@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiwi — Launch roadmap</title>
+<style>
+  :root {
+    --bg: #f5f5f7; --paper: #fff; --ink: #1d1d1f; --soft: #6e6e73; --line: rgba(0,0,0,.08);
+    --blue: #0071e3; --ui: #af52de; --cap: #34c759; --dep: #0071e3; --co: #ff9f0a; --crit: #ff3b30;
+    --ease: cubic-bezier(.2,.8,.2,1);
+    --label: 270px; --col: 118px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif; letter-spacing: -.02em; margin: 0; }
+  a { color: var(--blue); text-decoration: none; } a:hover { text-decoration: underline; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------------------------------------------------------------- hero */
+  header.hero { padding: 64px 0 28px; text-align: center; background: radial-gradient(900px 340px at 50% -80px, rgba(52,199,89,.16), transparent 70%), radial-gradient(700px 300px at 85% 0, rgba(0,113,227,.12), transparent 70%); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--soft); background: var(--paper); border: 1px solid var(--line); padding: 6px 14px; border-radius: 999px; }
+  .eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--cap); display: inline-block; }
+  h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.04; font-weight: 700; margin: 18px 0 10px; }
+  h1 em { font-style: normal; background: linear-gradient(90deg, #34c759, #0a84ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { font-size: clamp(17px, 2vw, 21px); color: var(--soft); max-width: 760px; margin: 0 auto; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 34px 0 0; text-align: left; }
+  .kpi { background: var(--paper); border: 1px solid var(--line); border-radius: 22px; padding: 20px 22px; box-shadow: 0 1px 2px rgba(0,0,0,.04); cursor: pointer; transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+  .kpi:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(0,0,0,.2); }
+  .kpi small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+  .kpi b { display: block; font-size: 30px; letter-spacing: -.02em; margin: 4px 0 2px; }
+  .kpi span { font-size: 13.5px; color: var(--soft); }
+  .kpi .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+
+  /* ---------------------------------------------------------------- toolbar */
+  .toolbar { position: sticky; top: 0; z-index: 30; background: rgba(245,245,247,.94); border-bottom: 1px solid var(--line); margin-top: 34px; }
+  .toolbar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding-top: 12px; padding-bottom: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { appearance: none; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all .18s var(--ease); }
+  .chip:hover { transform: translateY(-1px); }
+  .chip .sw { width: 10px; height: 10px; border-radius: 50%; }
+  .chip.off { opacity: .45; }
+  .chip.on-solid { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .spacer { flex: 1; }
+  .toolbar label { font-size: 13px; color: var(--soft); display: inline-flex; align-items: center; gap: 8px; }
+  .toolbar input[type=date] { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); }
+  .progress { font-size: 13px; color: var(--soft); }
+  .progress b { color: var(--ink); }
+
+  /* ---------------------------------------------------------------- gantt */
+  .gantt-card { background: var(--paper); border: 1px solid var(--line); border-radius: 26px; box-shadow: 0 30px 60px -36px rgba(0,0,0,.28); overflow: hidden; margin: 22px 0 0; }
+  .scroller { overflow-x: auto; position: relative; }
+  .chart { position: relative; width: calc(var(--label) + var(--col) * var(--weeks)); }
+  .headrow { display: grid; grid-template-columns: var(--label) 1fr; position: sticky; top: 0; z-index: 12; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .headrow .corner { position: sticky; left: 0; z-index: 14; background: var(--paper); padding: 14px 20px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); display: flex; align-items: flex-end; border-right: 1px solid var(--line); }
+  .phases { display: grid; grid-template-columns: repeat(var(--weeks), var(--col)); }
+  .phase-tag { grid-row: 1; padding: 12px 14px 6px; font-size: 12.5px; font-weight: 700; letter-spacing: -.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 1px solid var(--line); }
+  .phase-tag small { display: block; font-size: 11px; font-weight: 500; color: var(--soft); letter-spacing: 0; }
+  .weeks { display: grid; grid-template-columns: repeat(var(--weeks), var(--col)); }
+  .wk { padding: 6px 0 10px 14px; font-size: 12px; color: var(--soft); border-left: 1px solid var(--line); }
+  .wk b { display: block; color: var(--ink); font-size: 13px; }
+
+  .body { position: relative; }
+  .bands { position: absolute; top: 0; bottom: 0; left: var(--label); right: 0; display: grid; grid-template-columns: repeat(var(--weeks), var(--col)); pointer-events: none; z-index: 0; }
+  .bands i { border-left: 1px solid var(--line); }
+  .band-fill { position: absolute; top: 0; bottom: 0; z-index: 0; pointer-events: none; opacity: .5; }
+  .today { position: absolute; top: 0; bottom: 0; left: calc(var(--label) + 1px); width: 2px; background: var(--crit); z-index: 6; opacity: .75; }
+  .today::before { content: "Today"; position: absolute; top: 4px; left: 6px; font-size: 10.5px; font-weight: 700; color: #fff; background: var(--crit); padding: 2px 7px; border-radius: 6px; }
+
+  .lane-head { position: relative; z-index: 3; display: grid; grid-template-columns: var(--label) 1fr; border-top: 1px solid var(--line); background: linear-gradient(90deg, color-mix(in srgb, var(--lc) 11%, white), transparent 70%); }
+  .lane-head .name { position: sticky; left: 0; z-index: 5; padding: 14px 20px; display: flex; align-items: center; gap: 12px; background: color-mix(in srgb, var(--lc) 11%, white); border-right: 1px solid var(--line); }
+  .lane-head .badge { width: 34px; height: 34px; border-radius: 11px; background: var(--lc); color: #fff; display: grid; place-items: center; font-size: 17px; box-shadow: 0 6px 14px -6px var(--lc); }
+  .lane-head h3 { font-size: 16px; font-weight: 700; }
+  .lane-head p { margin: 0; font-size: 12px; color: var(--soft); }
+  .lane-head .tagline { padding: 14px 18px; font-size: 13px; color: var(--soft); align-self: center; position: sticky; left: var(--label); }
+
+  .row { position: relative; z-index: 3; display: grid; grid-template-columns: var(--label) 1fr; height: 50px; }
+  .row .lbl { position: sticky; left: 0; z-index: 5; background: var(--paper); border-right: 1px solid var(--line); padding: 0 18px 0 22px; display: flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 500; cursor: pointer; }
+  .row:hover .lbl { background: #fafafc; }
+  .row .lbl .id { font-size: 10.5px; font-weight: 700; color: var(--soft); background: var(--bg); border-radius: 6px; padding: 2px 6px; flex: none; }
+  .row .lbl .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .lane-cell { position: relative; }
+  .bar { position: absolute; top: 9px; height: 32px; border-radius: 11px; background: var(--lc); color: #fff; display: flex; align-items: center; gap: 7px; padding: 0 11px; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; cursor: pointer; box-shadow: 0 8px 16px -10px var(--lc), inset 0 1px 0 rgba(255,255,255,.28); transition: transform .18s var(--ease), box-shadow .18s var(--ease), filter .18s; border: 0; font-family: inherit; }
+  .bar:hover { transform: translateY(-1px) scale(1.012); filter: brightness(1.05); }
+  .bar.sel { outline: 3px solid color-mix(in srgb, var(--lc) 35%, white); outline-offset: 2px; }
+  .bar .crit { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px var(--crit); flex: none; }
+  .bar .txt { overflow: hidden; text-overflow: ellipsis; }
+  .bar.done { background: color-mix(in srgb, var(--lc) 55%, white); }
+  .bar.doing { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 8px, transparent 8px 16px); }
+  .bar.dim { opacity: .18; }
+  .row.dim .lbl { opacity: .35; }
+  .ms { position: absolute; top: 12px; width: 26px; height: 26px; transform: translateX(-13px) rotate(45deg); background: var(--ink); border-radius: 7px; box-shadow: 0 8px 14px -8px rgba(0,0,0,.6); cursor: pointer; border: 0; }
+  .ms-label { position: absolute; top: 14px; font-size: 12px; font-weight: 700; white-space: nowrap; pointer-events: none; }
+
+  svg.links { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; overflow: visible; }
+  svg.links path { fill: none; stroke: #8e8e93; stroke-width: 1.4; opacity: .35; transition: opacity .2s, stroke .2s; }
+  svg.links path.hot { stroke: var(--blue); opacity: .95; stroke-width: 2; }
+  svg.links path.critical { stroke: var(--crit); opacity: .55; }
+  svg.links.off { display: none; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 14px 22px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--soft); background: #fbfbfd; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .legend .k { width: 26px; height: 12px; border-radius: 5px; background: var(--blue); }
+  .legend .k.d { background: color-mix(in srgb, var(--blue) 55%, white); }
+  .legend .k.s { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.55) 0 4px, transparent 4px 8px), var(--blue); }
+  .legend .c { width: 9px; height: 9px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px var(--crit); }
+  .legend .dm { width: 11px; height: 11px; background: var(--ink); transform: rotate(45deg); border-radius: 3px; }
+
+  /* ---------------------------------------------------------------- sections */
+  section.block { margin: 56px 0 0; }
+  section.block > h2 { font-size: clamp(28px, 3.4vw, 40px); font-weight: 700; }
+  section.block > p.lead { color: var(--soft); font-size: 17px; max-width: 760px; margin: 8px 0 22px; }
+  .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .card p { margin: 0; color: var(--soft); font-size: 14.5px; }
+  .card .num { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--crit); color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 12px; }
+  .costs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .cost { background: var(--paper); border: 1px solid var(--line); border-radius: 22px; padding: 24px; }
+  .cost h3 { font-size: 17px; font-weight: 700; }
+  .cost .when { font-size: 12.5px; color: var(--soft); margin-bottom: 10px; }
+  .cost .big { font-size: 30px; font-weight: 700; letter-spacing: -.02em; }
+  .cost .big small { font-size: 14px; font-weight: 500; color: var(--soft); letter-spacing: 0; }
+  .cost ul { list-style: none; margin: 12px 0 0; padding: 0; font-size: 13.5px; }
+  .cost li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); }
+  .cost li span:last-child { color: var(--soft); text-align: right; }
+  .note { font-size: 12.5px; color: var(--soft); margin-top: 14px; }
+  footer { padding: 46px 0 70px; color: var(--soft); font-size: 13px; text-align: center; }
+
+  /* ---------------------------------------------------------------- drawer */
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.28); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 60; }
+  .scrim.on { opacity: 1; pointer-events: auto; }
+  aside.drawer { position: fixed; top: 12px; right: 12px; bottom: 12px; width: min(520px, calc(100vw - 24px)); background: var(--paper); border-radius: 26px; box-shadow: 0 40px 100px -20px rgba(0,0,0,.45); z-index: 70; transform: translateX(calc(100% + 30px)); transition: transform .38s var(--ease); display: flex; flex-direction: column; overflow: hidden; }
+  aside.drawer.on { transform: none; }
+  .d-head { padding: 24px 26px 18px; background: linear-gradient(180deg, color-mix(in srgb, var(--lc) 13%, white), var(--paper)); border-bottom: 1px solid var(--line); position: relative; }
+  .d-head .lane { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lc); }
+  .d-head h2 { font-size: 26px; font-weight: 700; margin: 6px 40px 8px 0; line-height: 1.15; }
+  .d-head .meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12.5px; }
+  .pill { background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; font-weight: 600; color: var(--ink); }
+  .pill.red { background: #fff1f0; border-color: #ffd0cc; color: #c4231a; }
+  .x { position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(0,0,0,.06); font-size: 16px; cursor: pointer; }
+  .x:hover { background: rgba(0,0,0,.1); }
+  .d-body { padding: 8px 26px 28px; overflow-y: auto; flex: 1; }
+  .d-body h4 { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); margin: 22px 0 8px; }
+  .d-body p { margin: 0; }
+  .d-body ol { margin: 0; padding-left: 20px; } .d-body ol li { margin: 5px 0; }
+  .opt { border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; margin: 8px 0; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; }
+  .opt.pick { border-color: color-mix(in srgb, var(--cap) 55%, white); background: #f3fbf5; }
+  .opt b { font-size: 14px; } .opt .cost-t { font-weight: 700; font-size: 13.5px; text-align: right; }
+  .opt .why { grid-column: 1 / -1; font-size: 13px; color: var(--soft); }
+  .opt .rec { font-size: 10.5px; font-weight: 700; color: #1d8a3a; background: #dcf5e3; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
+  .who a, .who span { display: inline-block; margin: 0 8px 6px 0; }
+  .who .lk { background: var(--bg); border-radius: 999px; padding: 6px 13px; font-size: 13px; font-weight: 600; }
+  .deps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .deps button { font: inherit; font-size: 12.5px; font-weight: 600; border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 5px 11px; cursor: pointer; }
+  .tip { background: #fff8e6; border: 1px solid #ffe3a3; border-radius: 14px; padding: 12px 14px; font-size: 13.5px; }
+  .status { display: flex; gap: 6px; margin-top: 4px; }
+  .status button { flex: 1; font: inherit; font-size: 13px; font-weight: 600; padding: 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; }
+  .status button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  @media (max-width: 980px) { .kpis, .cards3, .costs { grid-template-columns: 1fr 1fr; } :root { --label: 190px; --col: 104px; } .row .lbl .id { display: none; } }
+  @media (max-width: 620px) { .kpis, .cards3, .costs { grid-template-columns: 1fr; } .wrap { padding: 0 16px; } }
+  @media print {
+    @page { size: A3 landscape; margin: 10mm; }
+    body { background: #fff; } .toolbar, .scrim, aside.drawer { display: none !important; }
+    .scroller { overflow: visible; } .gantt-card, .card, .cost, .kpi { box-shadow: none; break-inside: avoid; }
+    header.hero { padding-top: 10px; } section.block { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><i></i> Kiwi · Launch roadmap · prices checked Oct 2026</span>
+    <h1>From MVP to <em>all of Chicago</em><br>in eight weeks.</h1>
+    <p class="sub">Four workstreams, one critical path. Click any bar to see how to do it, who to contact, what it costs and the cheapest option.</p>
+    <div class="kpis" id="kpis"></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="chips" id="laneChips"></div>
+    <button class="chip" id="critBtn" title="Show only the tasks that decide the launch date"><span class="sw" style="background:var(--crit)"></span>Critical path only</button>
+    <button class="chip" id="linkBtn" title="By default the arrows show for the task you hover or select">Show all dependencies</button>
+    <span class="spacer"></span>
+    <span class="progress" id="progress"></span>
+    <label>Start <input type="date" id="startDate"></label>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="gantt-card">
+    <div class="scroller" id="scroller">
+      <div class="chart" id="chart">
+        <div class="headrow">
+          <div class="corner">Workstream · task</div>
+          <div>
+            <div class="phases" id="phases"></div>
+            <div class="weeks" id="weeks"></div>
+          </div>
+        </div>
+        <div class="body" id="body">
+          <div class="bands" id="bands"></div>
+          <div class="today"></div>
+          <svg class="links" id="links"></svg>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="k"></i> To do</span><span><i class="k s"></i> In progress</span><span><i class="k d"></i> Done</span>
+      <span><i class="c"></i> On the critical path</span><span><i class="dm"></i> Milestone</span>
+      <span>Hover a bar to see what it depends on · click it for the how-to · set a status to track progress (saved in this browser)</span>
+    </div>
+  </div>
+
+  <section class="block">
+    <h2>What decides the date</h2>
+    <p class="lead">Three things can slip the launch. Everything else can run in parallel.</p>
+    <div class="cards3">
+      <div class="card"><span class="num">1</span><h3>Android is gated by a 14-day test</h3><p>A new personal Google Play account needs a closed test with at least 12 testers opted in for 14 days before it can go public. Start it in week 1 and Android is live by week 3.</p></div>
+      <div class="card"><span class="num">2</span><h3>Stripe live needs a legal entity</h3><p>Payments, payouts and the business bank account all need the company and an EIN. Form it by week 3 so premium features can charge in week 6.</p></div>
+      <div class="card"><span class="num">3</span><h3>Apple: individual first, company later</h3><p>An individual Apple account is approved in 1 to 3 days. A company account needs a D-U-N-S number and takes 7+ days. Ship on the individual account now, transfer the app to the company later.</p></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>What it costs</h2>
+    <p class="lead">The cheapest working option for each step. Typical list prices, to be confirmed at checkout.</p>
+    <div class="costs">
+      <div class="cost"><h3>MVP · now</h3><div class="when">Week 0 to 1</div><div class="big">≈ $15 <small>one-time</small></div>
+        <ul><li><span>Domain (.com)</span><span>≈ $10–15 / year</span></li><li><span>Vercel Hobby, Supabase Free</span><span>$0</span></li><li><span>Logo (DIY or AI tool)</span><span>$0–65</span></li></ul></div>
+      <div class="cost"><h3>1,000 users</h3><div class="when">Week 1 to 3</div><div class="big">≈ $140–440 <small>one-time</small></div>
+        <ul><li><span>Apple Developer</span><span>$99 / year</span></li><li><span>Google Play</span><span>$25 once</span></li><li><span>Vercel Pro + Supabase Pro</span><span>$45 / month</span></li><li><span>SMS sign-in codes</span><span>≈ $6–60 per 1,000</span></li><li><span>Email sender (optional)</span><span>$0–15 / month</span></li></ul></div>
+      <div class="cost"><h3>Full Chicago</h3><div class="when">Week 3 to 8</div><div class="big">≈ $150–500 <small>one-time</small></div>
+        <ul><li><span>Illinois LLC filing</span><span>$150 (+ $75 / year)</span></li><li><span>or Delaware C-corp (Stripe Atlas)</span><span>≈ $500</span></li><li><span>EIN · business bank</span><span>$0</span></li><li><span>Accounting</span><span>$0–30 / month</span></li><li><span>Stripe</span><span>% of revenue only</span></li></ul></div>
+    </div>
+    <p class="note">Stripe takes 2.9% + 30¢ per card payment; invoices are 0.4% per paid invoice; Connect payouts to providers add their own small per-seller and per-payout fees (see Stripe's pricing page). Nothing is owed until Kiwi earns.</p>
+  </section>
+</main>
+
+<footer>Kiwi launch roadmap · built to be explained to investors and used by the team · print it (A3 landscape) for the wall.</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+/* ======================================================================== data */
+const WEEKS = 10;
+const PHASES = [
+  { id: "mvp",  name: "MVP",            sub: "live now · harden",  from: 0, to: 1,  color: "#8e8e93" },
+  { id: "k1",   name: "1,000 users",    sub: "in 3 weeks",         from: 1, to: 3,  color: "#34c759" },
+  { id: "chi",  name: "Full Chicago",   sub: "in 2 months",        from: 3, to: 8.5, color: "#0a84ff" },
+  { id: "grow", name: "Keep growing",   sub: "week 9 onward",      from: 8.5, to: 10, color: "#af52de" }
+];
+const LANES = [
+  { id: "ui",  name: "UI & brand",           tag: "Nicer, with a logo, and clearly different on desktop and in the app", color: "#af52de", icon: "✦" },
+  { id: "cap", name: "Capabilities",         tag: "Circles, sign-up, contacts and the premium features",                color: "#34c759", icon: "◍" },
+  { id: "dep", name: "Massive deployment",   tag: "Domain, hosting, SMS, the stores, Stripe",                           color: "#0071e3", icon: "↗" },
+  { id: "co",  name: "Company & finance",    tag: "Entity, bank, accounting, tax. Comes with monetising",               color: "#ff9f0a", icon: "▤" }
+];
+const L = (label, url) => ({ label, url });
+const TASKS = [
+  /* ------------------------------------------------------------------ UI */
+  { id: "U1", lane: "ui", name: "Logo & brand identity", start: 0, dur: 1.2, owner: "Founder + designer", crit: false, deps: [],
+    why: "Needed before anything is submitted: the app icon, the store listings and the domain look all use it.",
+    steps: ["Write a 3-line brief: Kiwi, trusted recommendations from people you know, Chicago, friendly and credible.", "Pick the route below and get 3 options in a day.", "Export the mark, the wordmark, colours, and a 1024×1024 square icon with no transparency (the App Store requires it).", "Drop the files into /public and the Capacitor icon set."],
+    options: [ { name: "Figma / Canva, do it yourself", cost: "$0", why: "A simple fruit-slice mark and one colour is enough for launch.", pick: true }, { name: "AI logo tool (Looka, Brandmark)", cost: "$20–65", why: "Full brand kit in an afternoon." }, { name: "Freelancer (Fiverr, Dribbble)", cost: "$150–500", why: "Custom mark, 1–2 weeks." } ],
+    who: [L("Looka", "https://looka.com"), L("Canva", "https://www.canva.com"), L("Figma", "https://www.figma.com")],
+    tip: "Check the name before you commit: search the US trademark database (USPTO) and the App Store for 'Kiwi'. The name is common, so it may need a qualifier such as 'Kiwi Chicago'." },
+  { id: "U2", lane: "ui", name: "Desktop vs app layouts", start: 0.5, dur: 2.2, owner: "Engineering + design", crit: false, deps: ["U1"],
+    why: "On a laptop Kiwi should feel like a website (side navigation, wide cards); on the phone it should feel like an app (bottom tab bar, big touch targets, no hover). Two clear experiences, one codebase.",
+    steps: ["Detect the app: installed mode (display-mode: standalone) or Capacitor.", "Desktop: left sidebar, 2–3 column grid, hover states, keyboard shortcuts.", "App: bottom tab bar (Home, Circles, Search, Me), safe-area padding for the notch, 44px touch targets, pull-to-refresh.", "Test at 390, 834 and 1440 px widths and in the iOS simulator."],
+    options: [ { name: "Tailwind responsive + a mode flag", cost: "$0", why: "Already the stack. One component set, two layouts.", pick: true } ],
+    who: [], tip: "Do not build two apps. Switch layout at the shell level only." },
+  { id: "U3", lane: "ui", name: "Visual polish & motion", start: 1, dur: 2.5, owner: "Design", crit: false, deps: ["U1"],
+    why: "First impressions drive the first 1,000 users. Clean typography, real empty states and calm motion make it feel trustworthy.",
+    steps: ["Type scale, spacing and one accent colour; remove stray styles.", "Empty states with a clear next action (no circles yet, no reviews yet).", "Loading skeletons instead of spinners.", "Page transitions, 180 ms ease; respect reduced-motion.", "Review on a real phone in daylight."],
+    options: [ { name: "Do it in-house", cost: "$0", why: "Apple-like restraint is cheap: fewer colours, more space.", pick: true } ], who: [] },
+  { id: "U4", lane: "ui", name: "App Store & Play assets", start: 2, dur: 1.2, owner: "Design", crit: true, deps: ["U1", "U2"],
+    why: "No assets, no submission.",
+    steps: ["6.9-inch iPhone screenshots (at least 3) and a 6.5-inch set if asked; Android phone screenshots.", "Optional 15–30 s preview video.", "Name, subtitle, description, keywords, support URL, privacy URL.", "Apple privacy 'nutrition label' and the Google Data safety form (contacts, phone number, reviews)."],
+    options: [ { name: "Screenshots from the simulator + Figma frames", cost: "$0", why: "Fast and on brand.", pick: true }, { name: "AppLaunchpad / Previewed", cost: "$0–15", why: "Device-frame templates." } ],
+    who: [L("App Store Connect", "https://appstoreconnect.apple.com"), L("Play Console", "https://play.google.com/console")] },
+  { id: "U5", lane: "ui", name: "Onboarding & invite flow", start: 3, dur: 2, owner: "Design + engineering", crit: false, deps: ["C2"],
+    why: "The growth loop lives here: join, pick circles, share contacts, invite friends.",
+    steps: ["Three screens max: phone, circles, find friends.", "A share card for invites (image + link).", "Track drop-off per step."],
+    options: [ { name: "PostHog free tier for funnels", cost: "$0", why: "Open source, generous free tier.", pick: true } ], who: [L("PostHog", "https://posthog.com")] },
+  { id: "U6", lane: "ui", name: "Accessibility & dark/large text", start: 6, dur: 2, owner: "Engineering", crit: false, deps: ["U3"],
+    why: "Wider reach and a better App Store review.", steps: ["Contrast and focus states.", "Dynamic Type in the app.", "VoiceOver labels on all buttons."], options: [], who: [] },
+
+  /* ------------------------------------------------------------------ Capabilities */
+  { id: "C1", lane: "cap", name: "Circles: create & join", start: 0.5, dur: 2, owner: "Engineering", crit: true, deps: [],
+    why: "The core idea. A circle is a group of people who trust each other's recommendations: Booth, Kellogg, McKinsey, a neighbourhood, a building.",
+    steps: ["Data model: circles, memberships, roles (owner, admin, member), visibility (open, request, invite only).", "Verified circles: auto-join by email domain (e.g. a school or company address) with a verified badge.", "Create a circle: name, logo, description, rules.", "Invite by link, QR code and contacts.", "Seed the first ten: Booth, Kellogg, McKinsey, Northwestern, UChicago, Google Chicago…"],
+    options: [ { name: "Supabase tables + RLS policies", cost: "$0", why: "Already the stack; reviews stay visible only to the right circles.", pick: true } ], who: [],
+    tip: "Email-domain verification is the cheapest trust signal you have, and it makes 'Booth' mean actual Booth people." },
+  { id: "C2", lane: "cap", name: "Sign-up by circle", start: 1.5, dur: 1.8, owner: "Engineering", crit: true, deps: ["C1"],
+    why: "Sign-up should end with the person already inside their circles and seeing their friends' reviews.",
+    steps: ["Sign-up: phone number (SMS code) or email.", "Step 2: choose your circles, with verified ones on top.", "Step 3: import contacts (optional) to find friends.", "Land on a feed that already has reviews."],
+    options: [ { name: "Supabase phone auth + Send SMS hook", cost: "see SMS task", why: "Built already; needs a provider.", pick: true } ], who: [], deps2: ["D4"] },
+  { id: "C3", lane: "cap", name: "Contacts: select & control who sees what", start: 2, dur: 2, owner: "Engineering", crit: false, deps: ["C1"],
+    why: "People share different things with different groups. Let them choose which contacts and which circles see each review, and filter their feed by group.",
+    steps: ["Contact groups: favourites, family, work, a circle.", "Per-review audience: everyone, a circle, a group, only me.", "Filter or discriminate the feed by group.", "Never upload contacts without consent; hash numbers for matching."],
+    options: [ { name: "Native contacts via Capacitor", cost: "$0", why: "Already wired in the iOS wrapper.", pick: true } ], who: [] },
+  { id: "C8", lane: "cap", name: "Growth loops: invites & referrals", start: 2.5, dur: 3, owner: "Engineering + growth", crit: false, deps: ["C2"],
+    why: "1,000 users in 3 weeks comes from circles inviting circles, not from ads.",
+    steps: ["Invite links with a circle's name on them.", "'People you may know' from contacts.", "Share-a-review cards for iMessage and Instagram stories.", "A leaderboard per circle: who found the best providers."],
+    options: [ { name: "Branch / plain deep links", cost: "$0", why: "Plain universal links are enough at this size.", pick: true } ], who: [] },
+  { id: "C9", lane: "cap", name: "Trust, safety & moderation", start: 3, dur: 2, owner: "Engineering", crit: false, deps: ["C1"],
+    why: "Reviews of real businesses carry legal and reputational risk. Reports, an admin queue and a clear policy keep it clean.",
+    steps: ["Report a review or a provider.", "Admin queue (the feedback tracker pattern).", "Review policy and a provider reply right.", "Rate limits on sign-up and posting."], options: [], who: [] },
+  { id: "C4", lane: "cap", name: "Premium: provider analytics", start: 4.5, dur: 2.5, owner: "Engineering", crit: false, deps: ["C1", "D11"],
+    why: "The first thing a service provider will pay for: who is looking at them and which circles bring them customers.",
+    steps: ["Views, saves, contact taps and rating trend over time.", "Which circles and which friends referred each customer.", "Weekly email summary.", "Gate behind the Pro plan."],
+    options: [ { name: "Existing provider_events table + charts", cost: "$0", why: "The events are already recorded.", pick: true } ], who: [] },
+  { id: "C7", lane: "cap", name: "Premium plans & paywall", start: 5, dur: 2, owner: "Engineering", crit: true, deps: ["D11"],
+    why: "The business model: free for people, a subscription for providers.",
+    steps: ["Plans: Free and Pro (analytics, scheduling, invoicing).", "Stripe Billing + Customer Portal.", "Entitlements stored in Supabase; feature flags in the app.", "Apple and Google rules: charge providers through the web (Stripe), keep consumer features free so the in-app purchase rules do not apply."],
+    options: [ { name: "Stripe Billing", cost: "2.9% + 30¢", why: "Subscriptions, tax and the customer portal in one.", pick: true } ], who: [L("Stripe pricing", "https://stripe.com/pricing")],
+    tip: "Read Apple's in-app-purchase rules before putting a paywall inside the iOS app. Selling a business tool to businesses on the web is the safest route." },
+  { id: "C5", lane: "cap", name: "Premium: scheduling", start: 6, dur: 3, owner: "Engineering", crit: false, deps: ["C7"],
+    why: "Lets a customer book the provider they just found.",
+    steps: ["Provider sets weekly availability and services.", "Customer requests a slot; provider confirms.", "Reminders by push first, SMS only if needed (SMS costs money).", "Calendar sync (ICS first, Google and Apple later)."],
+    options: [ { name: "Build simple slots in-house", cost: "$0", why: "Lowest cost, tightly linked to circles.", pick: true }, { name: "Embed Cal.com", cost: "$0–15 / mo", why: "Faster, less control." } ], who: [L("Cal.com", "https://cal.com")] },
+  { id: "C6", lane: "cap", name: "Premium: invoicing", start: 7.5, dur: 2.5, owner: "Engineering", crit: false, deps: ["C5", "D11"],
+    why: "Closes the loop: find, book, serve, bill.",
+    steps: ["Create an invoice from a booking.", "Pay by card with Stripe; the provider receives a payout.", "PDF and email receipts.", "Export for accounting."],
+    options: [ { name: "Stripe Invoicing + Connect", cost: "0.4% per paid invoice + Connect fees", why: "No payments code to write, no money held by Kiwi.", pick: true } ], who: [L("Stripe Connect pricing", "https://stripe.com/connect/pricing")] },
+
+  /* ------------------------------------------------------------------ Deployment */
+  { id: "D1", lane: "dep", name: "Domain name", start: 0, dur: 0.4, owner: "Founder", crit: true, deps: [],
+    why: "Everything else (email, SMS, store listings, links in invites) hangs off a real domain.",
+    steps: ["Check the name is free: .com first; .app or .co as backups.", "Buy it in your own account (not a freelancer's).", "Point it at Vercel (add the domain in the Vercel project and copy the two DNS records).", "Turn on auto-renew and 2-step verification on the registrar."],
+    options: [ { name: "Cloudflare Registrar", cost: "≈ $10–11 / yr (.com, at cost)", why: "No markup and no renewal surprise; free DNS and email forwarding.", pick: true }, { name: "Porkbun", cost: "≈ $11 / yr", why: "Cheap first year, free WHOIS privacy." }, { name: "Namecheap / Squarespace", cost: "≈ $10–20 / yr", why: "Fine, check the renewal price." } ],
+    who: [L("Cloudflare Registrar", "https://www.cloudflare.com/products/registrar/"), L("Porkbun", "https://porkbun.com"), L("Namecheap", "https://www.namecheap.com")], tip: "Buy it today. Waiting costs nothing but time, and a taken name costs a rebrand." },
+  { id: "D2", lane: "dep", name: "Vercel Pro", start: 0.4, dur: 0.6, owner: "Founder", crit: true, deps: ["D1"],
+    why: "The free Hobby plan is for non-commercial use only. A launched product with users needs Pro.",
+    steps: ["Upgrade the team to Pro and add a payment card.", "Add the domain and set it as primary; make www redirect.", "Set production environment variables (Supabase URL and keys, SMS, Stripe later).", "Turn on Vercel Analytics and an alert for failed deployments."],
+    options: [ { name: "Vercel Pro", cost: "$20 / month per seat", why: "One seat is enough for now; includes usage credit.", pick: true }, { name: "Cloudflare Pages / Netlify", cost: "$0–19 / mo", why: "Cheaper, but means moving the app." } ],
+    who: [L("Vercel pricing", "https://vercel.com/pricing")] },
+  { id: "D3", lane: "dep", name: "Supabase Pro", start: 0.4, dur: 0.6, owner: "Founder", crit: true, deps: [],
+    why: "The free project can pause and has no daily backups. Pro does not pause, includes backups and 50,000 monthly active users.",
+    steps: ["Upgrade the organisation to Pro.", "Turn on point-in-time or daily backups.", "Set the site URL and redirect URLs to the new domain.", "Review row-level-security policies with the advisor (security and performance)."],
+    options: [ { name: "Supabase Pro", cost: "$25 / month", why: "Auth, database, storage and edge functions in one price.", pick: true } ], who: [L("Supabase pricing", "https://supabase.com/pricing")] },
+  { id: "D4", lane: "dep", name: "SMS codes + Send SMS hook", start: 0.5, dur: 1.5, owner: "Engineering", crit: true, deps: ["D3"],
+    why: "Phone sign-in is the way into the app and into your contacts. Without an SMS provider nobody can sign up.",
+    steps: ["Start: Twilio Verify, turn on in Supabase → Authentication → Phone (10 minutes).", "Test with Supabase test numbers (free).", "Then route codes with a Send SMS hook to Plivo or Telnyx for lower cost, with Twilio as the fallback for other countries.", "Set a daily cap and alerts on spend."],
+    options: [ { name: "Plivo via Send SMS hook", cost: "≈ $0.005 / US SMS, no verification fee", why: "Cheapest broadly; 2026 comparisons put it lowest in the UK and Indonesia.", pick: true }, { name: "Telnyx via hook", cost: "≈ $0.004 US + $0.03 / verification", why: "Lowest US message price." }, { name: "Twilio Verify (built in)", cost: "$0.05 / check + ≈ $0.008 SMS", why: "Fastest to turn on, most expensive." } ],
+    who: [L("Twilio Verify", "https://www.twilio.com/en-us/verify/pricing"), L("Plivo", "https://www.plivo.com/sms/pricing/"), L("Telnyx", "https://telnyx.com/pricing/messaging"), L("Supabase Send SMS hook", "https://supabase.com/docs/guides/auth/auth-hooks/send-sms-hook")],
+    tip: "Pricing is per destination country. Ask each vendor for the rate card of the top 10 countries you expect, then route by country." },
+  { id: "D5", lane: "dep", name: "Branded email sender", start: 1, dur: 0.8, owner: "Engineering", crit: false, deps: ["D1"],
+    why: "Sign-in and invite emails that come from your own domain land in the inbox, not in spam.",
+    steps: ["Add the sending domain; copy the SPF, DKIM and DMARC records into DNS.", "Connect it as Supabase custom SMTP.", "Test with Gmail and Outlook."],
+    options: [ { name: "Resend", cost: "$0 up to 3,000 emails / mo", why: "Simple, generous free tier.", pick: true }, { name: "Postmark", cost: "$15 / mo", why: "Best delivery reputation." } ], who: [L("Resend", "https://resend.com/pricing"), L("Postmark", "https://postmarkapp.com/pricing")] },
+  { id: "D6", lane: "dep", name: "Apple Developer (individual)", start: 0, dur: 0.6, owner: "Founder", crit: true, deps: [],
+    why: "Opens TestFlight and the App Store. Individual enrolment is approved in 1 to 3 days and needs no company.",
+    steps: ["Turn on two-factor authentication on your Apple ID.", "Enrol at developer.apple.com/programs/enroll as an individual and pay $99.", "Wait for approval (1–3 days).", "Create the app record in App Store Connect with the final bundle ID."],
+    options: [ { name: "Individual enrolment", cost: "$99 / year", why: "Fastest. Later, transfer the app to a company account.", pick: true }, { name: "Organisation enrolment", cost: "$99 / year", why: "Needs a legal entity and a D-U-N-S number; 7+ days." } ],
+    who: [L("Enrol", "https://developer.apple.com/programs/enroll/"), L("D-U-N-S for Apple", "https://developer.apple.com/help/account/membership/D-U-N-S/")],
+    tip: "With an individual account your personal name shows as the seller until you transfer the app to the company." },
+  { id: "D7", lane: "dep", name: "iOS build → TestFlight", start: 1, dur: 1.6, owner: "Engineering", crit: true, deps: ["D6", "D2", "U1"],
+    why: "TestFlight puts the app on real iPhones before the public store: friends and the first circles.",
+    steps: ["Run the Capacitor setup script; set the bundle ID, icon and the contacts permission text.", "Sign in Xcode with the developer account; archive and upload.", "Add internal testers (instant) and external testers (a short Beta App Review).", "Fix crashes from the first 20 testers."],
+    options: [ { name: "Capacitor wrapper, existing", cost: "$0", why: "Already in the repo with native contacts.", pick: true } ], who: [L("App Store Connect", "https://appstoreconnect.apple.com")] },
+  { id: "D8", lane: "dep", name: "App Store review & release", start: 2.6, dur: 1, owner: "Founder + engineering", crit: true, deps: ["D7", "U4", "B6"],
+    why: "Typical review takes 1–3 days. The main risk is a rejection under 'minimum functionality' for a web wrapper.",
+    steps: ["Submit with a demo account and review notes.", "Show native value: contacts import, phone sign-in, push notifications.", "Include privacy policy, account deletion in the app, and a support URL.", "Release manually once approved."],
+    options: [], who: [], tip: "Add one or two truly native features (contacts, share sheet, push) before submitting so the wrapper is clearly more than a website." },
+  { id: "D9", lane: "dep", name: "Google Play account", start: 0, dur: 0.8, owner: "Founder", crit: true, deps: [],
+    why: "A personal account needs identity verification and then a 14-day closed test. Start it on day one.",
+    steps: ["Create the Play Console account; pay $25 once.", "Verify identity (ID and address).", "Create the app and the closed-testing track.", "Recruit 12+ testers: friends, circle members, a group chat."],
+    options: [ { name: "Personal account", cost: "$25 once", why: "Cheapest; requires the 14-day, 12-tester test.", pick: true }, { name: "Organisation account", cost: "$25 once", why: "Exempt from the test, but needs the company first." } ],
+    who: [L("Play Console", "https://play.google.com/console/signup"), L("Testing requirements", "https://support.google.com/googleplay/android-developer/answer/14151465")] },
+  { id: "D10", lane: "dep", name: "Android build + 14-day closed test", start: 0.8, dur: 2.4, owner: "Engineering + testers", crit: true, deps: ["D9", "U1"],
+    why: "The 14 days cannot be sped up. The test must have 12+ testers opted in the whole time.",
+    steps: ["Add the Android platform in Capacitor; build a signed bundle (.aab).", "Upload to the closed track and invite testers by email.", "Keep 12+ testers opted in for 14 days; collect feedback.", "Apply for production access, then publish."],
+    options: [ { name: "Capacitor Android", cost: "$0", why: "Same code as iOS.", pick: true } ], who: [L("Play testing rules", "https://support.google.com/googleplay/android-developer/answer/14151465")], tip: "The 14 days start when the 12th tester opts in. Recruit them in week 1." },
+  { id: "D11", lane: "dep", name: "Stripe account & Connect", start: 3.4, dur: 1.8, owner: "Founder", crit: true, deps: ["B3"],
+    why: "Needed for subscriptions, invoices and payouts to providers.",
+    steps: ["Create the account in test mode now; go live once the entity, EIN and bank are ready.", "Create the Pro price and the customer portal.", "Connect: Express accounts so providers onboard themselves and get paid.", "Webhooks to Supabase; store entitlements."],
+    options: [ { name: "Stripe (Billing, Invoicing, Connect)", cost: "2.9% + 30¢; invoices 0.4%", why: "One vendor, handles tax forms for payouts.", pick: true } ], who: [L("Stripe", "https://stripe.com/pricing")] },
+  { id: "D12", lane: "dep", name: "Monitoring, backups & limits", start: 2, dur: 1.5, owner: "Engineering", crit: false, deps: ["D3"],
+    why: "A thousand strangers will find edge cases. You need to hear about them before they do.",
+    steps: ["Error tracking in web and app.", "Uptime check on the domain and the sign-in flow.", "Daily database backups, restore once to prove it.", "Rate limits on sign-up and SMS."],
+    options: [ { name: "Sentry + UptimeRobot", cost: "$0", why: "Free tiers cover this size.", pick: true } ], who: [L("Sentry", "https://sentry.io"), L("UptimeRobot", "https://uptimerobot.com")] },
+  { id: "D13", lane: "dep", name: "Seed circles & launch campaign", start: 2, dur: 6.5, owner: "Founder + ambassadors", crit: false, deps: ["C1", "D7"],
+    why: "Circles are the distribution. Each one that goes live brings its own members.",
+    steps: ["Week 2–3: Booth, Kellogg, McKinsey and three friend groups; 25 people in each.", "Weeks 3–6: campus ambassadors and the founders of other circles.", "Weeks 6–8: neighbourhoods, then providers (the first paying customers).", "Track: sign-ups per circle, reviews per user, invites per user."],
+    options: [], who: [] },
+
+  /* ------------------------------------------------------------------ Company */
+  { id: "B6", lane: "co", name: "Terms, privacy & review policy", start: 1, dur: 2, owner: "Founder", crit: true, deps: [],
+    why: "Both stores require a privacy policy and in-app account deletion; reviewing real businesses needs a clear policy.",
+    steps: ["Terms of use, privacy policy (phone numbers, contacts, reviews), community and review policy.", "A provider agreement (Pro plan), later.", "Link them in the app, the stores and the sign-up screen.", "Have a lawyer skim them before the Pro launch."],
+    options: [ { name: "Template generator (Termly, iubenda)", cost: "$0–15 / mo", why: "Good for launch.", pick: true }, { name: "Startup lawyer review", cost: "$300–1,500 once", why: "Before charging providers." } ], who: [L("Termly", "https://termly.io"), L("iubenda", "https://www.iubenda.com")] },
+  { id: "B1", lane: "co", name: "Choose the structure", start: 2, dur: 1, owner: "Founders", crit: true, deps: [],
+    why: "Decides taxes, liability and whether investors can invest later.",
+    steps: ["Talk to a startup accountant for 30 minutes.", "If you plan to raise: Delaware C-corp (investors expect it).", "If you will bootstrap first: Illinois LLC is cheapest and simplest.", "Agree the founder split and put it in writing."],
+    options: [ { name: "Illinois LLC", cost: "$150 + $75 / yr", why: "Cheapest, simple. Can convert later.", pick: true }, { name: "Delaware C-corp via Stripe Atlas", cost: "≈ $500", why: "Investor-ready, includes the legal documents." } ],
+    who: [L("Illinois Secretary of State, LLC", "https://www.ilsos.gov/publications/business-services/llc.html"), L("Stripe Atlas", "https://stripe.com/atlas")], tip: "Do not wait for revenue: the entity is the key that unlocks Stripe live, the business bank account and the Apple company account." },
+  { id: "B2", lane: "co", name: "Form the company & get an EIN", start: 3, dur: 0.8, owner: "Founders", crit: true, deps: ["B1"],
+    why: "The legal entity exists; the EIN is its tax ID.",
+    steps: ["File the Articles of Organization (Illinois) or use Atlas (Delaware).", "Name yourself the registered agent (free) or hire one.", "Get the EIN free at IRS.gov (about 5 minutes).", "Write a simple operating agreement."],
+    options: [ { name: "File it yourself", cost: "$150 (IL) + EIN $0", why: "Takes an afternoon.", pick: true } ], who: [L("Illinois LLC", "https://www.ilsos.gov/publications/business-services/llc.html"), L("IRS: get an EIN", "https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online")] },
+  { id: "B3", lane: "co", name: "Business bank account", start: 3.8, dur: 0.8, owner: "Founders", crit: true, deps: ["B2"],
+    why: "Stripe pays out here, and it keeps company money separate from yours.",
+    steps: ["Apply online with the EIN and formation documents.", "Get a debit card and connect it to Stripe.", "Use it for every business cost from now on."],
+    options: [ { name: "Mercury", cost: "$0 / month", why: "Startup-friendly, fast online approval.", pick: true }, { name: "Relay", cost: "$0 / month", why: "Good for multiple accounts." }, { name: "Chase / Bank of America", cost: "$0–30 / mo", why: "Local branch if you want one." } ],
+    who: [L("Mercury", "https://mercury.com"), L("Relay", "https://relayfi.com")] },
+  { id: "B4", lane: "co", name: "D-U-N-S → Apple company account", start: 4, dur: 2.5, owner: "Founders", crit: false, deps: ["B2", "D8"],
+    why: "Shows 'Kiwi Inc.' instead of a personal name on the App Store, and lets the company own the app.",
+    steps: ["Request the free D-U-N-S number for the company (Apple has a lookup page).", "Wait for Apple to receive it (up to 2 business days after issue).", "Enrol the organisation ($99) and wait 7+ days.", "Transfer the app from the individual account in App Store Connect."],
+    options: [ { name: "Free D-U-N-S via Dun & Bradstreet", cost: "$0 (can take weeks)", why: "Start early; expedited is paid.", pick: true } ], who: [L("Apple D-U-N-S help", "https://developer.apple.com/help/account/membership/D-U-N-S/")] },
+  { id: "B5", lane: "co", name: "Accounting & bookkeeping", start: 4.6, dur: 1, owner: "Founders", crit: false, deps: ["B3"],
+    why: "Clean books from day one save a painful month later.",
+    steps: ["Pick the tool and connect the bank and Stripe.", "Categorise monthly; keep every receipt.", "Find an accountant for the first tax return."],
+    options: [ { name: "Wave", cost: "$0 bookkeeping", why: "Free for tiny companies.", pick: true }, { name: "QuickBooks", cost: "≈ $30+ / mo", why: "Standard, accountants know it." }, { name: "Bench / Pilot", cost: "≈ $300 / mo", why: "Done-for-you; later." } ],
+    who: [L("Wave", "https://www.waveapps.com"), L("QuickBooks", "https://quickbooks.intuit.com")] },
+  { id: "B7", lane: "co", name: "Sales tax & Chicago specifics", start: 5.5, dur: 1.5, owner: "Accountant", crit: false, deps: ["B5"],
+    why: "Subscriptions to providers may be taxable. Chicago has taxes on some software and cloud services.",
+    steps: ["Ask the accountant whether the Pro plan is taxable in Illinois and in Chicago.", "Turn on Stripe Tax if needed.", "Register for the tax accounts it requires."],
+    options: [ { name: "Accountant, one hour", cost: "$150–300", why: "Cheap insurance.", pick: true } ], who: [L("Stripe Tax", "https://stripe.com/tax")], tip: "Check this before charging providers; it changes the price you show." },
+  { id: "B8", lane: "co", name: "Trademark & insurance", start: 7, dur: 1.5, owner: "Founders", crit: false, deps: ["B2"],
+    why: "Protects the name once it has users.", steps: ["USPTO trademark search, then file the application.", "General liability and cyber insurance quote."],
+    options: [ { name: "USPTO filing", cost: "≈ $350 per class", why: "File it yourself.", pick: true } ], who: [L("USPTO", "https://www.uspto.gov/trademarks")] }
+];
+const MILESTONES = [
+  { id: "M1", name: "MVP live", at: 0 }, { id: "M2", name: "TestFlight beta", at: 2.6 }, { id: "M3", name: "1,000 users", at: 3.6 },
+  { id: "M4", name: "Payments live", at: 5.2 }, { id: "M5", name: "Full Chicago", at: 8.5 }
+];
+/* extra dependency edges (task → prerequisite) not stored on the card */
+const EXTRA_DEPS = { C2: ["D4"], D13: ["D2"] };
+
+/* ======================================================================== state */
+const $ = (s, r = document) => r.querySelector(s);
+const state = { lanes: new Set(LANES.map(l => l.id)), crit: false, links: "focus", hover: null, sel: null, status: {}, start: "2026-10-12" };
+try { Object.assign(state.status, JSON.parse(localStorage.getItem("kiwi.roadmap.status") || "{}")); const d = localStorage.getItem("kiwi.roadmap.start"); if (d) state.start = d; } catch (e) {}
+state.status.M1 = state.status.M1 || "done"; TASKS.forEach(t => { if (!(t.id in state.status)) state.status[t.id] = "todo"; });
+const save = () => { try { localStorage.setItem("kiwi.roadmap.status", JSON.stringify(state.status)); localStorage.setItem("kiwi.roadmap.start", state.start); } catch (e) {} };
+const task = id => TASKS.find(t => t.id === id);
+const allDeps = t => [...new Set([...(t.deps || []), ...(EXTRA_DEPS[t.id] || [])])].filter(id => task(id));
+const unlocks = id => TASKS.filter(t => allDeps(t).includes(id));
+const phaseOf = w => PHASES.find(p => w >= p.from && w < p.to) || PHASES[PHASES.length - 1];
+document.documentElement.style.setProperty("--weeks", WEEKS);
+const COL = () => parseInt(getComputedStyle(document.documentElement).getPropertyValue("--col"));
+function fitColumns() {
+  const label = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--label"));
+  const room = $("#scroller").clientWidth - label;
+  document.documentElement.style.setProperty("--col", Math.max(96, Math.floor(room / WEEKS)) + "px");
+}
+const fmt = (d, add = 0) => { const x = new Date(d + "T12:00:00"); x.setDate(x.getDate() + Math.round(add * 7)); return x.toLocaleDateString("en-US", { month: "short", day: "numeric" }); };
+
+/* ======================================================================== render */
+function renderKpis() {
+  const done = TASKS.filter(t => state.status[t.id] === "done").length;
+  const crit = TASKS.filter(t => t.crit);
+  const k = [
+    { c: "#8e8e93", s: "Phase 1 · now", b: "MVP", t: "Live. Harden it, then buy the domain.", ph: "mvp" },
+    { c: "#34c759", s: "Phase 2 · 3 weeks", b: "1,000 users", t: "Circles, phone sign-up, TestFlight, Android test.", ph: "k1" },
+    { c: "#0a84ff", s: "Phase 3 · 2 months", b: "Full Chicago", t: "Stores live, company formed, payments and premium.", ph: "chi" },
+    { c: "#af52de", s: "Then", b: "Keep growing", t: "More cities, more circles, more providers.", ph: "grow" }
+  ];
+  $("#kpis").innerHTML = k.map(x => `<div class="kpi" data-ph="${x.ph}"><small><i class="dot" style="background:${x.c}"></i>${x.s}</small><b>${x.b}</b><span>${x.t}</span></div>`).join("");
+  document.querySelectorAll(".kpi").forEach(el => el.onclick = () => { const p = PHASES.find(p => p.id === el.dataset.ph); const sc = $("#scroller"); sc.scrollTo({ left: p.from * COL(), behavior: "smooth" }); $("#chart").scrollIntoView({ behavior: "smooth", block: "start" }); });
+}
+function renderHead() {
+  $("#phases").innerHTML = PHASES.map(p => `<div class="phase-tag" style="grid-column:${Math.floor(p.from) + 1} / ${Math.ceil(p.to) + 1};color:${p.color}">${p.name}<small>${p.sub}</small></div>`).join("");
+  $("#weeks").innerHTML = Array.from({ length: WEEKS }, (_, i) => `<div class="wk"><b>Week ${i + 1}</b>${fmt(state.start, i)}</div>`).join("");
+  $("#bands").innerHTML = Array.from({ length: WEEKS }, () => "<i></i>").join("");
+}
+function bandFills() {
+  const col = COL();
+  return PHASES.map(p => `<div class="band-fill" style="left:calc(var(--label) + ${p.from * col}px);width:${(p.to - p.from) * col}px;background:${p.color}0d"></div>`).join("");
+}
+function renderBody() {
+  const col = COL();
+  let html = bandFills();
+  LANES.forEach(l => {
+    if (!state.lanes.has(l.id)) return;
+    const items = TASKS.filter(t => t.lane === l.id);
+    html += `<div class="lane-head" style="--lc:${l.color}"><div class="name"><span class="badge">${l.icon}</span><div><h3>${l.name}</h3><p>${items.length} tasks</p></div></div><div class="tagline">${l.tag}</div></div>`;
+    items.forEach(t => {
+      const dim = state.crit && !t.crit;
+      const st = state.status[t.id];
+      const end = t.start + t.dur;
+      html += `<div class="row ${dim ? "dim" : ""}" style="--lc:${l.color}" data-id="${t.id}"><div class="lbl" data-open="${t.id}"><span class="id">${t.id}</span><span class="t">${t.name}</span></div><div class="lane-cell"><button class="bar ${st === "done" ? "done" : st === "doing" ? "doing" : ""} ${dim ? "dim" : ""} ${state.sel === t.id ? "sel" : ""}" data-open="${t.id}" data-id="${t.id}" style="left:${t.start * col}px;width:${Math.max(t.dur * col - 6, 28)}px" title="${t.name} · week ${(t.start + 1).toFixed(1).replace(".0", "")}–${end.toFixed(1).replace(".0", "")} (${fmt(state.start, t.start)} → ${fmt(state.start, end)})">${t.crit ? '<i class="crit"></i>' : ""}${st === "done" ? "✓ " : ""}<span class="txt">${t.dur * col > 110 ? t.name : ""}</span></button></div></div>`;
+    });
+  });
+  html += `<div class="lane-head" style="--lc:#1d1d1f"><div class="name"><span class="badge" style="background:#1d1d1f">◆</span><div><h3>Milestones</h3><p>What investors can check</p></div></div><div class="tagline"></div></div>`;
+  html += `<div class="row" style="--lc:#1d1d1f;height:56px"><div class="lbl"><span class="t" style="color:var(--soft)">Targets</span></div><div class="lane-cell">${MILESTONES.map(m => `<button class="ms" style="left:${m.at * col}px" title="${m.name} · ${fmt(state.start, m.at)}"></button><span class="ms-label" style="left:${m.at * col + 18}px">${m.name}<span style="color:var(--soft);font-weight:500"> · ${fmt(state.start, m.at)}</span></span>`).join("")}</div></div>`;
+  const body = $("#body");
+  [...body.children].forEach(c => { if (!c.matches(".bands, .today, svg.links")) c.remove(); });
+  body.insertAdjacentHTML("beforeend", html);
+  body.querySelectorAll("[data-open]").forEach(el => el.onclick = () => openTask(el.dataset.open));
+  body.querySelectorAll(".bar, .row .lbl[data-open]").forEach(el => {
+    const id = el.dataset.id || el.dataset.open;
+    el.onmouseenter = () => { state.hover = id; drawLinks(); };
+    el.onmouseleave = () => { state.hover = null; drawLinks(); };
+  });
+  requestAnimationFrame(drawLinks);
+  renderProgress();
+}
+function renderProgress() {
+  const done = TASKS.filter(t => state.status[t.id] === "done").length;
+  $("#progress").innerHTML = `<b>${done}</b> of ${TASKS.length} tasks done`;
+}
+function drawLinks() {
+  const svg = $("#links"); const mode = state.links; // "focus" (selected or hovered task), "all", or "off"
+  svg.classList.toggle("off", mode === "off");
+  const focus = state.hover || state.sel;
+  if (mode === "off" || (mode === "focus" && !focus)) { svg.innerHTML = ""; return; }
+  const body = $("#body"); const br = body.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${br.width} ${br.height}`);
+  let d = "";
+  TASKS.forEach(t => {
+    const to = $(`.bar[data-id="${t.id}"]`); if (!to || to.classList.contains("dim")) return;
+    allDeps(t).forEach(id => {
+      if (mode === "focus" && focus !== t.id && focus !== id) return;
+      const from = $(`.bar[data-id="${id}"]`); if (!from || from.classList.contains("dim")) return;
+      const a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+      const x1 = a.right - br.left, y1 = a.top + a.height / 2 - br.top, x2 = b.left - br.left, y2 = b.top + b.height / 2 - br.top;
+      const mx = Math.max(x1 + 14, (x1 + x2) / 2);
+      const hot = focus && (focus === t.id || focus === id);
+      const cls = hot ? "hot" : (task(id).crit && t.crit ? "critical" : "");
+      d += `<path class="${cls}" d="M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2 - 2} ${y2}" marker-end="url(#ah)"/>`;
+    });
+  });
+  svg.innerHTML = `<defs><marker id="ah" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8z" fill="#8e8e93" style="stroke:none;opacity:1"/></marker></defs>` + d;
+}
+
+/* ======================================================================== drawer */
+function openTask(id) {
+  const t = task(id), lane = LANES.find(l => l.id === t.lane); state.sel = id;
+  const end = t.start + t.dur, ph = phaseOf(t.start + t.dur / 2);
+  const deps = allDeps(t), un = unlocks(id);
+  const chipBtn = x => `<button data-jump="${x.id}">${x.id} · ${x.name}</button>`;
+  $("#drawer").style.setProperty("--lc", lane.color);
+  $("#drawer").innerHTML = `
+    <div class="d-head"><div class="lane">${lane.name} · ${t.id}</div><h2>${t.name}</h2>
+      <div class="meta"><span class="pill">Week ${(t.start + 1).toFixed(1).replace(".0", "")} → ${(end).toFixed(1).replace(".0", "")}</span><span class="pill">${fmt(state.start, t.start)} → ${fmt(state.start, end)}</span><span class="pill">${ph.name}</span><span class="pill">Owner: ${t.owner}</span>${t.crit ? '<span class="pill red">Critical path</span>' : ""}</div>
+      <button class="x" id="dx" aria-label="Close">✕</button></div>
+    <div class="d-body">
+      <h4>Status</h4><div class="status">${["todo", "doing", "done"].map(s => `<button data-st="${s}" class="${state.status[id] === s ? "on" : ""}">${{ todo: "To do", doing: "In progress", done: "Done" }[s]}</button>`).join("")}</div>
+      <h4>Why it matters</h4><p>${t.why}</p>
+      ${t.steps?.length ? `<h4>How to do it</h4><ol>${t.steps.map(s => `<li>${s}</li>`).join("")}</ol>` : ""}
+      ${t.options?.length ? `<h4>Options · cheapest first</h4>${t.options.map(o => `<div class="opt ${o.pick ? "pick" : ""}"><b>${o.name}${o.pick ? '<span class="rec">Recommended</span>' : ""}</b><span class="cost-t">${o.cost}</span><span class="why">${o.why}</span></div>`).join("")}` : ""}
+      ${t.who?.length ? `<h4>Who to contact / where</h4><div class="who">${t.who.map(w => `<a class="lk" href="${w.url}" target="_blank" rel="noopener">${w.label} ↗</a>`).join("")}</div>` : ""}
+      ${t.tip ? `<h4>Watch out</h4><div class="tip">${t.tip}</div>` : ""}
+      ${deps.length ? `<h4>Needs first</h4><div class="deps">${deps.map(d => chipBtn(task(d))).join("")}</div>` : ""}
+      ${un.length ? `<h4>Unlocks</h4><div class="deps">${un.map(chipBtn).join("")}</div>` : ""}
+    </div>`;
+  $("#drawer").classList.add("on"); $("#scrim").classList.add("on"); $("#drawer").setAttribute("aria-hidden", "false");
+  $("#dx").onclick = closeDrawer;
+  $("#drawer").querySelectorAll("[data-st]").forEach(b => b.onclick = () => { state.status[id] = b.dataset.st; save(); openTask(id); renderBody(); });
+  $("#drawer").querySelectorAll("[data-jump]").forEach(b => b.onclick = () => openTask(b.dataset.jump));
+  document.querySelectorAll(".bar").forEach(b => b.classList.toggle("sel", b.dataset.id === id));
+  drawLinks();
+}
+function closeDrawer() { state.sel = null; $("#drawer").classList.remove("on"); $("#scrim").classList.remove("on"); $("#drawer").setAttribute("aria-hidden", "true"); document.querySelectorAll(".bar.sel").forEach(b => b.classList.remove("sel")); drawLinks(); }
+
+/* ======================================================================== toolbar */
+function renderChips() {
+  $("#laneChips").innerHTML = LANES.map(l => `<button class="chip ${state.lanes.has(l.id) ? "" : "off"}" data-l="${l.id}"><span class="sw" style="background:${l.color}"></span>${l.name}</button>`).join("");
+  document.querySelectorAll("[data-l]").forEach(b => b.onclick = () => { const id = b.dataset.l; state.lanes.has(id) ? state.lanes.delete(id) : state.lanes.add(id); if (!state.lanes.size) LANES.forEach(l => state.lanes.add(l.id)); renderChips(); renderBody(); });
+}
+$("#critBtn").onclick = e => { state.crit = !state.crit; e.currentTarget.classList.toggle("on-solid", state.crit); renderBody(); };
+$("#linkBtn").onclick = e => { state.links = state.links === "all" ? "focus" : "all"; e.currentTarget.classList.toggle("on-solid", state.links === "all"); drawLinks(); };
+$("#scrim").onclick = closeDrawer; document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+$("#startDate").value = state.start;
+$("#startDate").onchange = e => { if (e.target.value) { state.start = e.target.value; save(); renderHead(); renderBody(); } };
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { fitColumns(); renderBody(); }, 120); });
+$("#scroller").addEventListener("scroll", () => {}, { passive: true });
+
+fitColumns(); renderKpis(); renderHead(); renderChips(); renderBody();
+if (new URLSearchParams(location.search).get("task")) openTask(new URLSearchParams(location.search).get("task"));
+</script>
+</body>
+</html>
