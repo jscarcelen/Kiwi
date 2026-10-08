@@ -24,6 +24,7 @@ export default function LoginForm() {
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
       <PhoneAuth mode="login" />
       <InstagramButton />
+      <p className="text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">How does phone sign-in work?</Link></p>
       <p className="text-center text-[14px] text-ink-soft">New to Kiwi? <Link className="font-semibold text-kiwi-700" href="/signup">Create an account</Link></p>
     </form>
   );

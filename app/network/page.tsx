@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
 import NetworkManager from "@/components/NetworkManager";
+import DeleteAccount from "@/components/DeleteAccount";
+import Link from "next/link";
 import ContactsFinder from "@/components/ContactsFinder";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +26,7 @@ export default async function Network({ searchParams }: { searchParams: { welcom
       <p className="mb-8 mt-1 text-ink-soft">The more people you connect, the better your recommendations.</p>
       <NetworkManager me={user.id} friends={friends} myGroups={myGroups} allGroups={groups ?? []} suggestions={suggestions ?? []} />
       <ContactsFinder me={user.id} friendIds={friends.map((f: any) => f.id)} />
+      <p className="mt-6 text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">Help: phone sign-in & importing contacts</Link> · <DeleteAccount /></p>
     </div>
   );
 }

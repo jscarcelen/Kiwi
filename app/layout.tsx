@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import FeedbackWidget from "@/components/FeedbackWidget";
 
@@ -18,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main>{children}</main>
         <footer className="mt-24 border-t border-black/5 py-10 text-center text-[13px] text-ink-faint">
-          🥝 Kiwi · Trusted services, recommended by people you know · Chicago · Beta
+          🥝 Kiwi · Trusted services, recommended by people you know · Chicago · Beta<br /><Link href="/help" className="underline">Help</Link> · <Link href="/privacy" className="underline">Privacy</Link>
         </footer>
         <FeedbackWidget />
       </body>

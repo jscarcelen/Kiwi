@@ -36,6 +36,7 @@ export default function SignupForm() {
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
       <PhoneAuth mode="signup" />
       <InstagramButton />
+      <p className="text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">How does phone sign-in work?</Link></p>
       <p className="text-center text-[14px] text-ink-soft">Already have an account? <Link className="font-semibold text-kiwi-700" href="/login">Sign in</Link></p>
     </form>
   );

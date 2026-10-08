@@ -2,16 +2,27 @@
   "name": "kiwi",
   "version": "0.1.0",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "ios:add": "cap add ios",
+    "ios:setup": "bash scripts/ios-setup.sh",
+    "ios:open": "cap open ios"
+  },
   "dependencies": {
-    "html2canvas": "^1.4.1",
+    "@capacitor-community/contacts": "^8.0.0",
+    "@capacitor/core": "^8.5.3",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.4",
+    "html2canvas": "^1.4.1",
     "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/ios": "^8.5.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

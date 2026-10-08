@@ -1,7 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function InstagramButton() {
   const [msg, setMsg] = useState(false);
+  const [native, setNative] = useState(false);
+  useEffect(() => setNative(!!(window as any).Capacitor?.isNativePlatform?.()), []);
+  if (native) return null; // App Store rule 4.8: no third-party login without Sign in with Apple
   return (
     <div>
       <button type="button" className="btn-ghost w-full" onClick={() => setMsg(true)}>

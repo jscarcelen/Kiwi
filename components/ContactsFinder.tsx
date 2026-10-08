@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -16,7 +17,8 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
   const [matches, setMatches] = useState<Match[] | null>(null);
   const [others, setOthers] = useState<Contact[]>([]);
   const [msg, setMsg] = useState(""); const [busy, setBusy] = useState(false);
-  const canPick = typeof navigator !== "undefined" && "contacts" in navigator && typeof window !== "undefined" && "ContactsManager" in window;
+  const [canPick, setCanPick] = useState(false);
+  const [native, setNative] = useState(false);
   const invite = typeof window !== "undefined" ? `${window.location.origin}/signup?ref=${me}` : "";
   const inviteMsg = `Join me on Kiwi — see which local services our friends trust: ${invite}`;
 
@@ -25,7 +27,11 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
     const { data } = await s.from("phone_numbers").select("phone,discoverable").eq("user_id", me).maybeSingle();
     setOwn(data ?? null);
   };
-  useEffect(() => { loadOwn(); }, []); // eslint-disable-line
+  useEffect(() => {
+    loadOwn();
+    setNative(!!(window as any).Capacitor?.isNativePlatform?.());
+    setCanPick("contacts" in navigator && "ContactsManager" in window);
+  }, []); // eslint-disable-line
 
   const sendCode = async () => {
     setMsg("");
@@ -51,6 +57,18 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
     setMatches(found);
     const foundPhones = new Set(found.map((m) => m.phone));
     setOthers(list.filter((c) => !foundPhones.has(c.num)));
+  };
+  const pickNative = async () => {
+    try {
+      const { Contacts } = await import("@capacitor-community/contacts");
+      const perm = await Contacts.requestPermissions();
+      if (perm.contacts !== "granted") return setMsg("Contacts access is off. Enable it in Settings → Kiwi → Contacts.");
+      setBusy(true);
+      const r = await Contacts.getContacts({ projection: { name: true, phones: true } });
+      const list = r.contacts.flatMap((c) => (c.phones ?? []).map((p) => ({ name: c.name?.display ?? "", num: toDigits(p.number ?? "") }))).filter((c) => c.num.length >= 10);
+      setBusy(false);
+      await run(list.filter((c, i) => list.findIndex((x) => x.num === c.num) === i));
+    } catch (e: any) { setBusy(false); setMsg(e?.message ?? "Couldn't read contacts."); }
   };
   const pick = async () => {
     try {
@@ -86,10 +104,10 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
       {msg && <p className="mt-3 text-[13px] text-ink-soft">{msg}</p>}
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        {canPick && <button className="btn-primary" onClick={pick} disabled={busy}>📇 Choose from my contacts</button>}
+        {(canPick || native) && <button className="btn-primary" onClick={native ? pickNative : pick} disabled={busy}>📇 {native ? "Find friends in my contacts" : "Choose from my contacts"}</button>}
         <label className="btn-ghost cursor-pointer">📄 Upload contacts file (.vcf / .csv)<input type="file" accept=".vcf,.csv,text/vcard,text/csv,text/plain" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} /></label>
       </div>
-      {!canPick && <p className="mt-2 text-[12px] text-ink-faint">iPhone tip: on icloud.com → Contacts → select all → Export vCard, then upload the file here. Or paste numbers below. (Direct contact access needs a native app.)</p>}
+      {!canPick && !native && <p className="mt-2 text-[12px] text-ink-faint">iPhone tip: on icloud.com → Contacts → select all → Export vCard, then upload the file here. Or paste numbers below. (One-tap access is coming with the Kiwi iPhone app.) <Link href="/help" className="underline">Step-by-step help</Link></p>}
       <textarea className="input mt-3 min-h-[70px]" placeholder="Or paste numbers / names, one per line" value={paste} onChange={(e) => setPaste(e.target.value)} />
       {paste.trim() && <button className="btn-ghost mt-2" onClick={() => run(parseContacts(paste))} disabled={busy}>Find them</button>}
 
