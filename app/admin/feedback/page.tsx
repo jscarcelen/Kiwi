@@ -1,24 +1,9 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { getViewer } from "@/lib/data";
+import type { Metadata } from "next";
 import FeedbackBoard from "@/components/FeedbackBoard";
 
-export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "Kiwi feedback", robots: { index: false, follow: false } };
 
-export default async function FeedbackAdmin() {
-  const supabase = createClient();
-  const { user } = await getViewer(supabase);
-  if (!user) redirect("/login?next=/admin/feedback");
-  const { data: admin } = await supabase.rpc("is_admin");
-  if (!admin)
-    return (
-      <div className="mx-auto max-w-xl px-5 py-20">
-        <div className="card p-8">
-          <h1 className="text-2xl font-semibold">Admins only</h1>
-          <p className="mt-2 text-ink-soft">Run <code>supabase/feedback.sql</code> in the Supabase SQL editor, or make this account an admin:</p>
-          <pre className="mt-4 overflow-x-auto rounded-xl bg-black/5 p-4 text-[13px]">{`insert into public.admins (user_id)\nselect id from auth.users where email = '${user.email}'\non conflict do nothing;`}</pre>
-        </div>
-      </div>
-    );
+// Open on purpose: shared by link with the team only (no login). Don't publish this URL.
+export default function FeedbackAdmin() {
   return <FeedbackBoard />;
 }

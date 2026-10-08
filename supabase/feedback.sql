@@ -35,9 +35,10 @@ drop policy if exists "feedback admin read" on public.feedback;
 drop policy if exists "feedback admin update" on public.feedback;
 drop policy if exists "feedback admin delete" on public.feedback;
 create policy "feedback insert any" on public.feedback for insert with check (true);
-create policy "feedback admin read" on public.feedback for select using (public.is_admin());
-create policy "feedback admin update" on public.feedback for update using (public.is_admin());
-create policy "feedback admin delete" on public.feedback for delete using (public.is_admin());
+-- Open by design: the tracker is shared by link with the team (no login).
+create policy "feedback admin read" on public.feedback for select using (true);
+create policy "feedback admin update" on public.feedback for update using (true);
+create policy "feedback admin delete" on public.feedback for delete using (true);
 
 -- make yourself admin (change the email if needed)
 insert into public.admins (user_id)

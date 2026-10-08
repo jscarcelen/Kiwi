@@ -7,10 +7,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   const supabase = createClient();
-  const { data: admin } = await supabase.rpc("is_admin");
-  if (!admin) return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   const { ids, extra, refine } = await req.json();
   if (!Array.isArray(ids) || ids.length === 0) return NextResponse.json({ error: "No items selected" }, { status: 400 });
+  if (ids.length > 20) return NextResponse.json({ error: "Select 20 items or fewer" }, { status: 400 });
   const { data: items, error } = await supabase.from("feedback").select("*").in("id", ids).order("created_at");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   const { prompt, warnings } = buildPrompt(items ?? [], extra);
