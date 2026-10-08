@@ -120,12 +120,14 @@ create or replace view public.provider_stats as
 -- new auth user -> profile (+ provider row if signing up as provider)
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = public as $$
-declare m jsonb := coalesce(new.raw_user_meta_data, '{}'::jsonb);
+declare
+  m jsonb := coalesce(new.raw_user_meta_data, '{}'::jsonb);
+  prov boolean := coalesce((m->>'is_provider') = 'true', false);
 begin
   insert into profiles (id, full_name, instagram, is_provider)
-  values (new.id, coalesce(m->>'full_name', ''), nullif(m->>'instagram', ''), (m->>'is_provider') = 'true')
+  values (new.id, coalesce(m->>'full_name', ''), nullif(m->>'instagram', ''), prov)
   on conflict do nothing;
-  if (m->>'is_provider') = 'true' then
+  if prov then
     insert into providers (owner_id, company, contact_name, category, city, regions, description, phone, email)
     values (new.id, coalesce(m->>'company', 'My business'), m->>'full_name', coalesce(m->>'category', 'cleaning'),
             coalesce(nullif(m->>'city', ''), 'Chicago'),

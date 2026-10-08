@@ -6,6 +6,7 @@ import SignOutButton from "./SignOutButton";
 export default async function Nav() {
   const supabase = createClient();
   const { user, profile } = await getViewer(supabase);
+  const isAdmin = user ? (await supabase.rpc("is_admin")).data === true : false;
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/75 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
@@ -17,6 +18,7 @@ export default async function Nav() {
           {user ? (
             <>
               <Link href="/network" className="rounded-full px-3 py-1.5 text-ink-soft hover:bg-black/5">My network</Link>
+              {isAdmin && <Link href="/admin/feedback" className="rounded-full px-3 py-1.5 text-ink-soft hover:bg-black/5">Feedback</Link>}
               {profile?.is_provider && <Link href="/provider/dashboard" className="rounded-full px-3 py-1.5 text-ink-soft hover:bg-black/5">Dashboard</Link>}
               <SignOutButton />
             </>
