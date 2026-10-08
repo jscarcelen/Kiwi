@@ -94,12 +94,12 @@ export default function FeedbackBoard() {
             <h2 className="text-lg font-semibold">Prompt builder</h2>
             <p className="text-[13px] text-ink-soft">{sel.size} item{sel.size === 1 ? "" : "s"} selected. Combines comment, page, element, files to touch, and acceptance criteria.</p>
             <textarea className="input mt-3 min-h-[60px]" placeholder="Optional extra instructions for Claude Code (e.g. 'keep the change behind a feature flag')" value={extra} onChange={(e) => setExtra(e.target.value)} />
-            <label className="mt-2 flex items-center gap-2 text-[13px]"><input type="checkbox" className="accent-kiwi-600" checked={refine} onChange={(e) => setRefine(e.target.checked)} /> Refine with Claude (needs ANTHROPIC_API_KEY on Vercel)</label>
+            <label className="mt-2 flex items-center gap-2 text-[13px]"><input type="checkbox" className="accent-kiwi-600" checked={refine} onChange={(e) => setRefine(e.target.checked)} /> Refine with AI (needs OPENAI_API_KEY on Vercel)</label>
             {out && (
               <div className="mt-4">
                 {out.note && <p className="mb-2 rounded-xl bg-amber-50 p-3 text-[13px] text-amber-900">{out.note}</p>}
                 {out.warnings.map((w, k) => <p key={k} className="mb-2 rounded-xl bg-amber-50 p-3 text-[13px] text-amber-900">⚠ {w}</p>)}
-                <div className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-ink-faint">{out.refined ? "Refined by Claude" : "Structured prompt"}</div>
+                <div className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-ink-faint">{out.refined ? "Refined by AI" : "Structured prompt"}</div>
                 <textarea readOnly className="input min-h-[360px] font-mono text-[12.5px]" value={out.prompt} />
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button className="btn-dark" onClick={async () => { await navigator.clipboard.writeText(out.prompt); setCopied(true); setTimeout(() => setCopied(false), 1800); }}>{copied ? "Copied ✓" : "Copy prompt"}</button>

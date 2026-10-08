@@ -14,26 +14,28 @@ export async function POST(req: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   const { prompt, warnings } = buildPrompt(items ?? [], extra);
 
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.OPENAI_API_KEY;
   if (!refine) return NextResponse.json({ prompt, refined: false, warnings });
-  if (!key) return NextResponse.json({ prompt, refined: false, warnings, note: "Add ANTHROPIC_API_KEY in Vercel env vars to enable AI refinement. Showing the structured prompt instead." });
+  if (!key) return NextResponse.json({ prompt, refined: false, warnings, note: "Add OPENAI_API_KEY in Vercel env vars (and redeploy) to enable AI refinement. Showing the structured prompt instead." });
   try {
-    const images = (items ?? []).filter((f: any) => f.screenshot).slice(0, 4).flatMap((f: any, i: number) => {
-      const m = /^data:(image\/\w+);base64,(.+)$/.exec(f.screenshot);
-      return m ? [{ type: "text", text: `Screenshot for feedback ${f.id.slice(0, 8)}:` }, { type: "image", source: { type: "base64", media_type: m[1], data: m[2] } }] : [];
-    });
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const images = (items ?? []).filter((f: any) => f.screenshot).slice(0, 4).flatMap((f: any) => [
+      { type: "text", text: `Screenshot for feedback ${f.id.slice(0, 8)}:` },
+      { type: "image_url", image_url: { url: f.screenshot } },
+    ]);
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
       body: JSON.stringify({
-        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5",
-        max_tokens: 4000,
-        system: REFINE_SYSTEM,
-        messages: [{ role: "user", content: [...images, { type: "text", text: `Draft prompt to improve:\n\n${prompt}` }] }],
+        model: process.env.OPENAI_MODEL || "gpt-4o",
+        max_completion_tokens: 4000,
+        messages: [
+          { role: "system", content: REFINE_SYSTEM },
+          { role: "user", content: [...images, { type: "text", text: `Draft prompt to improve:\n\n${prompt}` }] },
+        ],
       }),
     });
     const json = await res.json();
-    const text = json?.content?.find((c: any) => c.type === "text")?.text;
+    const text = json?.choices?.[0]?.message?.content;
     if (!res.ok || !text) throw new Error(json?.error?.message || "No response");
     return NextResponse.json({ prompt: text, base: prompt, refined: true, warnings });
   } catch (e: any) {
