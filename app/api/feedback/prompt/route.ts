@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       method: "POST",
       headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4o",
+        model: "gpt-4o",
         max_completion_tokens: 4000,
         messages: [
           { role: "system", content: REFINE_SYSTEM },
