@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { -webkit-font-smoothing: antialiased; background: #fbfbfd; }
+body { color: #1d1d1f; }
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-medium transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-kiwi-600 text-white hover:bg-kiwi-700; }
+  .btn-dark { @apply btn bg-ink text-white hover:bg-black; }
+  .btn-ghost { @apply btn bg-black/5 text-ink hover:bg-black/10; }
+  .input { @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] outline-none transition placeholder:text-ink-faint focus:border-kiwi-500 focus:ring-4 focus:ring-kiwi-500/15; }
+  .card { @apply rounded-3xl bg-white shadow-card; }
+  .label { @apply mb-1.5 block text-[13px] font-medium text-ink-soft; }
+}
