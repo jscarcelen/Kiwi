@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import InstagramButton from "./InstagramButton";
+import PhoneAuth from "./PhoneAuth";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function LoginForm() {
       <div><label className="label">Password</label><input className="input" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
       {err && <p className="text-[14px] text-red-600">{err}</p>}
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+      <PhoneAuth mode="login" />
       <InstagramButton />
       <p className="text-center text-[14px] text-ink-soft">New to Kiwi? <Link className="font-semibold text-kiwi-700" href="/signup">Create an account</Link></p>
     </form>

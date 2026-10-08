@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Avatar } from "./ui";
 
 type P = { id: string; full_name: string; instagram?: string | null };
-export default function NetworkManager({ me, friends, myGroups, allGroups }: { me: string; friends: P[]; myGroups: any[]; allGroups: any[] }) {
+export default function NetworkManager({ me, friends, myGroups, allGroups, suggestions = [] }: { me: string; friends: P[]; myGroups: any[]; allGroups: any[]; suggestions?: any[] }) {
   const router = useRouter();
   const s = createClient();
   const [q, setQ] = useState(""); const [results, setResults] = useState<P[]>([]);
@@ -47,6 +47,20 @@ export default function NetworkManager({ me, friends, myGroups, allGroups }: { m
             </li>
           ))}
         </ul>
+        {suggestions.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold tracking-tight">People you may know</h3>
+            <p className="text-[13px] text-ink-soft">Friends of your friends.</p>
+            <ul className="card mt-3 divide-y divide-black/5 px-5">
+              {suggestions.map((p: any) => (
+                <li key={p.id} className="flex items-center justify-between py-3">
+                  <span className="flex items-center gap-3"><Avatar id={p.id} name={p.full_name} /> <span>{p.full_name}<span className="ml-2 text-[12px] text-ink-faint">{p.mutual} mutual</span></span></span>
+                  <button className="btn-ghost !py-1.5 !text-[14px]" onClick={async () => { await s.rpc("add_friend", { target: p.id }); refresh(); }}>Add</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
       <section>
         <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">Groups <span className="rounded bg-kiwi-100 px-1.5 py-0.5 text-[11px] font-semibold text-kiwi-700">PLUS</span></h2>

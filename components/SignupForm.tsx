@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import InstagramButton from "./InstagramButton";
+import PhoneAuth from "./PhoneAuth";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function SignupForm() {
       {err && <p className="text-[14px] text-red-600">{err}</p>}
       {note && <p className="rounded-xl bg-kiwi-50 p-3 text-[14px] text-kiwi-700">{note}</p>}
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
+      <PhoneAuth mode="signup" />
       <InstagramButton />
       <p className="text-center text-[14px] text-ink-soft">Already have an account? <Link className="font-semibold text-kiwi-700" href="/login">Sign in</Link></p>
     </form>
