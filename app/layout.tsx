@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import FeedbackWidget from "@/components/FeedbackWidget";
@@ -6,7 +6,10 @@ import FeedbackWidget from "@/components/FeedbackWidget";
 export const metadata: Metadata = {
   title: "Kiwi — find services your friends already trust",
   description: "A trusted-services marketplace powered by recommendations from people you know.",
+  appleWebApp: { capable: true, title: "Kiwi", statusBarStyle: "default" },
 };
+
+export const viewport: Viewport = { themeColor: "#6aa84f", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -134,7 +134,7 @@ export default function FeedbackWidget() {
         <button
           onMouseDown={() => setSelected(window.getSelection()?.toString().trim().slice(0, 300) || "")}
           onClick={() => setOpen((o) => !o)}
-          className="fixed bottom-5 right-5 z-[2147483000] flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-[14px] font-medium text-white shadow-pop transition hover:bg-black active:scale-95"
+          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-[2147483000] flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-[14px] font-medium text-white shadow-pop transition hover:bg-black active:scale-95"
         >
           💬 Feedback
         </button>
@@ -177,10 +177,10 @@ export default function FeedbackWidget() {
       )}
       {mode === "area" && (
         <div
-          className="fixed inset-0 z-[2147483001] cursor-crosshair bg-black/20 select-none"
-          onMouseDown={(e) => setDrag({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY })}
-          onMouseMove={(e) => drag && setDrag({ ...drag, x1: e.clientX, y1: e.clientY })}
-          onMouseUp={finishArea}
+          className="fixed inset-0 z-[2147483001] cursor-crosshair touch-none bg-black/20 select-none"
+          onPointerDown={(e) => setDrag({ x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY })}
+          onPointerMove={(e) => drag && setDrag({ ...drag, x1: e.clientX, y1: e.clientY })}
+          onPointerUp={finishArea}
         >
           <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center"><div className="rounded-full bg-ink px-4 py-2 text-[13px] text-white shadow-pop">Drag to select an area · Esc to cancel</div></div>
           {drag && <div className="absolute border-2 border-kiwi-500 bg-kiwi-500/10" style={{ left: Math.min(drag.x0, drag.x1), top: Math.min(drag.y0, drag.y1), width: Math.abs(drag.x1 - drag.x0), height: Math.abs(drag.y1 - drag.y0) }} />}
