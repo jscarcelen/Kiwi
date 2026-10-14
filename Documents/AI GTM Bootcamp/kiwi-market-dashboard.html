@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Kiwi Market Dashboard",
+  "schemaVersion": 1,
+  "description": "One-screen market dashboard for Kiwi (Chicago providers): TAM/SAM/SOM, alternatives 2x2, cost of status quo, trigger timeline."
+}
+</script>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kiwi market dashboard</title>
+<style>
+:root{color-scheme:light;--ink:#1d1d1f;--soft:#6e6e73;--kiwi:#5a8f29;--kiwi-l:#eef6e4;--line:#e3e3e8;--warn:#b45309}
+*{box-sizing:border-box;margin:0}
+body{font:12px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fafafc;height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:10px 14px}
+h1{font-size:15px;font-weight:600;line-height:1.3;background:var(--kiwi-l);border-left:4px solid var(--kiwi);padding:8px 12px;border-radius:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;min-height:0}
+.tile{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.th{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.th b{font-size:12.5px}
+.conf{font-size:10px;font-weight:600;padding:1px 7px;border-radius:9px;white-space:nowrap}
+.high{background:#dcfce7;color:#166534}.medium{background:#fef3c7;color:#92400e}.low{background:#fee2e2;color:#991b1b}
+.sub{color:var(--soft);font-size:11px}
+.viz{flex:1;min-height:0;position:relative;margin:4px 0}
+.so{font-size:11.5px;font-weight:600;border-top:1px solid var(--line);padding-top:4px}
+.so span{color:var(--kiwi)}
+.tag{font-size:9px;font-weight:700;padding:0 4px;border-radius:3px;margin-left:3px;vertical-align:1px}
+.S{background:#dbeafe;color:#1e40af}.E{background:#ffedd5;color:#9a3412}
+/* funnel */
+.fun{display:flex;flex-direction:column;gap:3px;height:100%;justify-content:center}
+.fl{margin:0 auto;color:#fff;border-radius:4px;padding:3px 6px;text-align:center;font-size:11px;font-weight:600;display:flex;flex-direction:column;justify-content:center}
+.fl small{font-weight:400;font-size:10px;opacity:.95}
+/* 2x2 */
+.m{position:absolute;inset:0 0 14px 14px;border:1px solid var(--line);background:linear-gradient(#fff,#fafafc)}
+.m:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--line)}
+.m:after{content:"";position:absolute;top:50%;left:0;right:0;border-top:1px dashed var(--line)}
+.dot{position:absolute;transform:translate(-50%,-50%);font-size:10px;background:#f1f1f4;border:1px solid #d5d5db;border-radius:9px;padding:1px 6px;white-space:nowrap}
+.dot.k{background:var(--kiwi);color:#fff;border-color:var(--kiwi);font-weight:700;font-size:11px}
+.ax{position:absolute;font-size:9.5px;color:var(--soft)}
+/* timeline */
+.tl{display:flex;flex-direction:column;gap:3px;height:100%;justify-content:center}
+.ev{display:grid;grid-template-columns:46px 1fr;gap:6px;align-items:center;font-size:9.5px;line-height:1.25;border-left:3px solid var(--kiwi);padding-left:6px}
+.ev em{font-style:normal;color:#b91c1c;display:block}
+.ev br{display:none}.ev i:before{content:" · "}
+.ev.late{border-color:#dc2626;background:#fef2f2}
+.ev i{font-style:normal;color:var(--soft)}
+table.fb{display:none;width:100%;font-size:10.5px;border-collapse:collapse}
+table.fb td,table.fb th{border-bottom:1px solid var(--line);padding:2px 4px;text-align:left}
+footer{font-size:9.5px;color:var(--soft);line-height:1.35}
+footer a{color:var(--soft)}
+</style></head>
+<body>
+<h1>Kiwi's market is Chicago's solo and small-crew service providers who rent customers by the lead, so sell Kiwi as a flat-fee, network-trusted alternative, aimed at moments they reconsider lead platforms. <span class="tag E">Estimate</span></h1>
+
+<div class="grid">
+<!-- 1 -->
+<section class="tile">
+ <div class="th"><b>1 · How big is it? (providers × $300/yr)</b><span class="conf low">Confidence: low</span></div>
+ <div class="sub">Bottom-up, Chicago metro, 4 launch categories. Counts not found in Census via search.</div>
+ <div class="viz"><div class="fun">
+  <div class="fl" style="width:100%;background:#3f6b1d">TAM · ~40,000 providers · ~$12.0M/yr<small>cleaning, moving/handyman, dog walking, child care <span class="tag E">Estimate</span></small></div>
+  <div class="fl" style="width:72%;background:#5a8f29">SAM · ~14,000 · ~$4.2M/yr<small>Chicago/Evanston/Oak Park, already pay for leads (35%) <span class="tag E">Estimate</span></small></div>
+  <div class="fl" style="width:46%;background:#86b34f">SOM yr 1 · ~420 · ~$126K/yr<small>3% of SAM <span class="tag E">Estimate</span></small></div>
+ </div></div>
+ <div class="so"><span>So what:</span> A small niche in dollars, so win through density (communities), not breadth.</div>
+</section>
+
+<!-- 2 -->
+<section class="tile">
+ <div class="th"><b>2 · What do buyers do instead?</b><span class="conf medium">Confidence: medium</span></div>
+ <div class="sub">Placement is our judgment <span class="tag E">Estimate</span>; fee models Sourced.</div>
+ <div class="viz"><div class="m">
+  <span class="dot" style="left:18%;top:15%">Thumbtack (per lead)</span>
+  <span class="dot" style="left:22%;top:30%">Angi (lead + ~$300 fee)</span>
+  <span class="dot" style="left:20%;top:44%">Rover/Wag (20–40% cut)</span>
+  <span class="dot" style="left:26%;top:60%">Yelp / Google ads</span>
+  <span class="dot" style="left:30%;top:78%">Do nothing</span>
+  <span class="dot" style="left:74%;top:28%">Nextdoor</span>
+  <span class="dot" style="left:78%;top:68%">Word of mouth</span>
+  <span class="dot k" style="left:80%;top:86%">🥝 Kiwi</span>
+  <span class="ax" style="left:2px;bottom:0">← strangers' reviews</span>
+  <span class="ax" style="right:2px;bottom:0">your friends' ratings →</span>
+  <span class="ax" style="left:3px;top:1px">↑ provider pays per lead</span>
+  <span class="ax" style="left:3px;bottom:12px;top:auto">↓ flat / free</span>
+ </div></div>
+ <div class="so"><span>So what:</span> Only Kiwi pairs friend-trust with a flat fee. Word of mouth is the real rival.</div>
+</section>
+
+<!-- 3 -->
+<section class="tile">
+ <div class="th"><b>3 · What does staying put cost one provider/yr?</b><span class="conf medium">Confidence: medium</span></div>
+ <div class="sub">Typical cleaner, $60K revenue <span class="tag E">Estimate</span>. Prices Sourced (vendor blogs).</div>
+ <div class="viz"><canvas id="c3"></canvas>
+  <table class="fb" id="t3"><tr><th>Option</th><th>$/yr (Estimate)</th></tr>
+   <tr><td>Thumbtack, 10 leads/mo × $45</td><td>5,400</td></tr>
+   <tr><td>Own marketing, 8.5% of revenue</td><td>5,100</td></tr>
+   <tr><td>Angi, $300 + 8 leads/mo × $40</td><td>4,140</td></tr>
+   <tr><td>Kiwi</td><td>300</td></tr></table></div>
+ <div class="so"><span>So what:</span> Kiwi at $300 is ~6% of a lead-platform bill. Lead with that math.</div>
+</section>
+
+<!-- 4 -->
+<section class="tile">
+ <div class="th"><b>4 · When do they start looking?</b><span class="conf low">Confidence: low</span></div>
+ <div class="sub">Trigger → outside signal → too-late point. Mostly <span class="tag E">Estimate</span>.</div>
+ <div class="viz"><div class="tl">
+  <div class="ev"><b>Launch</b><span>New business starts<i>Signal: new LLC / Google profile</i><em>Too late: first 90 days pass</em></span></div>
+  <div class="ev"><b>Slow</b><span>Empty calendar weeks<i>Signal: "need clients" posts</i><em>Too late: they buy ads first</em></span></div>
+  <div class="ev"><b>Spike</b><span>Lead price up / budget cap hit<i>Signal: Thumbtack forum complaints</i><em>Too late: budget re-set</em></span></div>
+  <div class="ev"><b>Renewal</b><span>Angi 12-mo auto-renew <span class="tag S">Sourced</span><i>Signal: contract anniversary</i><em>Too late: renewed for 12 mo</em></span></div>
+  <div class="ev late"><b>Aug–Sep</b><span>Student move-in rush<i>Signal: Booth/UChicago move-in dates</i><em>Too late: calendar already full</em></span></div>
+ </div></div>
+ <div class="so"><span>So what:</span> Reach them 30–60 days before renewal or season, never mid-rush.</div>
+</section>
+</div>
+
+<footer><b>Sources:</b> Kiwi repo <a href="https://github.com/jscarcelen/Kiwi">github.com/jscarcelen/Kiwi</a> (product, cities, categories) · Thumbtack <a href="https://help.thumbtack.com/article/pay-for-leads">lead pricing</a>, <a href="https://auto-respond.com/blog/thumbtack-cost-per-lead-2026/">$15–80/lead</a> · Angi <a href="https://www.leadtruffle.co/blog/angi-leads-cost-pricing-contractors-2026/">fees, ~$300/yr, 12-mo terms</a> · Marketing <a href="https://www.torresmarketinginc.com/blog/cleaning-services-spend-on-marketing">7–10% of revenue</a> · <a href="https://trytails.com/faq/rover-vs-wag-cost/">Rover/Wag cuts</a>, <a href="https://www.care.com/app/vhp/plans-and-pricing">Care.com pricing</a> · Census <a href="https://www.census.gov/programs-surveys/cbp.html">County Business Patterns</a> (counts not retrieved). Sourced = from vendor/third-party pages, not audited. Provider counts, $300 price, 35% and 3% shares, revenue and lead volumes are our Estimates. Next step: replace counts with CBP/Nonemployer tables.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<script>
+try{
+ const labels=['Thumbtack leads','Own marketing','Angi','Kiwi'],vals=[5400,5100,4140,300];
+ new Chart(document.getElementById('c3'),{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:['#9ca3af','#9ca3af','#9ca3af','#5a8f29']}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},
+ scales:{x:{display:false,max:9500},y:{ticks:{font:{size:10}},grid:{display:false}}},
+ animation:{onComplete(){const c=this.ctx,m=this.getDatasetMeta(0);c.font='bold 10px sans-serif';c.fillStyle='#1d1d1f';m.data.forEach((b,i)=>c.fillText('$'+vals[i].toLocaleString()+' (Est.)',b.x+4,b.y+3));}}}});
+}catch(e){document.getElementById('c3').style.display='none';document.getElementById('t3').style.display='table';}
+if(typeof Chart==='undefined'){document.getElementById('c3').style.display='none';document.getElementById('t3').style.display='table';}
+</script>
+</body></html>
