@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
-export default function ShareBox({ icon, title, tagline, credit, perks, path, qrFile, makeMessage, emailSubject, personalize = false }: {
+export default function ShareBox({ icon, title, tagline, credit, perks, path, qrFile, message, emailSubject, personalize = false }: {
   icon: string; title: string; tagline: string; credit: string; perks: string[]; path: string; qrFile: string;
-  makeMessage: (link: string, name: string) => string; emailSubject: string; personalize?: boolean;
+  message: string; emailSubject: string; personalize?: boolean;
 }) {
   const [origin, setOrigin] = useState(""); const [canShare, setCanShare] = useState(false);
   const [showQr, setShowQr] = useState(false); const [showLink, setShowLink] = useState(false);
@@ -13,7 +13,8 @@ export default function ShareBox({ icon, title, tagline, credit, perks, path, qr
   useEffect(() => { setOrigin(window.location.origin); setCanShare(!!navigator.share); }, []);
   const link = `${origin}${path}`;
   useEffect(() => { if (showQr && origin) QRCode.toDataURL(link, { width: 640, margin: 2, color: { dark: "#051C2C", light: "#FFFFFF" } }).then(setQr); }, [showQr, origin, link]);
-  const msg = makeMessage(link, name);
+  const hi = name.trim() ? `Hi ${name.trim().split(" ")[0]}!` : "Hi!";
+  const msg = message.replace("{hi}", hi).replace("{link}", link);
   const isEmail = contact.includes("@"); const digits = contact.replace(/\D/g, "");
   const wa = `https://wa.me/${personalize && !isEmail && digits.length >= 10 ? (digits.length === 10 ? "1" + digits : digits) : ""}?text=${encodeURIComponent(msg)}`;
   const sms = `sms:${personalize && !isEmail ? digits : ""}?&body=${encodeURIComponent(msg)}`;

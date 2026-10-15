@@ -66,14 +66,14 @@ export default async function Network({ searchParams }: { searchParams: { welcom
           credit={`+${CREDIT_FRIEND} credit`}
           perks={[`+${CREDIT_FRIEND} credit for every friend who signs up with your link or QR`, `+${CREDIT_COMMUNITY} credit for every person who joins one of your communities`, "They're connected to you automatically"]}
           path={`/invite/${user.id}`} qrFile="wom-connect-qr.png" emailSubject="Join me on WOM"
-          makeMessage={(link) => `Join me on WOM — see which local pros our friends trust (cleaners, tutors, hair, movers & more): ${link}`}
+          message="Join me on WOM — see which local pros our friends trust (cleaners, tutors, hair, movers & more): {link}"
         />
         <ShareBox
           icon="🛠️" title="Add a supplier" tagline="Know a great cleaner, tutor, stylist or mover? Bring them on."
           credit={`+${CREDIT_SUPPLIER} credits`} personalize
           perks={[`Triple reward: +${CREDIT_SUPPLIER} credits for every new supplier who signs up`, "You're recorded as their referrer", "They can refer other pros too"]}
           path={`/invite/${user.id}/pro`} qrFile="wom-supplier-qr.png" emailSubject="Join me on WOM as a pro"
-          makeMessage={(link, name) => `Hi${name ? " " + name.split(" ")[0] : ""}! I use WOM — a marketplace where people find local pros through recommendations from friends. I think you'd be a great fit. Sign up as a pro here (about a minute): ${link}${first ? " — " + first : ""}. Heads up: I earn a referral credit if you join, and you can refer other pros too.`}
+          message={`{hi} I use WOM — a marketplace where people find local pros through recommendations from friends. I think you'd be a great fit. Sign up as a pro here (about a minute): {link}${first ? " — " + first : ""}. Heads up: I earn a referral credit if you join, and you can refer other pros too.`}
         />
       </div>
 
