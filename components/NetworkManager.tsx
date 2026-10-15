@@ -35,8 +35,7 @@ export default function NetworkManager({ me, friends, myGroups, allGroups, sugge
               </li>
             ))}
           </ul>
-          <button className="btn-ghost mt-3 w-full" onClick={async () => { await navigator.clipboard.writeText(invite); setCopied(true); setTimeout(() => setCopied(false), 2000); }}>{copied ? "Link copied ✓" : "Copy my invite link"}</button>
-          <p className="mt-2 text-[13px] text-ink-faint">Friends who sign up with your link are connected to you automatically.</p>
+
         </div>
         <ul className="card mt-4 divide-y divide-black/5 px-5">
           {friends.length === 0 && <li className="py-6 text-center text-ink-soft">No friends yet. Add some or share your invite link.</li>}

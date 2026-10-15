@@ -12,6 +12,13 @@ export default function Help() {
       <h1 className="text-4xl font-semibold tracking-tight">How WOM works with your phone</h1>
       <p className="mt-2 text-ink-soft">Sign in with a text code, then find friends who are already here.</p>
 
+      <h2 className="mt-10 text-2xl font-semibold tracking-tight">🔗 Invite friends (easiest)</h2>
+      <ol className="card mt-4 space-y-4 p-6">
+        <Step n={1}>Open <Link className="text-brand-700 underline" href="/network#invite">My network</Link> — your personal invite link is at the top.</Step>
+        <Step n={2}>Tap <b>Copy link</b> or <b>Share</b>, or send it straight to WhatsApp, Messages or email. Dropping it in your class or friends' group chat is the fastest way.</Step>
+        <Step n={3}>Everyone who joins through your link is connected to you automatically, and you'll see the pros they recommend first. No contacts access needed.</Step>
+      </ol>
+
       <h2 className="mt-10 text-2xl font-semibold tracking-tight">📱 Sign in with your phone</h2>
       <ol className="card mt-4 space-y-4 p-6">
         <Step n={1}>Go to <Link className="text-brand-700 underline" href="/signup">Join</Link> (new) or <Link className="text-brand-700 underline" href="/login">Sign in</Link> and tap <b>Continue with phone</b>.</Step>

@@ -21,6 +21,7 @@ export default async function Nav() {
           {user ? (
             <>
               <Link href="/network" className={link}>My network</Link>
+              <Link href="/network#invite" className={`${link} hidden sm:block`}>Invite</Link>
               {isAdmin && <Link href="/admin/feedback" className={`${link} hidden sm:block`}>Feedback</Link>}
               {profile?.is_provider ? <Link href="/provider/dashboard" className={link}>Dashboard</Link> : <Link href="/provider/signup" className={`${link} hidden sm:block`}>Join as a pro</Link>}
               <SignOutButton />

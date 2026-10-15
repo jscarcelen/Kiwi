@@ -19,7 +19,7 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
   const [msg, setMsg] = useState(""); const [busy, setBusy] = useState(false);
   const [canPick, setCanPick] = useState(false);
   const [native, setNative] = useState(false);
-  const invite = typeof window !== "undefined" ? `${window.location.origin}/signup?ref=${me}` : "";
+  const invite = typeof window !== "undefined" ? `${window.location.origin}/invite/${me}` : "";
   const inviteMsg = `Join me on WOM — see which local services our friends trust: ${invite}`;
 
   const loadOwn = async () => {
