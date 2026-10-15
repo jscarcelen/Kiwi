@@ -3,13 +3,17 @@ import { useState } from "react";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import IntakeModal from "./IntakeModal";
 import { LogoMark } from "./Logo";
+import SuggestionList from "./SuggestionList";
+import { suggest, type Sug } from "@/lib/suggestions";
 
 export default function Hero({ stats }: { stats: { label: string; value: string }[] }) {
   const [text, setText] = useState("");
   const [city, setCity] = useState(CITIES[0]);
   const [open, setOpen] = useState(false);
   const [cat, setCat] = useState<string | null>(null);
-  const launch = (c: string | null = null) => { setCat(c); setOpen(true); };
+  const [sug, setSug] = useState<Sug | null>(null);
+  const [focus, setFocus] = useState(false);
+  const launch = (c: string | null = null, g: Sug | null = null) => { setCat(c); setSug(g); setOpen(true); };
   return (
     <section className="relative overflow-hidden bg-navy text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_85%_20%,rgba(34,81,255,0.45),transparent),radial-gradient(50%_70%_at_0%_100%,rgba(90,169,255,0.28),transparent)]" />
@@ -22,8 +26,9 @@ export default function Hero({ stats }: { stats: { label: string; value: string 
         <form className="mt-8 max-w-2xl rounded-2xl bg-white p-3 text-ink shadow-pop" onSubmit={(e) => { e.preventDefault(); launch(); }}>
           <div className="flex items-center gap-3 px-3 py-2">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-ink-soft"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-            <input className="w-full bg-transparent py-1 text-[16px] outline-none placeholder:text-ink-faint" placeholder="Describe your project or need — be as detailed as you'd like!" value={text} onChange={(e) => setText(e.target.value)} />
+            <input className="w-full bg-transparent py-1 text-[16px] outline-none placeholder:text-ink-faint" placeholder="Describe your project or need — be as detailed as you'd like!" value={text} onChange={(e) => setText(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setTimeout(() => setFocus(false), 120)} autoComplete="off" />
           </div>
+          {focus && text.trim() && <div className="px-1 pb-2"><SuggestionList items={suggest(text)} text={text} onPick={(g) => launch(null, g)} onAsk={() => launch()} /></div>}
           <div className="mt-1 flex flex-col gap-2 sm:flex-row">
             <select className="rounded-full border border-black/10 bg-white px-4 py-3 text-[15px] outline-none" value={city} onChange={(e) => setCity(e.target.value)} aria-label="City">{CITIES.map((c) => <option key={c}>{c}</option>)}</select>
             <button className="btn-primary flex-1 !py-3.5">Find a pro →</button>
@@ -35,7 +40,7 @@ export default function Hero({ stats }: { stats: { label: string; value: string 
         <p className="mt-5 flex items-center gap-2 text-[14px] text-white/70">🔒 No calls or texts until you message a pro.</p>
         <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">{stats.map((s) => <div key={s.label}><div className="text-3xl font-semibold tracking-tight">{s.value}</div><div className="text-[14px] text-white/70">{s.label}</div></div>)}</div>
       </div>
-      {open && <IntakeModal open onClose={() => setOpen(false)} initialText={cat ? "" : text} initialCategory={cat} city={city} />}
+      {open && <IntakeModal open onClose={() => setOpen(false)} initialText={cat || sug ? "" : text} initialCategory={cat} initialSuggestion={sug} city={city} />}
     </section>
   );
 }

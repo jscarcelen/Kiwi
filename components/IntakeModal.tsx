@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { CATEGORIES, catEmoji, catLabel } from "@/lib/categories";
 import { LogoMark } from "./Logo";
+import SuggestionList from "./SuggestionList";
+import { suggest, type Sug } from "@/lib/suggestions";
 import { QUESTIONS, WHEN, answersToParams, type Answers, type Q } from "@/lib/intake";
 
 const EXAMPLES = ["Deep clean my 1-bedroom before I move out", "Walk my two dogs every weekday", "Assemble an IKEA wardrobe and mount my TV", "Babysitter for 2 kids on Saturday night"];
 
-export default function IntakeModal({ open, onClose, initialText = "", initialCategory = null, city = "Chicago" }: { open: boolean; onClose: () => void; initialText?: string; initialCategory?: string | null; city?: string }) {
+export default function IntakeModal({ open, onClose, initialText = "", initialCategory = null, initialSuggestion = null, city = "Chicago" }: { open: boolean; onClose: () => void; initialText?: string; initialCategory?: string | null; initialSuggestion?: Sug | null; city?: string }) {
   const router = useRouter();
   const [stage, setStage] = useState<"describe" | "thinking" | "pick" | "ask">("describe");
   const [text, setText] = useState(initialText);
@@ -29,11 +32,14 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
     document.body.style.overflow = "hidden";
     const esc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", esc);
-    if (initialCategory) begin(initialCategory, {}, catLabel(initialCategory), `Great — let's find the right ${catLabel(initialCategory).toLowerCase()} pro.`);
+    if (initialSuggestion) pickSug(initialSuggestion);
+    else if (initialCategory) begin(initialCategory, {}, catLabel(initialCategory), `Great — let's find the right ${catLabel(initialCategory).toLowerCase()} pro.`);
     else if (initialText.trim()) { setText(initialText); analyze(initialText); }
     else setStage("describe");
     return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", esc); };
   }, [open]); // eslint-disable-line
+
+  const pickSug = (g: Sug) => begin(g.category, g.answers ?? {}, g.label, `Great — ${g.label.toLowerCase()}. Let me ask a few quick questions.`);
 
   const analyze = async (t = text) => {
     if (!t.trim()) return;
@@ -66,8 +72,8 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
   const pct = stage === "ask" ? ((idx + 1) / queue.length) * 100 : stage === "describe" ? 8 : 20;
   const chips = category ? Object.entries(picked).flatMap(([k, v]) => v.map((x) => QUESTIONS[category]?.find((qq) => qq.id === k)?.options.find((o) => o.value === x)?.label ?? x)) : [];
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/55 sm:items-center sm:p-6" onClick={onClose}>
+  const ui = (
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/55 text-ink sm:items-center sm:p-6" onClick={onClose}>
       <div className="flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-pop sm:max-w-xl sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 pb-3 pt-4">
           <button onClick={back} className={`rounded-full p-2 hover:bg-black/5 ${stage === "describe" ? "invisible" : ""}`} aria-label="Back">←</button>
@@ -84,9 +90,15 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
             <>
               <Bubble>Hi! 👋 What do you need help with? Describe it in your own words — I'll find the right pros and ask a few quick questions.</Bubble>
               <textarea autoFocus className="input mt-4 min-h-[110px]" placeholder="e.g. I need a deep clean for my 1-bedroom before moving out" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); analyze(); } }} />
-              <div className="mt-3 flex flex-wrap gap-2">{EXAMPLES.map((x) => <button key={x} onClick={() => setText(x)} className="rounded-full bg-black/5 px-3 py-1.5 text-[13px] hover:bg-black/10">{x}</button>)}</div>
-              <p className="mb-2 mt-5 text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Or pick a category</p>
-              <div className="grid grid-cols-2 gap-2">{CATEGORIES.map((c) => <button key={c.slug} onClick={() => begin(c.slug, {}, c.label, `Great — let's find the right ${c.label.toLowerCase()} pro.`)} className="rounded-xl border border-black/10 p-3 text-left text-[14px] hover:border-navy"><span className="mr-1">{c.emoji}</span>{c.label}</button>)}</div>
+              {text.trim() ? (
+                <div className="mt-2"><SuggestionList items={suggest(text)} text={text} onPick={pickSug} onAsk={() => analyze()} /></div>
+              ) : (
+                <>
+                  <div className="mt-3 flex flex-wrap gap-2">{EXAMPLES.map((x) => <button key={x} onClick={() => setText(x)} className="rounded-full bg-black/5 px-3 py-1.5 text-[13px] hover:bg-black/10">{x}</button>)}</div>
+                  <p className="mb-2 mt-5 text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Or pick a category</p>
+                  <div className="grid grid-cols-2 gap-2">{CATEGORIES.map((c) => <button key={c.slug} onClick={() => begin(c.slug, {}, c.label, `Great — let's find the right ${c.label.toLowerCase()} pro.`)} className="rounded-xl border border-black/10 p-3 text-left text-[14px] hover:border-navy"><span className="mr-1">{c.emoji}</span>{c.label}</button>)}</div>
+                </>
+              )}
             </>
           )}
           {stage === "thinking" && <div className="py-16 text-center text-ink-soft"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-black/10 border-t-navy" />Understanding your request…</div>}
@@ -126,6 +138,7 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
       </div>
     </div>
   );
+  return typeof document !== "undefined" ? createPortal(ui, document.body) : null;
 }
 
 function Bubble({ children }: { children: React.ReactNode }) {
