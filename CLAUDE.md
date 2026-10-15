@@ -16,7 +16,7 @@ Env (`.env.local`, never commit): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPAB
 - `app/` pages: `/` landing, `/search`, `/providers/[id]`, `/review/[id]`, `/login`, `/signup`, `/provider/signup`, `/provider/dashboard`, `/network`, `/help`, `/privacy`, `/admin/feedback`, `api/feedback/prompt`.
 - `components/` UI + client forms (Nav, SearchBar, ProviderCard in ui.tsx, ReviewForm, NetworkManager, ContactsFinder, PhoneAuth, FeedbackWidget, FeedbackBoard…).
 - `lib/data.ts` — `rankProviders()` network-weighted ranking (friends weight 1.0, group-only 0.6; network results first, then global). `lib/phone.ts` contact parsing. `lib/routeMap.ts` page→file map for feedback prompts. `lib/supabase/{server,client}.ts`.
-- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`, `verticals.sql`, `referrals.sql`, `communities.sql`, `settings.sql`.
+- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`, `verticals.sql`, `referrals.sql`, `communities.sql`, `settings.sql`, `listings.sql`.
 
 ## Key concepts
 - **Privacy by RLS:** review text is visible only to the author and to people in their circle (`in_my_circle()`), and only if `share_with_friends`. Global scores come from the `provider_stats` view (security definer). Never loosen these policies casually.
@@ -45,3 +45,6 @@ Members can create communities (`groups.owner_id` set; 3 free, more with `profil
 
 ## Account menu, settings & tour
 Top-right avatar menu (`components/UserMenu.tsx`) → My network & invites (invites live on `/network`), pro dashboard, Settings (`/settings`: profile + photo, email/password/phone, discoverability, pro profile, delete account), log out. The 1-minute product tour is `components/TourHost.tsx` (opens via `window.dispatchEvent(new CustomEvent("wom:tour"))`, auto-shows once after first login, buttons on the landing page).
+
+## Several services per pro account
+A pro account can have several listings (e.g. Cleaning and Dog walking): each is its own `providers` row (same `owner_id`, own category, name, description, regions, `attributes`, reviews) so it appears in its own searches. Shared contact details (contact name, phone, email) live on every row. Dashboard (`/provider/dashboard?listing=<id>`) has a tab per service; `/provider/service/new` and `/provider/service/[id]` (`components/ServiceForm.tsx`) add/edit/remove one; a provider page shows "Also offers" links. Never use `.eq("owner_id", …).maybeSingle()` on providers (it fails with several rows); pick by id or take the first by `created_at`. Needs `supabase/listings.sql` (owner delete policy) for removing a service.

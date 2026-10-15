@@ -7,15 +7,16 @@ import AddonCard from "@/components/AddonCard";
 import SupplierReferCard from "@/components/SupplierReferCard";
 import ReferralBanner from "@/components/ReferralBanner";
 import { QUESTIONS, WHEN_LABEL, labelFor } from "@/lib/intake";
-import { catLabel } from "@/lib/categories";
+import { catEmoji, catLabel } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
 
-export default async function Dashboard() {
+export default async function Dashboard({ searchParams }: { searchParams?: { listing?: string } }) {
   const supabase = createClient();
   const { user } = await getViewer(supabase);
   if (!user) redirect("/login?next=/provider/dashboard");
-  const { data: p } = await supabase.from("providers").select("*").eq("owner_id", user.id).maybeSingle();
+  const { data: listings } = await supabase.from("providers").select("*").eq("owner_id", user.id).order("created_at");
+  const p = (listings ?? []).find((l: any) => l.id === searchParams?.listing) ?? (listings ?? [])[0];
   if (!p) return <div className="mx-auto max-w-xl px-5 py-20 text-center"><h1 className="text-2xl font-semibold">No provider profile</h1><p className="mt-2 text-ink-soft">This account isn't a provider.</p><Link className="btn-primary mt-6" href="/provider/signup">List your business</Link></div>;
   const since = new Date(Date.now() - 14 * 86400000).toISOString();
   const [{ data: events }, { data: stat }, { data: interest }, { data: requests }] = await Promise.all([
@@ -35,7 +36,11 @@ export default async function Dashboard() {
     <div className="mx-auto max-w-5xl px-5 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><p className="text-[14px] text-ink-soft">Dashboard</p><h1 className="text-4xl font-semibold tracking-tight">{p.company}</h1></div>
-        <Link href={`/providers/${p.id}`} className="btn-ghost">View public profile</Link>
+        <div className="flex flex-wrap gap-2"><Link href={`/provider/service/${p.id}`} className="btn-ghost">Edit this service</Link><Link href={`/providers/${p.id}`} className="btn-ghost">View public profile</Link></div>
+      </div>
+      <div className="mt-5 flex flex-wrap items-center gap-2" aria-label="Your services">
+        {(listings ?? []).map((l: any) => <Link key={l.id} href={`/provider/dashboard?listing=${l.id}`} className={`rounded-full px-4 py-2 text-[14px] ${l.id === p.id ? "bg-navy text-white" : "bg-black/5 hover:bg-black/10"}`}>{catEmoji(l.category)} {catLabel(l.category)}</Link>)}
+        <Link href="/provider/service/new" className="rounded-full border border-dashed border-black/20 px-4 py-2 text-[14px] text-brand-700 hover:bg-brand-50">+ Add a service</Link>
       </div>
       <p className="mt-6 text-[13px] font-semibold uppercase tracking-wide text-ink-faint">Last 14 days</p>
       <div className="mt-3 grid grid-cols-2 gap-4 lg:grid-cols-4">

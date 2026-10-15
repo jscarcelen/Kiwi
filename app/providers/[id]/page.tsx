@@ -14,9 +14,10 @@ export default async function ProviderPage({ params }: { params: { id: string } 
   const { user } = await getViewer(supabase);
   const { data: p } = await supabase.from("providers").select("*").eq("id", params.id).maybeSingle();
   if (!p) notFound();
-  const [{ data: stat }, { data: revs }] = await Promise.all([
+  const [{ data: stat }, { data: revs }, { data: siblings }] = await Promise.all([
     supabase.from("provider_stats").select("*").eq("provider_id", p.id).maybeSingle(),
     supabase.from("reviews").select("id,user_id,rating,comment,created_at,profiles(full_name)").eq("provider_id", p.id).order("created_at", { ascending: false }),
+    p.owner_id ? supabase.from("providers").select("id,company,category").eq("owner_id", p.owner_id).neq("id", p.id).order("created_at") : Promise.resolve({ data: [] as any[] }),
   ]);
   if (!user || user.id !== p.owner_id) await supabase.from("provider_events").insert({ provider_id: p.id, type: "view", user_id: user?.id ?? null });
   const mine = (revs ?? []).find((r: any) => r.user_id === user?.id);
@@ -45,6 +46,12 @@ export default async function ProviderPage({ params }: { params: { id: string } 
               {network.length > 0 && <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-[13px] font-medium text-brand-700">👥 {network.length} in your network · {netAvg!.toFixed(1)}★</p>}
             </div>
           </div>
+
+          {(siblings ?? []).length > 0 && (
+            <p className="mt-4 flex flex-wrap items-center gap-2 text-[14px] text-ink-soft">Also offers:
+              {(siblings ?? []).map((o: any) => <Link key={o.id} href={`/providers/${o.id}`} className="rounded-full bg-black/5 px-3 py-1 font-medium text-ink hover:bg-black/10">{catEmoji(o.category)} {catLabel(o.category)}</Link>)}
+            </p>
+          )}
 
           <div className="sticky top-16 z-30 mt-6 flex gap-6 border-b border-black/10 bg-[#fbfbfd]/95 backdrop-blur">
             <a href="#about" className={tab}>About</a><a href="#services" className={tab}>Services</a><a href="#reviews" className={tab}>Reviews</a>

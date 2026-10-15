@@ -13,7 +13,7 @@ export default async function Settings() {
   if (!user) redirect("/login?next=/settings");
   const [{ data: phone }, { data: provider }] = await Promise.all([
     supabase.from("phone_numbers").select("phone,discoverable").eq("user_id", user.id).maybeSingle(),
-    supabase.from("providers").select("*").eq("owner_id", user.id).maybeSingle(),
+    supabase.from("providers").select("*").eq("owner_id", user.id).order("created_at").limit(1).maybeSingle(),
   ]);
   return (
     <div className="mx-auto max-w-2xl px-5 py-10">

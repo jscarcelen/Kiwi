@@ -50,8 +50,10 @@ export default function SettingsForm({ user, profile, phoneRow, provider }: { us
   const verify = async () => { const { error } = await s.auth.verifyOtp({ phone: toE164(phone), token: code.trim(), type: "phone_change" }); if (error) return setPhMsg(error.message); await s.rpc("sync_my_phone"); setSent(false); setPhMsg("✓ Phone verified."); router.refresh(); };
   const saveProvider = async (e: React.FormEvent) => {
     e.preventDefault(); setPrMsg("");
-    const { error } = await s.from("providers").update({ company: pr.company, contact_name: pr.contact_name, description: pr.description, phone: pr.phone, category: pr.category, regions: pr.regions, city: pr.regions[0] ?? provider.city }).eq("owner_id", user.id);
-    setPrMsg(error ? error.message : "✓ Saved");
+    const { error } = await s.from("providers").update({ company: pr.company, description: pr.description, category: pr.category, regions: pr.regions, city: pr.regions[0] ?? provider.city }).eq("id", provider.id);
+    // Contact details are shared by all of this account's services.
+    const shared = error ? null : await s.from("providers").update({ contact_name: pr.contact_name, phone: pr.phone }).eq("owner_id", user.id);
+    setPrMsg(error ? error.message : shared?.error ? shared.error.message : "✓ Saved");
   };
   const uploadProviderPhoto = async (file?: File | null) => {
     if (!file) return; setPrMsg("Uploading…");
@@ -59,7 +61,7 @@ export default function SettingsForm({ user, profile, phoneRow, provider }: { us
     const up = await s.storage.from("provider-photos").upload(path, file);
     if (up.error) return setPrMsg(up.error.message);
     const url = s.storage.from("provider-photos").getPublicUrl(path).data.publicUrl;
-    const { error } = await s.from("providers").update({ photo_url: url }).eq("owner_id", user.id);
+    const { error } = await s.from("providers").update({ photo_url: url }).eq("id", provider.id);
     setPrMsg(error ? error.message : "✓ Business photo updated");
   };
 
@@ -110,7 +112,7 @@ export default function SettingsForm({ user, profile, phoneRow, provider }: { us
             <div><label className="label">Description</label><textarea className="input min-h-[100px]" value={pr.description} onChange={(e) => setPr({ ...pr, description: e.target.value })} /></div>
             <div><label className="label">Business photo / logo</label><input type="file" accept="image/*" onChange={(e) => uploadProviderPhoto(e.target.files?.[0])} className="block w-full text-[14px] file:mr-3 file:rounded-full file:border-0 file:bg-black/5 file:px-4 file:py-2" /></div>
             <button className="btn-primary !py-2.5" disabled={pr.regions.length === 0}>Save pro profile</button><Msg m={prMsg} />
-            <p className="text-[12px] text-ink-faint">To change the specific services you offer, contact us — editing offered services is coming soon.</p>
+            <p className="text-[12px] text-ink-faint">This is your first service. Offer more (like cleaning and dog walking) and edit what each one offers from your <a className="underline" href="/provider/dashboard">dashboard</a>.</p>
           </form>
         </Card>
       )}
