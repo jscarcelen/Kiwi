@@ -22,7 +22,7 @@ export default function PhoneAuth({ mode }: { mode: "login" | "signup" }) {
     if (!validPhone(phone)) return setErr("Enter a valid phone number (include country code if outside the US).");
     if (mode === "signup" && !name.trim()) return setErr("Please enter your name.");
     setBusy(true);
-    const { error } = await s.auth.signInWithOtp({ phone: toE164(phone), options: { shouldCreateUser: true, data: { full_name: name.trim() } } });
+    const { error } = await s.auth.signInWithOtp({ phone: toE164(phone), options: { shouldCreateUser: true, data: { full_name: name.trim(), ...(ref ? { ref } : {}) } } });
     setBusy(false);
     if (error) return setErr(error.message);
     setStep("code");

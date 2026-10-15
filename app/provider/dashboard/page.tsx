@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
 import { Avatar, Stars } from "@/components/ui";
 import AddonCard from "@/components/AddonCard";
+import SupplierReferCard from "@/components/SupplierReferCard";
+import ReferralBanner from "@/components/ReferralBanner";
 import { QUESTIONS, WHEN_LABEL, labelFor } from "@/lib/intake";
 import { catLabel } from "@/lib/categories";
 
@@ -46,6 +48,7 @@ export default async function Dashboard() {
           {byDay.map((v, i) => <div key={i} className="flex-1 rounded-t-md bg-brand-500/80" style={{ height: `${Math.max(4, (v / max) * 100)}%` }} title={`${days[i]}: ${v}`} />)}
         </div>
       </div>
+      <div className="mt-12 space-y-5"><ReferralBanner /><SupplierReferCard me={user.id} firstName={p.contact_name?.split(" ")[0]} /></div>
       <h2 className="mb-4 mt-12 text-2xl font-semibold tracking-tight">Project requests</h2>
       {(requests ?? []).length === 0 ? <div className="card p-6 text-ink-soft">No requests yet. When customers send their project to you, it shows up here.</div> : (
         <div className="space-y-3">{(requests ?? []).map((r: any) => (

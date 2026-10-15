@@ -17,7 +17,7 @@ export default function SignupForm() {
     <form className="space-y-4" onSubmit={async (e) => {
       e.preventDefault(); setBusy(true); setErr("");
       const s = createClient();
-      const { data, error } = await s.auth.signUp({ email: f.email, password: f.password, options: { data: { full_name: f.full_name, phone: f.phone, instagram: f.instagram.replace("@", "") } } });
+      const { data, error } = await s.auth.signUp({ email: f.email, password: f.password, options: { data: { full_name: f.full_name, phone: f.phone, instagram: f.instagram.replace("@", ""), ...(ref ? { ref } : {}) } } });
       if (error) { setErr(error.message); setBusy(false); return; }
       if (!data.session) { setNote("Check your email to confirm your account, then sign in."); setBusy(false); return; }
       if (ref) await s.rpc("add_friend", { target: ref });

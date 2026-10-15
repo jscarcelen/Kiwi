@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import { HEADINGS, QUESTIONS } from "@/lib/intake";
 
-export default function ProviderSignupForm() {
+export default function ProviderSignupForm({ refId }: { refId?: string }) {
   const router = useRouter();
   const [f, setF] = useState({ full_name: "", company: "", email: "", password: "", phone: "", category: "cleaning", city: "Chicago", description: "" });
   const [regions, setRegions] = useState<string[]>(["Chicago"]);
@@ -21,7 +21,7 @@ export default function ProviderSignupForm() {
     <form className="space-y-4" onSubmit={async (e) => {
       e.preventDefault(); setBusy(true); setErr("");
       const s = createClient();
-      const { data, error } = await s.auth.signUp({ email: f.email, password: f.password, options: { data: { ...f, password: undefined, regions: regions.join(","), is_provider: "true", attributes: Object.fromEntries(qs.map((q) => [q.id, eff(q.id, q.options.map((o) => o.value))])) } } });
+      const { data, error } = await s.auth.signUp({ email: f.email, password: f.password, options: { data: { ...f, password: undefined, regions: regions.join(","), is_provider: "true", ...(refId ? { ref: refId } : {}), attributes: Object.fromEntries(qs.map((q) => [q.id, eff(q.id, q.options.map((o) => o.value))])) } } });
       if (error) { setErr(error.message); setBusy(false); return; }
       if (!data.session) { setNote("Check your email to confirm your account, then sign in."); setBusy(false); return; }
       if (file && data.user) {

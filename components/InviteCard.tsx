@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
-export default function InviteCard({ me, firstName }: { me: string; firstName?: string }) {
+export default function InviteCard({ me, firstName, banner }: { me: string; firstName?: string; banner?: React.ReactNode }) {
   const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
   const [canShare, setCanShare] = useState(false);
@@ -30,6 +30,7 @@ export default function InviteCard({ me, firstName }: { me: string; firstName?: 
         <button className={btn} onClick={() => setShowQr(!showQr)}>{showQr ? "Hide QR" : "Show QR"}</button>
         <a className={btn} href={`mailto:?subject=${encodeURIComponent("Join me on WOM")}&body=${encodeURIComponent(msg)}`}>Email</a>
       </div>
+      {banner && <div className="mt-6 text-white">{banner}</div>}
       {showQr && (
         <div className="mt-5 flex flex-col items-center gap-3 rounded-2xl bg-white p-5 text-ink sm:flex-row sm:gap-6">
           {qr ? <img src={qr} alt="QR code to connect with you" className="h-44 w-44" /> : <div className="h-44 w-44 animate-pulse rounded-xl bg-black/5" />}
