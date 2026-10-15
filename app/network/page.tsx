@@ -5,6 +5,9 @@ import { getViewer } from "@/lib/data";
 import NetworkManager from "@/components/NetworkManager";
 import CommunitiesPanel from "@/components/CommunitiesPanel";
 import ContactsFinder from "@/components/ContactsFinder";
+
+/** Flip to true once phone verification (SMS) is set up: it shows the real contacts finder. */
+const CONTACTS_AVAILABLE = false;
 import CreditsCard from "@/components/CreditsCard";
 import ShareBox from "@/components/ShareBox";
 import { CREDIT_COMMUNITY, CREDIT_FRIEND, CREDIT_SUPPLIER } from "@/lib/referrals";
@@ -79,7 +82,18 @@ export default async function Network({ searchParams }: { searchParams: { welcom
 
       <div id="friends" className="mt-10 scroll-mt-24"><NetworkManager me={user.id} friends={friends} myGroups={myGroups} allGroups={(groups ?? []).filter((g: any) => !g.owner_id)} suggestions={suggestions ?? []} /></div>
       <div className="scroll-mt-24"><CommunitiesPanel me={user.id} communities={communities} isPremium={!!profile?.is_premium} /></div>
-      <ContactsFinder me={user.id} friendIds={friends.map((f: any) => f.id)} />
+      {CONTACTS_AVAILABLE ? (
+        <ContactsFinder me={user.id} friendIds={friends.map((f: any) => f.id)} />
+      ) : (
+        <section className="card mt-8 p-6" aria-label="Find friends from your contacts (coming soon)">
+          <div className="flex flex-wrap items-center gap-3">
+            <h2 className="text-2xl font-semibold tracking-tight">Find friends from your contacts</h2>
+            <span className="rounded-full bg-brand-50 px-3 py-1 text-[12px] font-semibold text-brand-700">Coming soon</span>
+          </div>
+          <p className="mt-1 text-[14px] text-ink-soft">Soon you&apos;ll be able to see which of your contacts are already on WOM, with a quick phone check. We match numbers on the spot and never store your contact list.</p>
+          <p className="mt-3 text-[13px] text-ink-faint">Until then, share your invite link above — friends who join through it connect with you automatically.</p>
+        </section>
+      )}
       <p className="mt-6 text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">Help: phone sign-in & importing contacts</Link> · <Link href="/settings" className="underline">Account settings</Link></p>
     </div>
   );
