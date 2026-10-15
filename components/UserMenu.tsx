@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { initials } from "@/lib/data";
 
-export default function UserMenu({ name, avatarUrl, isProvider, isAdmin }: { name: string; avatarUrl?: string | null; isProvider?: boolean; isAdmin?: boolean }) {
+export default function UserMenu({ name, avatarUrl, isProvider, isAdmin, credits = 0, perMonth = 5 }: { credits?: number; perMonth?: number; name: string; avatarUrl?: string | null; isProvider?: boolean; isAdmin?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export default function UserMenu({ name, avatarUrl, isProvider, isAdmin }: { nam
       </button>
       {open && (
         <div className="absolute right-0 top-12 z-50 w-60 rounded-2xl bg-white p-2 shadow-pop ring-1 ring-black/5" onClick={() => setOpen(false)}>
-          <div className="px-3 py-2"><div className="truncate text-[14px] font-semibold">{name}</div></div>
+          <div className="px-3 py-2"><div className="truncate text-[14px] font-semibold">{name}</div><Link href="/network" className="mt-1.5 flex items-center justify-between rounded-lg bg-brand-50 px-2.5 py-1.5 text-[12px] font-semibold text-brand-700">🎁 {credits} credits<span className="font-normal text-brand-700/80">{Math.floor(credits / perMonth)} free month{Math.floor(credits / perMonth) === 1 ? "" : "s"}</span></Link></div>
           <div className="my-1 h-px bg-black/5" />
           <Link href="/network" className={item}>My network & invites</Link>
           {isProvider && <Link href="/provider/dashboard" className={item}>Pro dashboard</Link>}
