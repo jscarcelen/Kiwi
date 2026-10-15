@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getViewer } from "@/lib/data";
+import { getCircle, getViewer } from "@/lib/data";
 import { catEmoji, catLabel } from "@/lib/categories";
 import { HEADINGS, QUESTIONS, labelFor } from "@/lib/intake";
 import { Avatar, Stars } from "@/components/ui";
@@ -9,7 +9,7 @@ import ContactButton from "@/components/ContactButton";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProviderPage({ params }: { params: { id: string } }) {
+export default async function ProviderPage({ params, searchParams }: { params: { id: string }; searchParams?: { rs?: string } }) {
   const supabase = createClient();
   const { user } = await getViewer(supabase);
   const { data: p } = await supabase.from("providers").select("*").eq("id", params.id).maybeSingle();
@@ -21,8 +21,22 @@ export default async function ProviderPage({ params }: { params: { id: string } 
   ]);
   if (!user || user.id !== p.owner_id) await supabase.from("provider_events").insert({ provider_id: p.id, type: "view", user_id: user?.id ?? null });
   const mine = (revs ?? []).find((r: any) => r.user_id === user?.id);
-  const network = (revs ?? []).filter((r: any) => r.user_id !== user?.id);
-  const hidden = Math.max(0, (stat?.n ?? 0) - (revs ?? []).length);
+  const others = (revs ?? []).filter((r: any) => r.user_id !== user?.id);
+  // "Whose ratings": all, my network (friends), or my communities (people who share one of them). Signed-in only.
+  const rs = user && (searchParams?.rs === "network" || searchParams?.rs === "communities") ? searchParams.rs : "all";
+  let friendIds = new Set<string>(); let communityIds = new Set<string>();
+  if (user) {
+    const circle = await getCircle(supabase, user.id);
+    friendIds = circle.friendIds;
+    const gids = circle.groups.map((g: any) => g.id).filter(Boolean);
+    if (gids.length) { const { data: mem } = await supabase.from("group_members").select("user_id").in("group_id", gids).eq("visible", true); communityIds = new Set((mem ?? []).map((m: any) => m.user_id)); }
+  }
+  const network = rs === "network" ? others.filter((r: any) => friendIds.has(r.user_id)) : rs === "communities" ? others.filter((r: any) => communityIds.has(r.user_id)) : others;
+  const scoped = rs !== "all";
+  const scopedN = network.length;
+  const scopedAvg = scopedN ? network.reduce((a: number, r: any) => a + r.rating, 0) / scopedN : null;
+  const scopedCount = (star: number) => network.filter((r: any) => r.rating === star).length;
+  const hidden = scoped ? 0 : Math.max(0, (stat?.n ?? 0) - (revs ?? []).length);
   const netAvg = network.length ? network.reduce((a: number, r: any) => a + r.rating, 0) / network.length : null;
   const attrs = p.attributes ?? {};
   const services = (QUESTIONS[p.category] ?? []).filter((q) => Array.isArray(attrs[q.id]) && attrs[q.id].length);
@@ -88,19 +102,26 @@ export default async function ProviderPage({ params }: { params: { id: string } 
 
           <section id="reviews" className="scroll-mt-32 border-t border-black/10 pt-10">
             <h2 className="text-2xl font-semibold tracking-tight">Reviews</h2>
-            {stat && (
+            {user && (
+              <div className="mt-4 inline-flex gap-1 rounded-full bg-black/5 p-1 text-[14px]" role="tablist" aria-label="Whose ratings">
+                {([["all", "All ratings"], ["network", "My network"], ["communities", "Communities"]] as const).map(([id, label]) => (
+                  <Link key={id} role="tab" aria-selected={rs === id} scroll={false} href={`/providers/${p.id}${id === "all" ? "" : `?rs=${id}`}#reviews`} className={`rounded-full px-4 py-1.5 font-semibold ${rs === id ? "bg-white shadow-sm" : "text-ink-soft hover:bg-black/5"}`}>{label}</Link>
+                ))}
+              </div>
+            )}
+            {(scoped ? scopedN > 0 : !!stat) && (
               <div className="mt-4 flex flex-wrap items-center gap-8">
-                <div><div className="text-4xl font-semibold text-brand-700">{Number(stat.avg_rating).toFixed(1)}</div><Stars value={Number(stat.avg_rating)} size={20} /><div className="mt-1 text-[13px] text-ink-soft">{stat.n} reviews</div></div>
+                <div><div className="text-4xl font-semibold text-brand-700">{(scoped ? scopedAvg! : Number(stat.avg_rating)).toFixed(1)}</div><Stars value={scoped ? scopedAvg! : Number(stat.avg_rating)} size={20} /><div className="mt-1 text-[13px] text-ink-soft">{scoped ? scopedN : stat.n} {(scoped ? scopedN : stat.n) === 1 ? "review" : "reviews"}{scoped ? ` from ${rs === "network" ? "your network" : "your communities"}` : ""}</div></div>
                 <div className="min-w-[220px] flex-1 space-y-1.5">
-                  {[5, 4, 3, 2, 1].map((s) => { const c = stat[`c${s}`] ?? 0; const pct = stat.n ? Math.round((c / stat.n) * 100) : 0; return <div key={s} className="flex items-center gap-2 text-[13px]"><span className="w-6">{s} ★</span><div className="h-2 flex-1 overflow-hidden rounded-full bg-black/10"><div className="h-2 rounded-full bg-brand-500" style={{ width: `${pct}%` }} /></div><span className="w-9 text-right text-ink-soft">{pct}%</span></div>; })}
+                  {[5, 4, 3, 2, 1].map((s) => { const total = scoped ? scopedN : stat.n; const c = scoped ? scopedCount(s) : (stat[`c${s}`] ?? 0); const pct = total ? Math.round((c / total) * 100) : 0; return <div key={s} className="flex items-center gap-2 text-[13px]"><span className="w-6">{s} ★</span><div className="h-2 flex-1 overflow-hidden rounded-full bg-black/10"><div className="h-2 rounded-full bg-brand-500" style={{ width: `${pct}%` }} /></div><span className="w-9 text-right text-ink-faint">{c}</span></div>; })}
                 </div>
               </div>
             )}
-            <h3 className="mb-3 mt-8 font-semibold">From people you know</h3>
+            <h3 className="mb-3 mt-8 font-semibold">{rs === "network" ? "From your network" : rs === "communities" ? "From your communities" : "From people you know"}</h3>
             {!user ? (
               <div className="card p-6 text-ink-soft"><Link href={`/login?next=/providers/${p.id}`} className="font-semibold text-brand-700 underline">Sign in</Link> to see which friends and groups have used {p.company}.</div>
             ) : network.length === 0 ? (
-              <div className="card p-6 text-ink-soft">None of your contacts have reviewed this pro yet.{hidden > 0 && ` ${hidden} other rating${hidden > 1 ? "s are" : " is"} included in the overall score.`}</div>
+              <div className="card p-6 text-ink-soft">{scoped ? `Nobody in ${rs === "network" ? "your network" : "your communities"} has reviewed this pro yet.` : "None of your contacts have reviewed this pro yet."}{hidden > 0 && ` ${hidden} other rating${hidden > 1 ? "s are" : " is"} included in the overall score.`}</div>
             ) : (
               <div className="space-y-3">
                 {network.map((r: any) => (

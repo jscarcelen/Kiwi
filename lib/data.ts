@@ -50,7 +50,12 @@ export async function rankProviders(
     const { friendIds, groups } = await getCircle(supabase, userId);
     let allowed: Set<string> | null = null; // restrict to a custom circle
     if (f.circle === "friends") allowed = friendIds;
-    else if (f.circle && f.circle !== "all") {
+    else if (f.circle === "communities") {
+      // everyone who shares at least one of my communities / groups
+      const ids = groups.map((x: any) => x.id).filter(Boolean);
+      const { data: mem } = ids.length ? await supabase.from("group_members").select("user_id").in("group_id", ids).eq("visible", true) : { data: [] as any[] };
+      allowed = new Set((mem ?? []).map((m: any) => m.user_id));
+    } else if (f.circle && f.circle !== "all") {
       const g = groups.find((x: any) => x.slug === f.circle);
       if (g) {
         const { data: mem } = await supabase.from("group_members").select("user_id").eq("group_id", g.id).eq("visible", true);

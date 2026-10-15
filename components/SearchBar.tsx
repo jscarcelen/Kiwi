@@ -38,9 +38,10 @@ export default function SearchBar({ initial, groups = [], signedIn = false }: { 
             Whose reviews <span className="rounded bg-brand-100 px-1.5 py-px text-[10px] text-brand-700">PLUS</span>
           </span>
           <select className={sel} value={circle} onChange={(e) => setCircle(e.target.value)} disabled={!signedIn} title={signedIn ? "" : "Sign in to filter by your network"}>
-            <option value="all">{signedIn ? "My whole network" : "Sign in to unlock"}</option>
-            {signedIn && <option value="friends">Friends only</option>}
-            {groups.map((g) => <option key={g.slug} value={g.slug}>{g.name}</option>)}
+            <option value="all">{signedIn ? "All ratings (network first)" : "Sign in to unlock"}</option>
+            {signedIn && <option value="friends">My network (friends)</option>}
+            {signedIn && groups.length > 0 && <option value="communities">All my communities</option>}
+            {groups.map((g) => <option key={g.slug} value={g.slug}>↳ {g.name}</option>)}
           </select>
         </label>
         <button className="btn-primary m-1 !px-7 !py-3.5" type="submit">Search</button>
