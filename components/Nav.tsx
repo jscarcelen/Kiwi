@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
 import ExploreMenu from "./ExploreMenu";
 import Logo from "./Logo";
+import ConnectButton from "./ConnectButton";
 import UserMenu from "./UserMenu";
 import { CREDITS_PER_MONTH } from "@/lib/referrals";
 
@@ -20,6 +21,7 @@ export default async function Nav() {
           <ExploreMenu />
           {user ? (
             <>
+              <ConnectButton me={user.id} />
               <Link href="/network" className={link}>My network</Link>
               {profile?.is_provider ? <Link href="/provider/dashboard" className={`${link} hidden sm:block`}>Dashboard</Link> : <Link href="/provider/signup" className={`${link} hidden sm:block`}>Join as a pro</Link>}
               <Link href="/network" title="Credits earned toward Premium" className="flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1.5 font-semibold text-brand-700 hover:bg-brand-100">🎁 {credits}<span className="hidden sm:inline"> credits</span></Link>
