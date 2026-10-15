@@ -3,6 +3,8 @@ export const CATEGORIES = [
   { slug: "moving", label: "Moving & Handyman", emoji: "📦", blurb: "Movers, assembly, repairs" },
   { slug: "dog-walking", label: "Dog walking", emoji: "🐕", blurb: "Walks, sitting, drop-ins" },
   { slug: "child-care", label: "Child care", emoji: "🧸", blurb: "Nannies, babysitters, after-school" },
+  { slug: "tutoring", label: "Tutoring & Coaching", emoji: "🎓", blurb: "School, test prep, recruiting, case interviews" },
+  { slug: "beauty", label: "Beauty & Hair", emoji: "💇", blurb: "Salons, stylists, barbers, makeup, nails" },
 ] as const;
 export const CITIES = ["Chicago", "Evanston", "Oak Park"];
 export const catLabel = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.label ?? slug;

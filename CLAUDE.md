@@ -1,6 +1,6 @@
 # WOM — project guide for Claude
 
-WOM is a trusted-services marketplace: users find cleaners, movers/handymen, dog walkers and child care through ratings from people in their own network (friends, verified groups like Chicago Booth MBA), not anonymous reviews. Initial market: Chicago Booth community. Founders: Gerardo Sánchez, Rodrigo Peña, Jonathan Sanz.
+WOM is a trusted-services marketplace: users find cleaners, movers/handymen, dog walkers, child care, tutors/coaches and beauty pros through ratings from people in their own network (friends, verified groups like Chicago Booth MBA), not anonymous reviews. Initial market: Chicago Booth community. Founders: Gerardo Sánchez, Rodrigo Peña, Jonathan Sanz.
 
 - Live: https://kiwi-mu-red.vercel.app · Repo: https://github.com/jscarcelen/Kiwi
 - Feedback tracker (team only, no login): /admin/feedback — collects in-app feedback (element + screenshot) and generates Claude Code prompts.
@@ -16,7 +16,7 @@ Env (`.env.local`, never commit): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPAB
 - `app/` pages: `/` landing, `/search`, `/providers/[id]`, `/review/[id]`, `/login`, `/signup`, `/provider/signup`, `/provider/dashboard`, `/network`, `/help`, `/privacy`, `/admin/feedback`, `api/feedback/prompt`.
 - `components/` UI + client forms (Nav, SearchBar, ProviderCard in ui.tsx, ReviewForm, NetworkManager, ContactsFinder, PhoneAuth, FeedbackWidget, FeedbackBoard…).
 - `lib/data.ts` — `rankProviders()` network-weighted ranking (friends weight 1.0, group-only 0.6; network results first, then global). `lib/phone.ts` contact parsing. `lib/routeMap.ts` page→file map for feedback prompts. `lib/supabase/{server,client}.ts`.
-- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`.
+- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`, `verticals.sql`.
 
 ## Key concepts
 - **Privacy by RLS:** review text is visible only to the author and to people in their circle (`in_my_circle()`), and only if `share_with_friends`. Global scores come from the `provider_stats` view (security definer). Never loosen these policies casually.

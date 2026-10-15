@@ -8,7 +8,7 @@ import SuggestionList from "./SuggestionList";
 import { suggest, type Sug } from "@/lib/suggestions";
 import { QUESTIONS, WHEN, answersToParams, type Answers, type Q } from "@/lib/intake";
 
-const EXAMPLES = ["Deep clean my 1-bedroom before I move out", "Walk my two dogs every weekday", "Assemble an IKEA wardrobe and mount my TV", "Babysitter for 2 kids on Saturday night"];
+const EXAMPLES = ["Deep clean my 1-bedroom before I move out", "Walk my two dogs every weekday", "Case interview coach for MBB recruiting", "Balayage and a haircut this weekend"];
 
 export default function IntakeModal({ open, onClose, initialText = "", initialCategory = null, initialSuggestion = null, city = "Chicago" }: { open: boolean; onClose: () => void; initialText?: string; initialCategory?: string | null; initialSuggestion?: Sug | null; city?: string }) {
   const router = useRouter();

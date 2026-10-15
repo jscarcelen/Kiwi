@@ -29,7 +29,7 @@ export default async function Home() {
 
       <section className="mx-auto max-w-6xl px-5 pt-16">
         <h2 className="text-3xl font-semibold tracking-tight">What do you need today?</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
           {CATEGORIES.map((c) => (
             <IntakeButton key={c.slug} initialCategory={c.slug} className="card group p-6 text-left transition hover:-translate-y-0.5 hover:shadow-pop">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-3xl">{c.emoji}</div>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { CATEGORY_SLUGS, QUESTIONS, classifyFallback } from "@/lib/intake";
-import { catLabel } from "@/lib/categories";
+import { catLabel, CATEGORIES } from "@/lib/categories";
 
 export const maxDuration = 30;
 const hits = new Map<string, number[]>();
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const text = String(body.text ?? "").trim().slice(0, 500);
   const fallbackCat = classifyFallback(text);
-  const base = { category: fallbackCat, summary: text.length > 120 ? text.slice(0, 117) + "…" : text, answers: {} as Record<string, string[]>, reply: fallbackCat ? `Got it — that sounds like ${catLabel(fallbackCat)}.` : "I can help with cleaning, moving & handyman, dog walking and child care. Which one fits?" };
+  const base = { category: fallbackCat, summary: text.length > 120 ? text.slice(0, 117) + "…" : text, answers: {} as Record<string, string[]>, reply: fallbackCat ? `Got it — that sounds like ${catLabel(fallbackCat)}.` : `I can help with ${CATEGORIES.map((c) => c.label.toLowerCase()).join(", ")}. Which one fits?` };
   if (!text) return NextResponse.json(base);
   const key = process.env.OPENAI_API_KEY;
   if (!key || limited(ip)) return NextResponse.json(base);

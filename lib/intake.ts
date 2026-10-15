@@ -30,6 +30,23 @@ export const QUESTIONS: Record<string, Q[]> = {
   ],
 };
 
+QUESTIONS.tutoring = [
+  { id: "subject", title: "What do you need help with?", type: "multi", options: [
+    { value: "school", label: "School subjects (math, science, writing)" }, { value: "test", label: "Test prep (GMAT, GRE, SAT, LSAT…)" },
+    { value: "recruiting", label: "Recruiting (resume, networking, interviews)" }, { value: "case", label: "Case interviews (consulting)" },
+    { value: "bschool", label: "Business school classes (finance, accounting, stats)" }, { value: "languages", label: "Languages" }, { value: "coding", label: "Coding & data" }] },
+  { id: "level", title: "What level?", type: "single", options: [{ value: "hs", label: "High school" }, { value: "undergrad", label: "Undergraduate" }, { value: "grad", label: "MBA / graduate" }, { value: "pro", label: "Working professional" }] },
+  { id: "format", title: "How would you like to meet?", type: "single", options: [{ value: "inperson", label: "In person" }, { value: "online", label: "Online" }] },
+  { id: "frequency", title: "How often?", type: "single", options: [{ value: "once", label: "One-time session" }, { value: "recurring", label: "Ongoing (weekly)" }] },
+];
+QUESTIONS.beauty = [
+  { id: "beauty_service", title: "What are you looking for?", type: "multi", options: [
+    { value: "haircut", label: "Haircut & styling" }, { value: "color", label: "Hair color" }, { value: "barber", label: "Barber" }, { value: "makeup", label: "Makeup" },
+    { value: "nails", label: "Nails" }, { value: "brows", label: "Brows & lashes" }, { value: "skin", label: "Facials & skin care" }] },
+  { id: "client", title: "Who is it for?", type: "single", options: [{ value: "women", label: "Women" }, { value: "men", label: "Men" }, { value: "kids", label: "Kids" }] },
+  { id: "beauty_place", title: "Where?", type: "single", options: [{ value: "salon", label: "At a salon / studio" }, { value: "mobile", label: "They come to me" }] },
+];
+
 export const WHEN: Q = {
   id: "when", title: "What's your timeline?", type: "single",
   options: [{ value: "urgent", label: "Urgent — within 48 hours" }, { value: "week", label: "Ready to hire, within a week" }, { value: "flex", label: "Still researching" }],
@@ -59,6 +76,8 @@ export function answersToParams(a: Answers) {
 const RULES: [string, RegExp][] = [
   ["dog-walking", /\b(dog|dogs|puppy|pup|leash|pet sit|dog walk)/i],
   ["child-care", /\b(child|children|kid|kids|nanny|babysit|toddler|baby|infant|after.?school|daycare)/i],
+  ["beauty", /\b(hair|haircut|salon|barber|makeup|make-up|nails?|manicure|pedicure|brows?|lashes|facial|stylist|balayage|blowout|beauty|highlights)/i],
+  ["tutoring", /\b(tutor|tutoring|gmat|gre|sat|lsat|mcat|exam|homework|case interview|interview prep|recruit|resume|study|studying|calculus|accounting|finance class|stats|essay|coach)/i],
   ["cleaning", /\b(clean|maid|mop|dust|housekeep|deep clean|tidy|scrub)/i],
   ["moving", /\b(mov(e|ing|ers?)|furniture|assembl|handyman|mount|ikea|shelf|drill|repair|fix|install|paint|haul|pack)/i],
 ];
@@ -70,5 +89,5 @@ export const CATEGORY_SLUGS = CATEGORIES.map((c) => c.slug) as string[];
 
 export const HEADINGS: Record<string, string> = {
   clean_type: "Type of cleaning", home_size: "Home size", property: "Property type", frequency: "Frequency",
-  job: "Services", dog_service: "Services", dogs: "Number of dogs", care_type: "Type of care", kids: "Number of children", ages: "Ages",
+  job: "Services", dog_service: "Services", dogs: "Number of dogs", care_type: "Type of care", kids: "Number of children", ages: "Ages", subject: "Subjects", level: "Level", format: "Format", beauty_service: "Services", client: "Who it's for", beauty_place: "Where",
 };

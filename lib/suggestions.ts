@@ -24,12 +24,29 @@ export const SUGGESTIONS: Sug[] = [
   { label: "After-school care & pickup", category: "child-care", answers: { care_type: ["afterschool"] }, kw: "homework school" },
   { label: "Infant / newborn care", category: "child-care", answers: { ages: ["infant"] }, kw: "baby newborn" },
   { label: "Toddler care", category: "child-care", answers: { ages: ["toddler"] }, kw: "child kids" },
+  { label: "Case interview coaching", category: "tutoring", answers: { subject: ["case"] }, kw: "consulting mbb mckinsey bain bcg practice" },
+  { label: "Recruiting prep (resume, networking, interviews)", category: "tutoring", answers: { subject: ["recruiting"] }, kw: "cv linkedin behavioral finance banking" },
+  { label: "GMAT / GRE tutor", category: "tutoring", answers: { subject: ["test"], level: ["grad"] }, kw: "test prep exam" },
+  { label: "SAT / ACT tutor", category: "tutoring", answers: { subject: ["test"], level: ["hs"] }, kw: "test prep college" },
+  { label: "MBA class tutor (finance, accounting, stats)", category: "tutoring", answers: { subject: ["bschool"], level: ["grad"] }, kw: "booth core courses study" },
+  { label: "Math & science tutor", category: "tutoring", answers: { subject: ["school"] }, kw: "calculus physics chemistry homework" },
+  { label: "Language lessons", category: "tutoring", answers: { subject: ["languages"] }, kw: "spanish french english mandarin" },
+  { label: "Coding & data tutor", category: "tutoring", answers: { subject: ["coding"] }, kw: "python sql excel programming" },
+  { label: "Haircut & styling", category: "beauty", answers: { beauty_service: ["haircut"] }, kw: "hairdresser salon stylist blowout" },
+  { label: "Hair color & highlights", category: "beauty", answers: { beauty_service: ["color"] }, kw: "balayage dye salon" },
+  { label: "Barber", category: "beauty", answers: { beauty_service: ["barber"], client: ["men"] }, kw: "fade beard trim men haircut" },
+  { label: "Makeup artist", category: "beauty", answers: { beauty_service: ["makeup"] }, kw: "wedding event glam bridal" },
+  { label: "Nails (manicure & pedicure)", category: "beauty", answers: { beauty_service: ["nails"] }, kw: "manicure pedicure gel" },
+  { label: "Brows & lashes", category: "beauty", answers: { beauty_service: ["brows"] }, kw: "eyebrows eyelash lash lift" },
+  { label: "Facial & skin care", category: "beauty", answers: { beauty_service: ["skin"] }, kw: "esthetician spa" },
+  { label: "Mobile hair & makeup (they come to me)", category: "beauty", answers: { beauty_place: ["mobile"] }, kw: "home visit on location" },
 ];
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/g, " ");
 
 export function suggest(text: string, limit = 6): Sug[] {
-  const tokens = norm(text).split(/\s+/).filter((t) => t.length >= 2);
+  const STOP = new Set(["help", "with", "the", "get", "for", "my", "need", "want", "and", "some", "someone", "find", "looking", "please", "can", "you", "our", "to", "of", "in", "on", "me"]);
+  const tokens = norm(text).split(/\s+/).filter((t) => t.length >= 2 && !STOP.has(t));
   if (!tokens.length) return [];
   return SUGGESTIONS.map((s) => {
     const hay = norm(`${s.label} ${s.kw ?? ""} ${s.category}`);
@@ -37,7 +54,7 @@ export function suggest(text: string, limit = 6): Sug[] {
     let score = 0;
     for (const t of tokens) {
       if (words.some((w) => w.startsWith(t))) score += 2;
-      else if (hay.includes(t)) score += 1;
+      else if (t.length >= 4 && hay.includes(t)) score += 1;
     }
     return { s, score, all: tokens.every((t) => hay.includes(t)) };
   })

@@ -6,7 +6,7 @@ import Nav from "@/components/Nav";
 import FeedbackWidget from "@/components/FeedbackWidget";
 
 export const metadata: Metadata = {
-  title: "WOM — find services your friends already trust",
+  title: "WOM — find pros your friends already trust",
   description: "A trusted-services marketplace powered by recommendations from people you know.",
   appleWebApp: { capable: true, title: "WOM", statusBarStyle: "default" },
 };
