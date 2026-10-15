@@ -16,7 +16,7 @@ Env (`.env.local`, never commit): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPAB
 - `app/` pages: `/` landing, `/search`, `/providers/[id]`, `/review/[id]`, `/login`, `/signup`, `/provider/signup`, `/provider/dashboard`, `/network`, `/help`, `/privacy`, `/admin/feedback`, `api/feedback/prompt`.
 - `components/` UI + client forms (Nav, SearchBar, ProviderCard in ui.tsx, ReviewForm, NetworkManager, ContactsFinder, PhoneAuth, FeedbackWidget, FeedbackBoard…).
 - `lib/data.ts` — `rankProviders()` network-weighted ranking (friends weight 1.0, group-only 0.6; network results first, then global). `lib/phone.ts` contact parsing. `lib/routeMap.ts` page→file map for feedback prompts. `lib/supabase/{server,client}.ts`.
-- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`, `verticals.sql`, `referrals.sql`, `communities.sql`.
+- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`, `verticals.sql`, `referrals.sql`, `communities.sql`, `settings.sql`.
 
 ## Key concepts
 - **Privacy by RLS:** review text is visible only to the author and to people in their circle (`in_my_circle()`), and only if `share_with_friends`. Global scores come from the `provider_stats` view (security definer). Never loosen these policies casually.
@@ -42,3 +42,6 @@ Landing hero + `components/IntakeModal.tsx`: user describes a need → `/api/int
 
 ## Communities & ambassadors
 Members can create communities (`groups.owner_id` set; 3 free, more with `profiles.is_premium`), share `/c/<invite_code>` links and QR, and filter searches by a community (`circle=<slug>`). Joining via a signup link (`metadata.community`) is handled in `handle_new_user()` and earns the ambassador 1 credit (`referrals.kind='community'`); 5 credits = 1 free Premium month (banked). Official groups (`owner_id is null`, email-domain verified) are still listed publicly.
+
+## Account menu, settings & tour
+Top-right avatar menu (`components/UserMenu.tsx`) → My network & invites (invites live on `/network`), pro dashboard, Settings (`/settings`: profile + photo, email/password/phone, discoverability, pro profile, delete account), log out. The 1-minute product tour is `components/TourHost.tsx` (opens via `window.dispatchEvent(new CustomEvent("wom:tour"))`, auto-shows once after first login, buttons on the landing page).

@@ -13,7 +13,7 @@ export default function InviteCard({ me, firstName, banner }: { me: string; firs
   useEffect(() => { if (showQr && origin) QRCode.toDataURL(link, { width: 640, margin: 2, errorCorrectionLevel: "M", color: { dark: "#051C2C", light: "#FFFFFF" } }).then(setQr); }, [showQr, origin, link]);
   const msg = `Join me on WOM — see which local pros our friends trust (cleaners, tutors, hair, movers & more): ${link}`;
   const copy = async () => { await navigator.clipboard.writeText(link); setCopied(true); setTimeout(() => setCopied(false), 2000); };
-  const btn = "btn-ghost !px-4 !py-2 !text-[14px]";
+  const btn = "btn !bg-white/10 !text-white hover:!bg-white/20 !px-4 !py-2 !text-[14px]";
   return (
     <section id="invite" className="rounded-2xl bg-navy p-6 text-white sm:p-8">
       <p className="text-[13px] font-semibold text-brand-200">Step 1 · Invite your friends</p>
@@ -23,7 +23,7 @@ export default function InviteCard({ me, firstName, banner }: { me: string; firs
         <input readOnly value={link} onFocus={(e) => e.currentTarget.select()} className="min-w-0 flex-1 rounded-full bg-white/10 px-5 py-3 text-[14px] text-white outline-none ring-1 ring-white/20" aria-label="Your invite link" />
         <button className="btn-light shrink-0" onClick={copy}>{copied ? "Copied ✓" : "Copy link"}</button>
       </div>
-      <div className="mt-3 flex flex-wrap gap-2 text-ink">
+      <div className="mt-3 flex flex-wrap gap-2">
         {canShare && <button className={btn} onClick={() => navigator.share({ title: "Join me on WOM", text: msg, url: link }).catch(() => {})}>Share…</button>}
         <a className={btn} href={`https://wa.me/?text=${encodeURIComponent(msg)}`} target="_blank" rel="noreferrer">WhatsApp</a>
         <a className={btn} href={`sms:?&body=${encodeURIComponent(msg)}`}>Messages</a>

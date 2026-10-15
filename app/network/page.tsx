@@ -32,7 +32,7 @@ export default async function Network({ searchParams }: { searchParams: { welcom
   const communities = allMine.filter((g: any) => g.owner_id).map((g: any) => ({ ...g, members: (cm ?? []).filter((x: any) => x.group_id === g.id).length }));
   return (
     <div className="mx-auto max-w-5xl px-5 py-10">
-      <h1 className="text-4xl font-semibold tracking-tight">{searchParams.welcome ? `Welcome, ${profile?.full_name?.split(" ")[0] ?? ""}` : "My network"}</h1>
+      <h1 className="text-4xl font-semibold tracking-tight">{searchParams.welcome ? `Welcome, ${profile?.full_name?.split(" ")[0] ?? ""}` : "My network & invites"}</h1>
       <p className="mb-8 mt-1 text-ink-soft">The more people you connect, the better your recommendations.</p>
       <div className="mb-10 space-y-5"><InviteCard me={user.id} firstName={profile?.full_name?.split(" ")[0]} banner={<ReferralBanner stats={stats} />} /><SupplierReferCard me={user.id} firstName={profile?.full_name?.split(" ")[0]} /></div>
       <NetworkManager me={user.id} friends={friends} myGroups={myGroups} allGroups={(groups ?? []).filter((g: any) => !g.owner_id)} suggestions={suggestions ?? []} />

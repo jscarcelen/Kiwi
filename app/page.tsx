@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getViewer, rankProviders } from "@/lib/data";
 import { CATEGORIES } from "@/lib/categories";
 import Hero from "@/components/Hero";
+import TourButton from "@/components/TourButton";
 import IntakeButton from "@/components/IntakeButton";
 import { ProviderCard } from "@/components/ui";
 
@@ -41,7 +42,7 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-5 pt-20">
-        <h2 className="text-3xl font-semibold tracking-tight">How WOM works</h2>
+        <div className="flex flex-wrap items-end justify-between gap-3"><h2 className="text-3xl font-semibold tracking-tight">How WOM works</h2><TourButton className="btn-ghost">▶ Take the 1-minute tour</TourButton></div>
         <div className="mt-6 grid gap-5 md:grid-cols-3">
           {[
             ["Tell us what you need", "Describe it in your own words. Our assistant understands it and asks a few quick questions."],

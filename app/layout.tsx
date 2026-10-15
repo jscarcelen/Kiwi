@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import TourHost from "@/components/TourHost";
 import Nav from "@/components/Nav";
 import FeedbackWidget from "@/components/FeedbackWidget";
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </footer>
         <FeedbackWidget />
+        <TourHost />
       </body>
     </html>
   );

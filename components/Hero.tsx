@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import IntakeModal from "./IntakeModal";
 import { LogoMark } from "./Logo";
+import TourButton from "./TourButton";
 import SuggestionList from "./SuggestionList";
 import { suggest, type Sug } from "@/lib/suggestions";
 
@@ -37,7 +38,7 @@ export default function Hero({ stats }: { stats: { label: string; value: string 
         <div className="mt-4 flex max-w-2xl flex-wrap gap-2">
           {CATEGORIES.map((c) => <button key={c.slug} onClick={() => launch(c.slug)} className="rounded-full bg-white/10 px-4 py-2 text-[14px] backdrop-blur transition hover:bg-white/20">{c.emoji} {c.label}</button>)}
         </div>
-        <p className="mt-5 flex items-center gap-2 text-[14px] text-white/70">🔒 No calls or texts until you message a pro.</p>
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px] text-white/75"><span>🔒 No calls or texts until you message a pro.</span><TourButton className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">▶ See how WOM works (1 min)</TourButton></div>
         <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">{stats.map((s) => <div key={s.label}><div className="text-3xl font-semibold tracking-tight">{s.value}</div><div className="text-[14px] text-white/70">{s.label}</div></div>)}</div>
       </div>
       {open && <IntakeModal open onClose={() => setOpen(false)} initialText={cat || sug ? "" : text} initialCategory={cat} initialSuggestion={sug} city={city} />}

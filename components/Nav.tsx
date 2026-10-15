@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
-import SignOutButton from "./SignOutButton";
 import ExploreMenu from "./ExploreMenu";
 import Logo from "./Logo";
+import UserMenu from "./UserMenu";
 
 export default async function Nav() {
   const supabase = createClient();
@@ -13,18 +13,14 @@ export default async function Nav() {
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link href="/" className="flex items-center" aria-label="WOM home">
-          <Logo height={32} />
-        </Link>
+        <Link href="/" className="flex items-center" aria-label="WOM home"><Logo height={32} /></Link>
         <nav className="flex items-center gap-0.5 text-[14px] sm:gap-1">
           <ExploreMenu />
           {user ? (
             <>
               <Link href="/network" className={link}>My network</Link>
-              <Link href="/network#invite" className={`${link} hidden sm:block`}>Invite</Link>
-              {isAdmin && <Link href="/admin/feedback" className={`${link} hidden sm:block`}>Feedback</Link>}
-              {profile?.is_provider ? <Link href="/provider/dashboard" className={link}>Dashboard</Link> : <Link href="/provider/signup" className={`${link} hidden sm:block`}>Join as a pro</Link>}
-              <SignOutButton />
+              {profile?.is_provider ? <Link href="/provider/dashboard" className={`${link} hidden sm:block`}>Dashboard</Link> : <Link href="/provider/signup" className={`${link} hidden sm:block`}>Join as a pro</Link>}
+              <UserMenu name={profile?.full_name || user.email || "Account"} avatarUrl={profile?.avatar_url} isProvider={!!profile?.is_provider} isAdmin={isAdmin} />
             </>
           ) : (
             <>
