@@ -10,6 +10,7 @@ export default function SignupForm() {
   const router = useRouter();
   const sp = useSearchParams();
   const ref = sp.get("ref");
+  const community = sp.get("community");
   const [f, setF] = useState({ full_name: "", email: "", password: "", phone: "", instagram: "" });
   const [err, setErr] = useState(""); const [note, setNote] = useState(""); const [busy, setBusy] = useState(false);
   const set = (k: string) => (e: any) => setF({ ...f, [k]: e.target.value });
@@ -17,13 +18,14 @@ export default function SignupForm() {
     <form className="space-y-4" onSubmit={async (e) => {
       e.preventDefault(); setBusy(true); setErr("");
       const s = createClient();
-      const { data, error } = await s.auth.signUp({ email: f.email, password: f.password, options: { data: { full_name: f.full_name, phone: f.phone, instagram: f.instagram.replace("@", ""), ...(ref ? { ref } : {}) } } });
+      const { data, error } = await s.auth.signUp({ email: f.email, password: f.password, options: { data: { full_name: f.full_name, phone: f.phone, instagram: f.instagram.replace("@", ""), ...(ref ? { ref } : {}), ...(community ? { community } : {}) } } });
       if (error) { setErr(error.message); setBusy(false); return; }
       if (!data.session) { setNote("Check your email to confirm your account, then sign in."); setBusy(false); return; }
       if (ref) await s.rpc("add_friend", { target: ref });
       router.push("/network?welcome=1"); router.refresh();
     }}>
       {ref && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">You were invited by a friend — you'll be connected automatically.</p>}
+      {community && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">You're joining a WOM community — you'll be added automatically.</p>}
       <div><label className="label">Full name</label><input className="input" required value={f.full_name} onChange={set("full_name")} /></div>
       <div><label className="label">Email</label><input className="input" type="email" required value={f.email} onChange={set("email")} placeholder="Use your @chicagobooth.edu email to join Booth" /></div>
       <div><label className="label">Password</label><input className="input" type="password" minLength={6} required value={f.password} onChange={set("password")} /></div>
