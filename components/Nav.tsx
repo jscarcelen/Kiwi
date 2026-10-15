@@ -23,13 +23,12 @@ export default async function Nav() {
             <>
               <ConnectButton me={user.id} />
               <Link href="/network" className={link}>My network</Link>
-              {profile?.is_provider ? <Link href="/provider/dashboard" className={`${link} hidden sm:block`}>Dashboard</Link> : <Link href="/provider/signup" className={`${link} hidden sm:block`}>Join as a pro</Link>}
+              {profile?.is_provider ? <Link href="/provider/dashboard" className={`${link} hidden sm:block`}>Dashboard</Link> : null}
               <Link href="/network" title="Credits earned toward Premium" className="flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1.5 font-semibold text-brand-700 hover:bg-brand-100">🎁 {credits}<span className="hidden sm:inline"> credits</span></Link>
               <UserMenu credits={credits} perMonth={CREDITS_PER_MONTH} name={profile?.full_name || user.email || "Account"} avatarUrl={profile?.avatar_url} isProvider={!!profile?.is_provider} isAdmin={isAdmin} />
             </>
           ) : (
             <>
-              <Link href="/provider/signup" className={`${link} hidden sm:block`}>Join as a pro</Link>
               <Link href="/login" className="rounded-full px-3 py-1.5 font-semibold text-ink hover:bg-black/5">Log in</Link>
               <Link href="/signup" className="rounded-full bg-navy-100 px-4 py-2 font-semibold text-navy hover:bg-navy/20">Sign up</Link>
             </>

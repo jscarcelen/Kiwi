@@ -6,6 +6,7 @@ import { CATEGORIES, CITIES } from "@/lib/categories";
 import { toE164, validPhone } from "@/lib/phone";
 import { initials } from "@/lib/data";
 import DeleteAccount from "./DeleteAccount";
+import PasswordInput from "./PasswordInput";
 
 function Card({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
   return <section className="card p-6"><h2 className="text-xl font-semibold tracking-tight">{title}</h2>{desc && <p className="mt-1 text-[14px] text-ink-soft">{desc}</p>}<div className="mt-4 space-y-4">{children}</div></section>;
@@ -84,7 +85,7 @@ export default function SettingsForm({ user, profile, phoneRow, provider }: { us
 
       <Card title="Sign-in details">
         <div><label className="label">Email</label><div className="flex gap-2"><input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Add an email" /><button className="btn-ghost shrink-0" onClick={saveEmail} disabled={!email || email === user.email}>Update</button></div><Msg m={eMsg} /></div>
-        <div><label className="label">New password</label><div className="flex gap-2"><input className="input" type="password" minLength={6} value={pw} onChange={(e) => setPw(e.target.value)} placeholder="At least 6 characters" /><button className="btn-ghost shrink-0" onClick={savePw} disabled={!pw}>Update</button></div><Msg m={pwMsg} /></div>
+        <div><label className="label">New password</label><div className="flex gap-2"><div className="flex-1"><PasswordInput minLength={6} value={pw} onChange={setPw} placeholder="At least 6 characters" autoComplete="new-password" /></div><button className="btn-ghost shrink-0" onClick={savePw} disabled={!pw}>Update</button></div><Msg m={pwMsg} /></div>
         <div><label className="label">Phone {user.phone && <span className="font-normal text-ink-faint">· current: +{user.phone}</span>}</label>
           <div className="flex flex-wrap gap-2">
             <input className="input !w-56" inputMode="tel" placeholder="(312) 555-0123" value={phone} onChange={(e) => setPhone(e.target.value)} />

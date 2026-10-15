@@ -6,6 +6,7 @@ import { Avatar, Stars } from "@/components/ui";
 import AddonCard from "@/components/AddonCard";
 import SupplierReferCard from "@/components/SupplierReferCard";
 import ReferralBanner from "@/components/ReferralBanner";
+import ApplyPendingServices from "@/components/ApplyPendingServices";
 import { QUESTIONS, WHEN_LABEL, labelFor } from "@/lib/intake";
 import { catEmoji, catLabel } from "@/lib/categories";
 
@@ -34,6 +35,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: { lis
   const kpis = [["Search appearances", imp], ["Profile views", views], ["Contact clicks", contacts], ["Conversion", imp ? `${Math.round((contacts / imp) * 100)}%` : "–"]];
   return (
     <div className="mx-auto max-w-5xl px-5 py-10">
+      {Array.isArray(user.user_metadata?.extra_services) && user.user_metadata.extra_services.length > 0 && <ApplyPendingServices />}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><p className="text-[14px] text-ink-soft">Dashboard</p><h1 className="text-4xl font-semibold tracking-tight">{p.company}</h1></div>
         <div className="flex flex-wrap gap-2"><Link href={`/provider/service/${p.id}`} className="btn-ghost">Edit this service</Link><Link href={`/providers/${p.id}`} className="btn-ghost">View public profile</Link></div>

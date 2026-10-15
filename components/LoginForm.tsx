@@ -1,4 +1,5 @@
 "use client";
+import PasswordInput from "./PasswordInput";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +20,7 @@ export default function LoginForm() {
       router.push(next); router.refresh();
     }}>
       <div><label className="label">Email</label><input className="input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-      <div><label className="label">Password</label><input className="input" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+      <div><label className="label">Password</label><PasswordInput required value={password} onChange={setPassword} autoComplete="current-password" /></div>
       {err && <p className="text-[14px] text-red-600">{err}</p>}
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
       <PhoneAuth mode="login" />

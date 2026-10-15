@@ -8,7 +8,7 @@ export default function SignupSwitch({ active, refId, community }: { active: "us
   };
   const items = [
     { id: "user", icon: "🙋", title: "I'm looking for pros", sub: "Find trusted services", href: `/signup${q({ ref: refId, community })}` },
-    { id: "supplier", icon: "🛠️", title: "I offer a service", sub: "List my business", href: `/provider/signup${q({ ref: refId })}` },
+    { id: "supplier", icon: "🛠️", title: "I am a pro", sub: "List my business", href: `/provider/signup${q({ ref: refId })}` },
   ] as const;
   return (
     <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-1 rounded-3xl bg-black/5 p-1" role="tablist" aria-label="Sign up as">
