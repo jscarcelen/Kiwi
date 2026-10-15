@@ -27,6 +27,7 @@ export default function UserMenu({ name, avatarUrl, isProvider, isAdmin, credits
           <div className="my-1 h-px bg-black/5" />
           <Link href="/network" className={item}>My network & invites</Link>
           {isProvider && <Link href="/provider/dashboard" className={item}>Pro dashboard</Link>}
+          {isAdmin && <Link href="/admin" className={item}>Admin console</Link>}
           {isAdmin && <Link href="/admin/feedback" className={item}>Feedback tracker</Link>}
           <button className={item} onClick={() => window.dispatchEvent(new CustomEvent("wom:tour"))}>Take the 1-min tour</button>
           <Link href="/settings" className={item}>Settings</Link>

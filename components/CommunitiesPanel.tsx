@@ -1,4 +1,5 @@
 "use client";
+import { track } from "@/lib/track";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -24,7 +25,8 @@ export default function CommunitiesPanel({ me, communities, isPremium }: { me: s
     const { data, error } = await s.rpc("create_community", { cname: name, cdesc: desc });
     setBusy(false);
     if (error) return setErr(error.message);
-    if (data?.error) return setErr(data.error);
+    if (data?.error) { if (data.limit) track("limit_hit", { feature: "community" }); return setErr(data.error); }
+    track("premium_feature", { feature: "community", free: !isPremium });
     setName(""); setDesc(""); setOpen(false); router.refresh();
   };
   const link = (c: Community) => `${origin}/c/${c.invite_code}`;

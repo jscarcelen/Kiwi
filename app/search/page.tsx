@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import TrackEvent from "@/components/TrackEvent";
 import { getCircle, getViewer, rankProviders } from "@/lib/data";
 import { catLabel } from "@/lib/categories";
 import { readAnswers, WHEN_LABEL } from "@/lib/intake";
@@ -52,6 +53,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
             </div>
           )}
           {user && inNet.length === 0 && results.length > 0 && <div className="mt-4 rounded-2xl bg-brand-50 p-4 text-[14px] text-brand-700">No one in your circle has rated these yet. <Link href="/network" className="font-semibold underline">Add friends or join a group</Link>.</div>}
+          <TrackEvent type="search" meta={{ service, city, circle, results: results.length }} />
           <div className="mt-6 space-y-4">{results.map((r) => <ProviderRow key={r.provider.id} r={r} />)}</div>
           {results.length === 0 && <div className="mt-8"><Empty title="No pros match those filters">Try removing a filter or choosing another city.</Empty></div>}
         </section>

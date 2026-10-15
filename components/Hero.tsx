@@ -7,7 +7,7 @@ import TourButton from "./TourButton";
 import SuggestionList from "./SuggestionList";
 import { suggest, type Sug } from "@/lib/suggestions";
 
-export default function Hero({ stats }: { stats: { label: string; value: string }[] }) {
+export default function Hero({ stats, headline = "Whatever you need, ask the people you trust.", subtitle = "Tell us what you need. WOM finds local pros your friends and communities already rate highly." }: { stats: { label: string; value: string }[]; headline?: string; subtitle?: string }) {
   const [text, setText] = useState("");
   const [city, setCity] = useState(CITIES[0]);
   const [open, setOpen] = useState(false);
@@ -21,8 +21,8 @@ export default function Hero({ stats }: { stats: { label: string; value: string 
       <LogoMark tone="dark" size={460} className="pointer-events-none absolute -right-10 top-1/2 hidden -translate-y-1/2 opacity-[0.14] md:block" />
       <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-16 sm:pb-24 sm:pt-24">
         <p className="text-[14px] font-semibold text-brand-200">Trusted by the people you trust</p>
-        <h1 className="mt-3 max-w-2xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl">Whatever you need, ask the people you trust.</h1>
-        <p className="mt-5 max-w-xl text-lg text-white/80">Tell us what you need. WOM finds local pros your friends and communities already rate highly.</p>
+        <h1 className="mt-3 max-w-2xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl">{headline}</h1>
+        <p className="mt-5 max-w-xl text-lg text-white/80">{subtitle}</p>
 
         <form className="mt-8 max-w-2xl rounded-2xl bg-white p-3 text-ink shadow-pop" onSubmit={(e) => { e.preventDefault(); launch(); }}>
           <div className="flex items-center gap-3 px-3 py-2">

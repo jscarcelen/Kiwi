@@ -4,6 +4,7 @@ import Link from "next/link";
 import Logo from "@/components/Logo";
 import TourHost from "@/components/TourHost";
 import Nav from "@/components/Nav";
+import Tracker from "@/components/Tracker";
 import FeedbackWidget from "@/components/FeedbackWidget";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </footer>
         <FeedbackWidget />
         <TourHost />
+        <Tracker />
       </body>
     </html>
   );
