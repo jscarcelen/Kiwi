@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import QRCode from "qrcode";
 
 const KINDS = [
@@ -31,7 +32,9 @@ export default function ConnectButton({ me }: { me: string }) {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = overflow; };
   }, [open]);
 
   return (
@@ -39,9 +42,11 @@ export default function ConnectButton({ me }: { me: string }) {
       <button type="button" onClick={() => setOpen(true)} className="flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 font-semibold text-white hover:bg-navy/90" aria-haspopup="dialog">
         <span aria-hidden>▦</span><span>Connect</span>
       </button>
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center" onClick={() => setOpen(false)}>
-          <div role="dialog" aria-label="Connect" className="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-pop" onClick={(e) => e.stopPropagation()}>
+      {open && createPortal(
+        // In a portal on <body>: the sticky header's blur would otherwise make it the containing block of this fixed layer.
+        // Phones: the whole screen. Computers: a card in the middle of the screen.
+        <div className="fixed inset-0 z-[100] flex items-stretch justify-center bg-black/50 sm:items-center sm:p-6" onClick={() => setOpen(false)}>
+          <div role="dialog" aria-modal="true" aria-label="Connect" className="flex h-full w-full flex-col overflow-y-auto bg-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] text-center sm:h-auto sm:max-h-[92vh] sm:max-w-md sm:rounded-3xl sm:shadow-pop" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold tracking-tight">Connect</h2>
               <button type="button" aria-label="Close" className="rounded-full px-2 py-1 text-ink-soft hover:bg-black/5" onClick={() => setOpen(false)}>✕</button>
@@ -52,8 +57,10 @@ export default function ConnectButton({ me }: { me: string }) {
               ))}
             </div>
             <p className="mt-4 text-[15px] font-semibold">{k.title}</p>
-            <div className="mx-auto mt-3 aspect-square w-full max-w-[16rem]">
+            <div className="mx-auto mt-3 flex flex-1 items-center justify-center sm:flex-none">
+              <div className="aspect-square w-[min(78vw,26rem)] sm:w-[19rem]">
               {qr ? <img src={qr} alt={`QR code: ${k.title}`} className="h-full w-full rounded-2xl border border-black/10 bg-white" /> : <div className="h-full w-full animate-pulse rounded-2xl bg-black/5" />}
+              </div>
             </div>
             <p className="mt-3 text-[13px] text-ink-soft">{k.how}</p>
             <div className="mt-4 flex justify-center gap-2">
@@ -61,7 +68,8 @@ export default function ConnectButton({ me }: { me: string }) {
               {qr && <a className="btn-ghost !px-4 !py-2 !text-[13px]" href={qr} download={k.file}>Download QR</a>}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
