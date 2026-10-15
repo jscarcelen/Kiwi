@@ -5,7 +5,7 @@ export type RankedProvider = {
   provider: any;
   avg: number | null;
   n: number;
-  net: { score: number; count: number; endorsers: Endorser[] } | null;
+  net: { score: number; count: number; endorsers: Endorser[]; snippet?: { name: string; comment: string } } | null;
 };
 
 export async function getViewer(supabase: any) {
@@ -30,18 +30,22 @@ export async function getCircle(supabase: any, userId: string) {
 export async function rankProviders(
   supabase: any,
   userId: string | null,
-  f: { service?: string; city?: string; circle?: string; limit?: number }
+  f: { service?: string; city?: string; circle?: string; limit?: number; answers?: Record<string, string[]> }
 ): Promise<RankedProvider[]> {
   let q = supabase.from("providers").select("*");
   if (f.service && f.service !== "all") q = q.eq("category", f.service);
   if (f.city && CITIES.includes(f.city)) q = q.or(`city.eq.${f.city},regions.cs.{${f.city}}`);
-  const { data: providers } = await q;
-  if (!providers?.length) return [];
+  const { data: all } = await q;
+  const ans = Object.entries(f.answers ?? {}).filter(([, v]) => v.length);
+  const providers = (all ?? []).filter((p: any) =>
+    ans.every(([k, v]) => { const have = p.attributes?.[k]; return !Array.isArray(have) || v.some((x) => have.includes(x)); })
+  );
+  if (!providers.length) return [];
   const ids = providers.map((p: any) => p.id);
   const { data: stats } = await supabase.from("provider_stats").select("*").in("provider_id", ids);
   const statMap = new Map<string, any>((stats ?? []).map((s: any) => [s.provider_id, s]));
 
-  const netMap = new Map<string, { w: number; ws: number; ppl: Map<string, string> }>();
+  const netMap = new Map<string, { w: number; ws: number; ppl: Map<string, string>; snip?: { name: string; comment: string; rating: number } }>();
   if (userId) {
     const { friendIds, groups } = await getCircle(supabase, userId);
     let allowed: Set<string> | null = null; // restrict to a custom circle
@@ -55,14 +59,15 @@ export async function rankProviders(
     }
     const { data: revs } = await supabase
       .from("reviews")
-      .select("provider_id,user_id,rating,profiles(full_name)")
+      .select("provider_id,user_id,rating,comment,profiles(full_name)")
       .in("provider_id", ids)
       .neq("user_id", userId);
     for (const r of revs ?? []) {
       if (allowed && !allowed.has(r.user_id)) continue;
       const w = friendIds.has(r.user_id) ? 1 : 0.6;
-      const e = netMap.get(r.provider_id) ?? { w: 0, ws: 0, ppl: new Map() };
+      const e: any = netMap.get(r.provider_id) ?? { w: 0, ws: 0, ppl: new Map() };
       e.w += w; e.ws += w * r.rating; e.ppl.set(r.user_id, (r.profiles as any)?.full_name ?? "Friend");
+      if (r.comment && (!e.snip || r.rating > e.snip.rating)) e.snip = { name: (r.profiles as any)?.full_name ?? "Friend", comment: r.comment, rating: r.rating };
       netMap.set(r.provider_id, e);
     }
   }
@@ -74,7 +79,7 @@ export async function rankProviders(
       provider: p,
       avg: s ? Number(s.avg_rating) : null,
       n: s?.n ?? 0,
-      net: e ? { score: e.ws / e.w, count: e.ppl.size, endorsers: [...e.ppl].map(([id, name]) => ({ id, name })) } : null,
+      net: e ? { score: e.ws / e.w, count: e.ppl.size, endorsers: [...e.ppl].map(([id, name]) => ({ id, name })), snippet: e.snip ? { name: e.snip.name, comment: e.snip.comment } : undefined } : null,
     };
   });
   rows.sort((a, b) => {

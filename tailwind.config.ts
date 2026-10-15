@@ -5,6 +5,7 @@ const config: Config = {
     extend: {
       colors: {
         kiwi: { 50: "#f5faee", 100: "#e8f4d6", 200: "#d0e8ad", 400: "#8cc152", 500: "#6aa84f", 600: "#578f3f", 700: "#467532" },
+        forest: { DEFAULT: "#12351f", 700: "#0c2415", 100: "#dfeadf" },
         ink: { DEFAULT: "#1d1d1f", soft: "#6e6e73", faint: "#86868b" },
       },
       fontFamily: { sans: ["-apple-system", "BlinkMacSystemFont", "SF Pro Display", "Inter", "Helvetica Neue", "Arial", "sans-serif"] },

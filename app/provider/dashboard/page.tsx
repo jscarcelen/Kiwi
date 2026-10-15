@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
 import { Avatar, Stars } from "@/components/ui";
 import AddonCard from "@/components/AddonCard";
+import { QUESTIONS, WHEN_LABEL, labelFor } from "@/lib/intake";
+import { catLabel } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +16,11 @@ export default async function Dashboard() {
   const { data: p } = await supabase.from("providers").select("*").eq("owner_id", user.id).maybeSingle();
   if (!p) return <div className="mx-auto max-w-xl px-5 py-20 text-center"><h1 className="text-2xl font-semibold">No provider profile</h1><p className="mt-2 text-ink-soft">This account isn't a provider.</p><Link className="btn-primary mt-6" href="/provider/signup">List your business</Link></div>;
   const since = new Date(Date.now() - 14 * 86400000).toISOString();
-  const [{ data: events }, { data: stat }, { data: interest }] = await Promise.all([
+  const [{ data: events }, { data: stat }, { data: interest }, { data: requests }] = await Promise.all([
     supabase.from("provider_events").select("type,created_at").eq("provider_id", p.id).gte("created_at", since),
     supabase.from("provider_stats").select("*").eq("provider_id", p.id).maybeSingle(),
     supabase.from("addon_interest").select("addon").eq("user_id", user.id),
+    supabase.from("project_requests").select("*").contains("provider_ids", [p.id]).order("created_at", { ascending: false }).limit(20),
   ]);
   const count = (t: string) => (events ?? []).filter((e: any) => e.type === t).length;
   const days = Array.from({ length: 14 }, (_, i) => { const d = new Date(Date.now() - (13 - i) * 86400000); return d.toISOString().slice(0, 10); });
@@ -43,6 +46,16 @@ export default async function Dashboard() {
           {byDay.map((v, i) => <div key={i} className="flex-1 rounded-t-md bg-kiwi-500/80" style={{ height: `${Math.max(4, (v / max) * 100)}%` }} title={`${days[i]}: ${v}`} />)}
         </div>
       </div>
+      <h2 className="mb-4 mt-12 text-2xl font-semibold tracking-tight">Project requests</h2>
+      {(requests ?? []).length === 0 ? <div className="card p-6 text-ink-soft">No requests yet. When customers send their project to you, it shows up here.</div> : (
+        <div className="space-y-3">{(requests ?? []).map((r: any) => (
+          <div key={r.id} className="card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2"><b>{catLabel(r.category)} · {r.city}</b><span className="text-[12px] text-ink-faint">{new Date(r.created_at).toLocaleString()}{r.timeline && ` · ${WHEN_LABEL[r.timeline] ?? ""}`}</span></div>
+            <p className="mt-1 text-ink-soft">{r.summary}</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">{Object.entries(r.answers ?? {}).flatMap(([k, v]: any) => v.map((x: string) => <span key={k + x} className="rounded-full bg-black/5 px-2.5 py-0.5 text-[12px]">{labelFor(r.category, k, x)}</span>))}</div>
+            <p className="mt-3 text-[14px]"><b>Customer:</b> {r.contact}</p>
+          </div>))}</div>
+      )}
       <h2 className="mb-4 mt-12 text-2xl font-semibold tracking-tight">Add-ons</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AddonCard id="scheduling" emoji="📅" title="Scheduling" desc="Let customers book slots directly." initial={have.has("scheduling")} />

@@ -16,7 +16,7 @@ Env (`.env.local`, never commit): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPAB
 - `app/` pages: `/` landing, `/search`, `/providers/[id]`, `/review/[id]`, `/login`, `/signup`, `/provider/signup`, `/provider/dashboard`, `/network`, `/help`, `/privacy`, `/admin/feedback`, `api/feedback/prompt`.
 - `components/` UI + client forms (Nav, SearchBar, ProviderCard in ui.tsx, ReviewForm, NetworkManager, ContactsFinder, PhoneAuth, FeedbackWidget, FeedbackBoard…).
 - `lib/data.ts` — `rankProviders()` network-weighted ranking (friends weight 1.0, group-only 0.6; network results first, then global). `lib/phone.ts` contact parsing. `lib/routeMap.ts` page→file map for feedback prompts. `lib/supabase/{server,client}.ts`.
-- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`.
+- `supabase/*.sql` — run in this order: `schema.sql`, `seed.sql`, `feedback.sql`, `feedback_open_access.sql`, `phone.sql`, `account_deletion.sql`, `intake.sql`.
 
 ## Key concepts
 - **Privacy by RLS:** review text is visible only to the author and to people in their circle (`in_my_circle()`), and only if `share_with_friends`. Global scores come from the `provider_stats` view (security definer). Never loosen these policies casually.
@@ -36,3 +36,6 @@ Work on a branch (`feature/<name>`), open a PR to `main`, Jonathan or Gerardo re
 
 ## Known TODOs / ideas
 Report/block for reviews (App Store 1.2) · Instagram OAuth (needs Meta app review) · provider add-ons (scheduling, invoicing, payments, back-office are waitlist-only) · 2nd-degree ranking · password on /admin/feedback before wide launch · iOS app via Capacitor (IOS.md).
+
+## Intake assistant & search UX (Oct 2026)
+Landing hero + `components/IntakeModal.tsx`: user describes a need → `/api/intake` (gpt-4o, falls back to keyword rules) picks a category and pre-fills answers → remaining questions from `lib/intake.ts` (`QUESTIONS`) → `/search?service=…&a_<qid>=…`. Providers store `attributes` (jsonb keyed by the same question ids); filters exclude only providers that explicitly don't offer something. "Message top 3" saves a `project_requests` row visible to those providers on their dashboard.
