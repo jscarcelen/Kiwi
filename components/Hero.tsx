@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import IntakeModal from "./IntakeModal";
+import { LogoMark } from "./Logo";
 
 export default function Hero({ stats }: { stats: { label: string; value: string }[] }) {
   const [text, setText] = useState("");
@@ -10,16 +11,13 @@ export default function Hero({ stats }: { stats: { label: string; value: string 
   const [cat, setCat] = useState<string | null>(null);
   const launch = (c: string | null = null) => { setCat(c); setOpen(true); };
   return (
-    <section className="relative overflow-hidden bg-forest text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_85%_20%,rgba(140,193,82,0.35),transparent),radial-gradient(50%_70%_at_0%_100%,rgba(106,168,79,0.25),transparent)]" />
-      <svg className="pointer-events-none absolute -right-24 top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 opacity-[0.16] md:block" viewBox="0 0 200 200" aria-hidden>
-        <circle cx="100" cy="100" r="92" fill="#7a553d" /><circle cx="100" cy="100" r="82" fill="#8cc152" /><circle cx="100" cy="100" r="26" fill="#eef6d9" />
-        {Array.from({ length: 24 }).map((_, i) => { const a = (i / 24) * Math.PI * 2; return <ellipse key={i} cx={100 + Math.cos(a) * 52} cy={100 + Math.sin(a) * 52} rx="2.2" ry="4" transform={`rotate(${(a * 180) / Math.PI + 90} ${100 + Math.cos(a) * 52} ${100 + Math.sin(a) * 52})`} fill="#1d1d1f" />; })}
-      </svg>
+    <section className="relative overflow-hidden bg-navy text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_85%_20%,rgba(34,81,255,0.45),transparent),radial-gradient(50%_70%_at_0%_100%,rgba(90,169,255,0.28),transparent)]" />
+      <LogoMark tone="dark" size={460} className="pointer-events-none absolute -right-10 top-1/2 hidden -translate-y-1/2 opacity-[0.14] md:block" />
       <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-16 sm:pb-24 sm:pt-24">
-        <p className="text-[14px] font-semibold text-kiwi-200">Trusted by the people you trust</p>
+        <p className="text-[14px] font-semibold text-brand-200">Trusted by the people you trust</p>
         <h1 className="mt-3 max-w-2xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl">For everything home could be, ask your friends' pros.</h1>
-        <p className="mt-5 max-w-xl text-lg text-white/80">Tell us what you need. Kiwi finds local pros your friends and communities already rate highly.</p>
+        <p className="mt-5 max-w-xl text-lg text-white/80">Tell us what you need. WOM finds local pros your friends and communities already rate highly.</p>
 
         <form className="mt-8 max-w-2xl rounded-2xl bg-white p-3 text-ink shadow-pop" onSubmit={(e) => { e.preventDefault(); launch(); }}>
           <div className="flex items-center gap-3 px-3 py-2">

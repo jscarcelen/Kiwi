@@ -5,9 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 export default function ContactButton({ providerId, phone, email }: { providerId: string; phone?: string; email?: string }) {
   const [open, setOpen] = useState(false);
   return open ? (
-    <div className="rounded-2xl bg-kiwi-50 p-4 text-[15px]">
-      {phone && <div><b>Phone:</b> <a className="text-kiwi-700 underline" href={`tel:${phone}`}>{phone}</a></div>}
-      {email && <div className="mt-1"><b>Email:</b> <a className="text-kiwi-700 underline" href={`mailto:${email}`}>{email}</a></div>}
+    <div className="rounded-2xl bg-brand-50 p-4 text-[15px]">
+      {phone && <div><b>Phone:</b> <a className="text-brand-700 underline" href={`tel:${phone}`}>{phone}</a></div>}
+      {email && <div className="mt-1"><b>Email:</b> <a className="text-brand-700 underline" href={`mailto:${email}`}>{email}</a></div>}
     </div>
   ) : (
     <button className="btn-primary w-full" onClick={async () => {

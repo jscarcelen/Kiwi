@@ -1,4 +1,4 @@
--- KIWI schema. Run once in Supabase SQL editor.
+-- WOM schema. Run once in Supabase SQL editor.
 create extension if not exists pgcrypto;
 
 create table if not exists public.profiles (

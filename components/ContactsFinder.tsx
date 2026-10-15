@@ -20,7 +20,7 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
   const [canPick, setCanPick] = useState(false);
   const [native, setNative] = useState(false);
   const invite = typeof window !== "undefined" ? `${window.location.origin}/signup?ref=${me}` : "";
-  const inviteMsg = `Join me on Kiwi — see which local services our friends trust: ${invite}`;
+  const inviteMsg = `Join me on WOM — see which local services our friends trust: ${invite}`;
 
   const loadOwn = async () => {
     await s.rpc("sync_my_phone");
@@ -62,7 +62,7 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
     try {
       const { Contacts } = await import("@capacitor-community/contacts");
       const perm = await Contacts.requestPermissions();
-      if (perm.contacts !== "granted") return setMsg("Contacts access is off. Enable it in Settings → Kiwi → Contacts.");
+      if (perm.contacts !== "granted") return setMsg("Contacts access is off. Enable it in Settings → WOM → Contacts.");
       setBusy(true);
       const r = await Contacts.getContacts({ projection: { name: true, phones: true } });
       const list = r.contacts.flatMap((c) => (c.phones ?? []).map((p) => ({ name: c.name?.display ?? "", num: toDigits(p.number ?? "") }))).filter((c) => c.num.length >= 10);
@@ -86,7 +86,7 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
       <p className="mt-1 text-[14px] text-ink-soft">We match phone numbers on the spot and never store your contact list.</p>
 
       {own === undefined ? null : !own ? (
-        <div className="mt-4 rounded-2xl bg-kiwi-50 p-4">
+        <div className="mt-4 rounded-2xl bg-brand-50 p-4">
           <p className="text-[14px]"><b>Verify your phone</b> so friends can find you and connections can be traced.</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <input className="input !w-56" placeholder="(312) 555-0123" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
@@ -97,8 +97,8 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
         </div>
       ) : (
         <label className="mt-4 flex items-center gap-2 text-[14px]">
-          <input type="checkbox" className="accent-kiwi-600" checked={own.discoverable} onChange={async (e) => { await s.from("phone_numbers").update({ discoverable: e.target.checked }).eq("user_id", me); setOwn({ ...own, discoverable: e.target.checked }); }} />
-          Let people with my number in their contacts find me on Kiwi (+{own.phone.slice(0, 1)}•••{own.phone.slice(-2)})
+          <input type="checkbox" className="accent-brand-600" checked={own.discoverable} onChange={async (e) => { await s.from("phone_numbers").update({ discoverable: e.target.checked }).eq("user_id", me); setOwn({ ...own, discoverable: e.target.checked }); }} />
+          Let people with my number in their contacts find me on WOM (+{own.phone.slice(0, 1)}•••{own.phone.slice(-2)})
         </label>
       )}
       {msg && <p className="mt-3 text-[13px] text-ink-soft">{msg}</p>}
@@ -107,13 +107,13 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
         {(canPick || native) && <button className="btn-primary" onClick={native ? pickNative : pick} disabled={busy}>📇 {native ? "Find friends in my contacts" : "Choose from my contacts"}</button>}
         <label className="btn-ghost cursor-pointer">📄 Upload contacts file (.vcf / .csv)<input type="file" accept=".vcf,.csv,text/vcard,text/csv,text/plain" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} /></label>
       </div>
-      {!canPick && !native && <p className="mt-2 text-[12px] text-ink-faint">iPhone tip: on icloud.com → Contacts → select all → Export vCard, then upload the file here. Or paste numbers below. (One-tap access is coming with the Kiwi iPhone app.) <Link href="/help" className="underline">Step-by-step help</Link></p>}
+      {!canPick && !native && <p className="mt-2 text-[12px] text-ink-faint">iPhone tip: on icloud.com → Contacts → select all → Export vCard, then upload the file here. Or paste numbers below. (One-tap access is coming with the WOM iPhone app.) <Link href="/help" className="underline">Step-by-step help</Link></p>}
       <textarea className="input mt-3 min-h-[70px]" placeholder="Or paste numbers / names, one per line" value={paste} onChange={(e) => setPaste(e.target.value)} />
       {paste.trim() && <button className="btn-ghost mt-2" onClick={() => run(parseContacts(paste))} disabled={busy}>Find them</button>}
 
       {matches && (
         <div className="mt-6">
-          <div className="flex items-center justify-between"><h3 className="font-semibold">{matches.length} of your contacts {matches.length === 1 ? "is" : "are"} on Kiwi</h3>
+          <div className="flex items-center justify-between"><h3 className="font-semibold">{matches.length} of your contacts {matches.length === 1 ? "is" : "are"} on WOM</h3>
             {fresh.length > 1 && <button className="btn-primary !py-1.5 !text-[14px]" onClick={() => addAll(fresh.map((m) => m.id))}>Add all ({fresh.length})</button>}</div>
           <ul className="mt-2 divide-y divide-black/5">
             {matches.map((m) => (
@@ -131,7 +131,7 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
               </div>
               <ul className="mt-2 max-h-56 divide-y divide-black/5 overflow-y-auto">
                 {others.slice(0, 50).map((c) => (
-                  <li key={c.num} className="flex items-center justify-between py-2 text-[14px]"><span>{c.name || `+${c.num}`}</span><a className="text-kiwi-700 underline" href={`sms:+${c.num}?&body=${encodeURIComponent(inviteMsg)}`}>Invite by text</a></li>
+                  <li key={c.num} className="flex items-center justify-between py-2 text-[14px]"><span>{c.name || `+${c.num}`}</span><a className="text-brand-700 underline" href={`sms:+${c.num}?&body=${encodeURIComponent(inviteMsg)}`}>Invite by text</a></li>
                 ))}
               </ul>
             </div>

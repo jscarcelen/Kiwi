@@ -6,11 +6,11 @@ html { -webkit-font-smoothing: antialiased; background: #fbfbfd; }
 body { color: #1d1d1f; }
 @layer components {
   .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-medium transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed; }
-  .btn-primary { @apply btn bg-forest text-white hover:bg-forest-700; }
-  .btn-dark { @apply btn bg-forest text-white hover:bg-forest-700; }
-  .btn-light { @apply btn bg-white text-forest hover:bg-white/90; }
+  .btn-primary { @apply btn bg-navy text-white hover:bg-navy-700; }
+  .btn-dark { @apply btn bg-navy text-white hover:bg-navy-700; }
+  .btn-light { @apply btn bg-white text-navy hover:bg-white/90; }
   .btn-ghost { @apply btn bg-black/5 text-ink hover:bg-black/10; }
-  .input { @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] outline-none transition placeholder:text-ink-faint focus:border-kiwi-500 focus:ring-4 focus:ring-kiwi-500/15; }
+  .input { @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] outline-none transition placeholder:text-ink-faint focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15; }
   .card { @apply rounded-2xl bg-white shadow-card ring-1 ring-black/[0.04]; }
   .label { @apply mb-1.5 block text-[13px] font-medium text-ink-soft; }
 }

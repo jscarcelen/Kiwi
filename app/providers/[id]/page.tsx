@@ -30,19 +30,19 @@ export default async function ProviderPage({ params }: { params: { id: string } 
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
-      <nav className="text-[13px] text-ink-soft"><Link href="/" className="hover:underline">Kiwi</Link> › <Link href={`/search?service=${p.category}`} className="hover:underline">{catLabel(p.category)}</Link> › <span className="font-medium text-ink">{p.company}</span></nav>
+      <nav className="text-[13px] text-ink-soft"><Link href="/" className="hover:underline">WOM</Link> › <Link href={`/search?service=${p.category}`} className="hover:underline">{catLabel(p.category)}</Link> › <span className="font-medium text-ink">{p.company}</span></nav>
       <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_340px]">
         <div>
           <div className="flex items-start gap-5">
-            <div className="relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-kiwi-50 to-kiwi-200 text-5xl sm:h-36 sm:w-36">
+            <div className="relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-brand-50 to-brand-200 text-5xl sm:h-36 sm:w-36">
               {p.photo_url ? <img src={p.photo_url} alt="" className="absolute inset-0 h-full w-full object-cover" /> : catEmoji(p.category)}
             </div>
             <div>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{p.company}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-[15px]">
-                {stat ? <><span className="font-semibold text-emerald-700">{Number(stat.avg_rating) >= 4.5 ? "Excellent" : "Great"} {Number(stat.avg_rating).toFixed(1)}</span><Stars value={Number(stat.avg_rating)} size={16} /><span className="text-ink-soft">({stat.n})</span></> : <span className="text-ink-soft">New on Kiwi</span>}
+                {stat ? <><span className="font-semibold text-brand-700">{Number(stat.avg_rating) >= 4.5 ? "Excellent" : "Great"} {Number(stat.avg_rating).toFixed(1)}</span><Stars value={Number(stat.avg_rating)} size={16} /><span className="text-ink-soft">({stat.n})</span></> : <span className="text-ink-soft">New on WOM</span>}
               </div>
-              {network.length > 0 && <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-kiwi-50 px-3 py-1 text-[13px] font-medium text-kiwi-700">👥 {network.length} in your network · {netAvg!.toFixed(1)}★</p>}
+              {network.length > 0 && <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-[13px] font-medium text-brand-700">👥 {network.length} in your network · {netAvg!.toFixed(1)}★</p>}
             </div>
           </div>
 
@@ -51,7 +51,7 @@ export default async function ProviderPage({ params }: { params: { id: string } 
           </div>
 
           <div className="mt-6 rounded-2xl bg-black/[0.04] p-5">
-            <div className="flex items-center gap-2 font-semibold">✨ Why Kiwi recommends this pro</div>
+            <div className="flex items-center gap-2 font-semibold">✨ Why WOM recommends this pro</div>
             <ul className="mt-2 space-y-1 text-[14px] text-ink-soft">
               {!user ? <li>Sign in to see how people in your network rate them.</li> : network.length ? <li>{network.length} {network.length === 1 ? "person" : "people"} you know rated them {netAvg!.toFixed(1)}/5.</li> : <li>No one in your network has rated them yet — you could be the first.</li>}
               {stat && <li>{stat.n} overall rating{stat.n > 1 ? "s" : ""} averaging {Number(stat.avg_rating).toFixed(1)}/5.</li>}
@@ -64,7 +64,7 @@ export default async function ProviderPage({ params }: { params: { id: string } 
             <p className="mt-2 text-[16px] leading-relaxed text-ink-soft">{p.description}</p>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
               <div><h3 className="font-semibold">Overview</h3><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>{catEmoji(p.category)} {catLabel(p.category)}</li><li>📍 Serves {regions.join(", ")}</li>{p.contact_name && <li>👤 {p.contact_name}</li>}</ul></div>
-              <div><h3 className="font-semibold">Why people choose Kiwi pros</h3><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>✅ Rated by real customers</li><li>👥 Friends' reviews first</li><li>🔒 You choose when to share contact info</li></ul></div>
+              <div><h3 className="font-semibold">Why people choose WOM pros</h3><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>✅ Rated by real customers</li><li>👥 Friends' reviews first</li><li>🔒 You choose when to share contact info</li></ul></div>
             </div>
           </section>
 
@@ -73,7 +73,7 @@ export default async function ProviderPage({ params }: { params: { id: string } 
               <h2 className="text-2xl font-semibold tracking-tight">Services offered</h2>
               <div className="mt-4 grid gap-6 sm:grid-cols-2">
                 {services.map((q) => (
-                  <div key={q.id}><h3 className="text-[14px] font-semibold">{HEADINGS[q.id]}</h3><ul className="mt-2 space-y-1">{attrs[q.id].map((v: string) => <li key={v} className="text-[14px] text-ink-soft"><span className="mr-2 text-emerald-700">✓</span>{labelFor(p.category, q.id, v)}</li>)}</ul></div>
+                  <div key={q.id}><h3 className="text-[14px] font-semibold">{HEADINGS[q.id]}</h3><ul className="mt-2 space-y-1">{attrs[q.id].map((v: string) => <li key={v} className="text-[14px] text-ink-soft"><span className="mr-2 text-brand-700">✓</span>{labelFor(p.category, q.id, v)}</li>)}</ul></div>
                 ))}
               </div>
             </section>
@@ -83,15 +83,15 @@ export default async function ProviderPage({ params }: { params: { id: string } 
             <h2 className="text-2xl font-semibold tracking-tight">Reviews</h2>
             {stat && (
               <div className="mt-4 flex flex-wrap items-center gap-8">
-                <div><div className="text-4xl font-semibold text-emerald-700">{Number(stat.avg_rating).toFixed(1)}</div><Stars value={Number(stat.avg_rating)} size={20} /><div className="mt-1 text-[13px] text-ink-soft">{stat.n} reviews</div></div>
+                <div><div className="text-4xl font-semibold text-brand-700">{Number(stat.avg_rating).toFixed(1)}</div><Stars value={Number(stat.avg_rating)} size={20} /><div className="mt-1 text-[13px] text-ink-soft">{stat.n} reviews</div></div>
                 <div className="min-w-[220px] flex-1 space-y-1.5">
-                  {[5, 4, 3, 2, 1].map((s) => { const c = stat[`c${s}`] ?? 0; const pct = stat.n ? Math.round((c / stat.n) * 100) : 0; return <div key={s} className="flex items-center gap-2 text-[13px]"><span className="w-6">{s} ★</span><div className="h-2 flex-1 overflow-hidden rounded-full bg-black/10"><div className="h-2 rounded-full bg-emerald-600" style={{ width: `${pct}%` }} /></div><span className="w-9 text-right text-ink-soft">{pct}%</span></div>; })}
+                  {[5, 4, 3, 2, 1].map((s) => { const c = stat[`c${s}`] ?? 0; const pct = stat.n ? Math.round((c / stat.n) * 100) : 0; return <div key={s} className="flex items-center gap-2 text-[13px]"><span className="w-6">{s} ★</span><div className="h-2 flex-1 overflow-hidden rounded-full bg-black/10"><div className="h-2 rounded-full bg-brand-500" style={{ width: `${pct}%` }} /></div><span className="w-9 text-right text-ink-soft">{pct}%</span></div>; })}
                 </div>
               </div>
             )}
             <h3 className="mb-3 mt-8 font-semibold">From people you know</h3>
             {!user ? (
-              <div className="card p-6 text-ink-soft"><Link href={`/login?next=/providers/${p.id}`} className="font-semibold text-kiwi-700 underline">Sign in</Link> to see which friends and groups have used {p.company}.</div>
+              <div className="card p-6 text-ink-soft"><Link href={`/login?next=/providers/${p.id}`} className="font-semibold text-brand-700 underline">Sign in</Link> to see which friends and groups have used {p.company}.</div>
             ) : network.length === 0 ? (
               <div className="card p-6 text-ink-soft">None of your contacts have reviewed this pro yet.{hidden > 0 && ` ${hidden} other rating${hidden > 1 ? "s are" : " is"} included in the overall score.`}</div>
             ) : (
@@ -109,14 +109,14 @@ export default async function ProviderPage({ params }: { params: { id: string } 
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="card space-y-3 border-t-4 border-t-forest p-6">
+          <div className="card space-y-3 border-t-4 border-t-navy p-6">
             <ContactButton providerId={p.id} phone={p.phone} email={p.email} />
             <Link href={user ? `/review/${p.id}` : `/login?next=/review/${p.id}`} className="btn-ghost w-full">{mine ? "Edit your review" : "I've used this pro"}</Link>
             {mine && <p className="text-center text-[13px] text-ink-soft">You rated {mine.rating}/5.</p>}
             <p className="text-center text-[13px] text-ink-faint">🟢 Contact details are shared only when you click.</p>
           </div>
-          <div className="rounded-2xl bg-black/[0.04] p-5 text-[14px]"><div className="font-semibold">🥝 Kiwi network</div><p className="mt-1 text-ink-soft">Reviews from people you know — not anonymous strangers.</p></div>
-          <div className="card p-5"><div className="text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Coming soon</div><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>📅 Book appointments</li><li>💳 Pay securely through Kiwi</li></ul></div>
+          <div className="rounded-2xl bg-black/[0.04] p-5 text-[14px]"><div className="font-semibold">WOM network</div><p className="mt-1 text-ink-soft">Reviews from people you know — not anonymous strangers.</p></div>
+          <div className="card p-5"><div className="text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Coming soon</div><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>📅 Book appointments</li><li>💳 Pay securely through WOM</li></ul></div>
         </aside>
       </div>
     </div>

@@ -8,7 +8,7 @@ export type FB = {
 
 const CRITERIA: Record<string, string> = {
   bug: "The problem no longer reproduces on the page described; no regressions on neighbouring features; handle loading/empty/error states.",
-  design: "The result visually matches the intent (see screenshot/element); consistent with existing design tokens (kiwi colors, rounded-3xl cards, .btn-* classes); looks right at mobile (375px) and desktop widths.",
+  design: "The result visually matches the intent (see screenshot/element); consistent with existing design tokens (brand colors (navy/blue), rounded-3xl cards, .btn-* classes); looks right at mobile (375px) and desktop widths.",
   copy: "Text is changed exactly where described, in the same tone (friendly, concise, Apple-like); no layout breakage from longer/shorter text.",
   idea: "The new behaviour works end-to-end for signed-in and signed-out users where relevant; follows existing patterns; any new DB needs are added as a SQL file in supabase/ and clearly flagged.",
 };
@@ -32,7 +32,7 @@ export function buildPrompt(items: FB[], extra?: string) {
       lines.push(`  (Tailwind classes in the snippet are the best string to grep for.)`);
     }
     if (f.selected_text) lines.push(`- User highlighted text: "${f.selected_text.slice(0, 200)}" (grep for this exact string)`);
-    if (f.has_screenshot || f.screenshot) lines.push(`- Screenshot: yes — download from the Kiwi feedback tracker (item ${f.id.slice(0, 8)}) and attach it to this chat.`);
+    if (f.has_screenshot || f.screenshot) lines.push(`- Screenshot: yes — download from the WOM feedback tracker (item ${f.id.slice(0, 8)}) and attach it to this chat.`);
     if (f.viewport) lines.push(`- Viewport when reported: ${f.viewport.w}×${f.viewport.h}${f.viewport.w < 640 ? " (mobile)" : ""}`);
     if (f.note) lines.push(`- Prior note: ${f.note}`);
     lines.push(`- Acceptance criteria: ${CRITERIA[f.category] ?? CRITERIA.idea}`);
@@ -46,10 +46,10 @@ export function buildPrompt(items: FB[], extra?: string) {
     return lines.join("\n");
   }).join("\n\n");
 
-  const prompt = `# Task: implement ${items.length} user feedback item${items.length > 1 ? "s" : ""} on Kiwi
+  const prompt = `# Task: implement ${items.length} user feedback item${items.length > 1 ? "s" : ""} on WOM
 
 ## Project context
-Kiwi is a trusted-services marketplace (live at https://kiwi-mu-red.vercel.app). Stack: Next.js 14 App Router, TypeScript, Tailwind CSS, Supabase (Auth, Postgres with RLS, Storage), deployed on Vercel. Design language: clean, Apple-like, kiwi-green accent (tailwind \`kiwi-*\`), rounded-3xl white cards, helper classes in app/globals.css (.btn-primary, .btn-ghost, .card, .input, .label). Server pages use lib/supabase/server.ts; client components use lib/supabase/client.ts.
+WOM is a trusted-services marketplace (live at https://kiwi-mu-red.vercel.app). Stack: Next.js 14 App Router, TypeScript, Tailwind CSS, Supabase (Auth, Postgres with RLS, Storage), deployed on Vercel. Design language: clean, Apple-like, kiwi-green accent (tailwind \`kiwi-*\`), rounded-3xl white cards, helper classes in app/globals.css (.btn-primary, .btn-ghost, .card, .input, .label). Server pages use lib/supabase/server.ts; client components use lib/supabase/client.ts.
 
 ## Feedback items
 ${body}
@@ -64,7 +64,7 @@ ${extra?.trim() ? `\n## Extra instructions from the product owner\n${extra.trim(
   return { prompt, warnings };
 }
 
-export const REFINE_SYSTEM = `You are an expert prompt engineer writing prompts for Claude Code, an autonomous coding agent working in the Kiwi repo.
+export const REFINE_SYSTEM = `You are an expert prompt engineer writing prompts for Claude Code, an autonomous coding agent working in the WOM repo.
 You receive a draft prompt built from raw user feedback (plus screenshots when available). Rewrite it into the best possible prompt:
 - Keep the structure (context, items, how to work) and keep all feedback IDs and file hints.
 - Make each item precise: what to change, where (files/components, using the route and element selector hints), and concrete acceptance criteria. Use the screenshots to describe what you see.

@@ -25,7 +25,7 @@ export default function NetworkManager({ me, friends, myGroups, allGroups, sugge
       <section>
         <h2 className="text-2xl font-semibold tracking-tight">Friends</h2>
         <div className="card mt-4 p-5">
-          <label className="label">Find people on Kiwi</label>
+          <label className="label">Find people on WOM</label>
           <input className="input" placeholder="Name or Instagram handle" value={q} onChange={(e) => search(e.target.value)} />
           <ul className="mt-3 divide-y divide-black/5">
             {results.map((p) => (
@@ -63,7 +63,7 @@ export default function NetworkManager({ me, friends, myGroups, allGroups, sugge
         )}
       </section>
       <section>
-        <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">Groups <span className="rounded bg-kiwi-100 px-1.5 py-0.5 text-[11px] font-semibold text-kiwi-700">PLUS</span></h2>
+        <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">Groups <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[11px] font-semibold text-brand-700">PLUS</span></h2>
         <p className="mt-1 text-[14px] text-ink-soft">Join a verified community and see its members' reviews — even if you don't know anyone yet.</p>
         <div className="mt-4 space-y-3">
           {allGroups.map((g) => {
@@ -77,7 +77,7 @@ export default function NetworkManager({ me, friends, myGroups, allGroups, sugge
                 </div>
                 {mine && (
                   <label className="mt-3 flex items-center gap-2 text-[14px]">
-                    <input type="checkbox" className="accent-kiwi-600" checked={mine.visible} onChange={async (e) => { await s.from("group_members").update({ visible: e.target.checked }).eq("group_id", g.id).eq("user_id", me); refresh(); }} />
+                    <input type="checkbox" className="accent-brand-600" checked={mine.visible} onChange={async (e) => { await s.from("group_members").update({ visible: e.target.checked }).eq("group_id", g.id).eq("user_id", me); refresh(); }} />
                     Let this group see my reviews
                   </label>
                 )}

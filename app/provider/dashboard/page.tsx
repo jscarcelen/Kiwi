@@ -43,7 +43,7 @@ export default async function Dashboard() {
         <div className="flex items-center justify-between"><h2 className="font-semibold">Profile views per day</h2>
           <div className="flex items-center gap-2 text-[14px]">{stat ? <><Stars value={Number(stat.avg_rating)} /> {Number(stat.avg_rating).toFixed(1)} · {stat.n} reviews</> : "No reviews yet"}</div></div>
         <div className="mt-5 flex h-32 items-end gap-1.5">
-          {byDay.map((v, i) => <div key={i} className="flex-1 rounded-t-md bg-kiwi-500/80" style={{ height: `${Math.max(4, (v / max) * 100)}%` }} title={`${days[i]}: ${v}`} />)}
+          {byDay.map((v, i) => <div key={i} className="flex-1 rounded-t-md bg-brand-500/80" style={{ height: `${Math.max(4, (v / max) * 100)}%` }} title={`${days[i]}: ${v}`} />)}
         </div>
       </div>
       <h2 className="mb-4 mt-12 text-2xl font-semibold tracking-tight">Project requests</h2>
@@ -60,7 +60,7 @@ export default async function Dashboard() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AddonCard id="scheduling" emoji="📅" title="Scheduling" desc="Let customers book slots directly." initial={have.has("scheduling")} />
         <AddonCard id="invoicing" emoji="🧾" title="Invoicing" desc="Send professional invoices in a tap." initial={have.has("invoicing")} />
-        <AddonCard id="payments" emoji="💳" title="Payments" desc="Get paid securely through Kiwi." initial={have.has("payments")} />
+        <AddonCard id="payments" emoji="💳" title="Payments" desc="Get paid securely through WOM." initial={have.has("payments")} />
         <AddonCard id="backoffice" emoji="🗂️" title="Back-office" desc="Contracts, taxes and admin handled." initial={have.has("backoffice")} />
       </div>
     </div>

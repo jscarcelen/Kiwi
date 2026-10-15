@@ -36,7 +36,7 @@ export default function SearchFilters({ service, answers }: { service: string; a
               const on = (answers[q.id] ?? []).includes(o.value);
               return (
                 <label key={o.value} className="flex cursor-pointer items-center gap-2.5 text-[14px] text-ink-soft">
-                  <input type={q.type === "single" ? "radio" : "checkbox"} className="h-4 w-4 accent-forest" checked={on} onChange={() => toggle(q.id, o.value, q.type === "single")} onClick={() => q.type === "single" && on && toggle(q.id, o.value, true)} />
+                  <input type={q.type === "single" ? "radio" : "checkbox"} className="h-4 w-4 accent-navy" checked={on} onChange={() => toggle(q.id, o.value, q.type === "single")} onClick={() => q.type === "single" && on && toggle(q.id, o.value, true)} />
                   {o.label}
                 </label>
               );
@@ -44,7 +44,7 @@ export default function SearchFilters({ service, answers }: { service: string; a
           </div>
         </fieldset>
       ))}
-      {Object.keys(answers).length > 0 && <button onClick={() => apply({})} className="mt-6 text-[14px] font-medium text-kiwi-700 hover:underline">Reset filters</button>}
+      {Object.keys(answers).length > 0 && <button onClick={() => apply({})} className="mt-6 text-[14px] font-medium text-brand-700 hover:underline">Reset filters</button>}
     </div>
   );
 }

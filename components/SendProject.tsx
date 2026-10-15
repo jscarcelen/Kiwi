@@ -21,7 +21,7 @@ export default function SendProject({ top, category, summary, answers, city, whe
   };
   if (!top.length) return null;
   return (
-    <div className="flex flex-col items-start justify-between gap-4 rounded-2xl bg-kiwi-50 p-5 sm:flex-row sm:items-center">
+    <div className="flex flex-col items-start justify-between gap-4 rounded-2xl bg-brand-50 p-5 sm:flex-row sm:items-center">
       <div className="flex items-center gap-4">
         <div className="flex -space-x-2">{top.map((t) => <Avatar key={t.id} id={t.id} name={t.company} size={40} />)}</div>
         <div>

@@ -4,8 +4,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        kiwi: { 50: "#f5faee", 100: "#e8f4d6", 200: "#d0e8ad", 400: "#8cc152", 500: "#6aa84f", 600: "#578f3f", 700: "#467532" },
-        forest: { DEFAULT: "#12351f", 700: "#0c2415", 100: "#dfeadf" },
+        brand: { 50: "#eef3ff", 100: "#dce6ff", 200: "#b9cdff", 400: "#6b8dff", 500: "#2251ff", 600: "#1b43d6", 700: "#1536b0" },
+        navy: { DEFAULT: "#051c2c", 700: "#030f18", 100: "#e4eaf2" },
         ink: { DEFAULT: "#1d1d1f", soft: "#6e6e73", faint: "#86868b" },
       },
       fontFamily: { sans: ["-apple-system", "BlinkMacSystemFont", "SF Pro Display", "Inter", "Helvetica Neue", "Arial", "sans-serif"] },

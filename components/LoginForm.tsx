@@ -25,7 +25,7 @@ export default function LoginForm() {
       <PhoneAuth mode="login" />
       <InstagramButton />
       <p className="text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">How does phone sign-in work?</Link></p>
-      <p className="text-center text-[14px] text-ink-soft">New to Kiwi? <Link className="font-semibold text-kiwi-700" href="/signup">Create an account</Link></p>
+      <p className="text-center text-[14px] text-ink-soft">New to WOM? <Link className="font-semibold text-brand-700" href="/signup">Create an account</Link></p>
     </form>
   );
 }

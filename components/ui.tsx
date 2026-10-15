@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "./Logo";
 import { initials, type RankedProvider } from "@/lib/data";
 import { catEmoji, catLabel } from "@/lib/categories";
 
@@ -14,7 +15,7 @@ export function Stars({ value, size = 16 }: { value: number; size?: number }) {
   );
 }
 
-const hues = ["bg-kiwi-100 text-kiwi-700", "bg-sky-100 text-sky-700", "bg-amber-100 text-amber-700", "bg-rose-100 text-rose-700", "bg-violet-100 text-violet-700"];
+const hues = ["bg-brand-100 text-brand-700", "bg-sky-100 text-sky-700", "bg-amber-100 text-amber-700", "bg-rose-100 text-rose-700", "bg-violet-100 text-violet-700"];
 export function Avatar({ name, id = "", size = 32 }: { name: string; id?: string; size?: number }) {
   const h = hues[(id.charCodeAt(id.length - 1) || name.length) % hues.length];
   return (
@@ -28,9 +29,9 @@ export function ProviderCard({ r, signedIn }: { r: RankedProvider; signedIn: boo
   const p = r.provider;
   return (
     <Link href={`/providers/${p.id}`} className="card group block overflow-hidden transition hover:-translate-y-0.5 hover:shadow-pop">
-      <div className="relative flex h-36 items-center justify-center bg-gradient-to-br from-kiwi-50 to-kiwi-100">
+      <div className="relative flex h-36 items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
         {p.photo_url ? <img src={p.photo_url} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <span className="text-5xl">{catEmoji(p.category)}</span>}
-        {r.net && <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-medium text-kiwi-700 backdrop-blur">In your network</span>}
+        {r.net && <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-medium text-brand-700 backdrop-blur">In your network</span>}
       </div>
       <div className="p-5">
         <div className="text-[12px] font-medium uppercase tracking-wide text-ink-faint">{catLabel(p.category)} · {p.city}</div>
@@ -58,7 +59,7 @@ export function ProviderCard({ r, signedIn }: { r: RankedProvider; signedIn: boo
 export function Empty({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
     <div className="card mx-auto max-w-xl p-10 text-center">
-      <div className="text-4xl">🥝</div>
+      <div className="flex justify-center"><LogoMark size={44} /></div>
       <h3 className="mt-3 text-xl font-semibold">{title}</h3>
       <div className="mt-2 text-ink-soft">{children}</div>
     </div>
@@ -71,19 +72,19 @@ export function ProviderRow({ r }: { r: RankedProvider }) {
   const regions = [p.city, ...(p.regions ?? []).filter((x: string) => x !== p.city)].join(", ");
   return (
     <div className="card flex flex-col gap-5 p-5 sm:flex-row">
-      <Link href={`/providers/${p.id}`} className="relative flex h-44 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-kiwi-50 to-kiwi-200 sm:h-40 sm:w-40">
+      <Link href={`/providers/${p.id}`} className="relative flex h-44 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-brand-50 to-brand-200 sm:h-40 sm:w-40">
         {p.photo_url ? <img src={p.photo_url} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <span className="text-6xl">{catEmoji(p.category)}</span>}
       </Link>
       <div className="min-w-0 flex-1">
         <Link href={`/providers/${p.id}`}><h3 className="text-xl font-semibold tracking-tight hover:underline">{p.company}</h3></Link>
         <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px]">
           {top && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[12px] font-semibold text-amber-800">★ Top rated</span>}
-          {r.avg ? <><span className="font-semibold text-emerald-700">{r.avg >= 4.5 ? "Excellent" : r.avg >= 4 ? "Very good" : "Good"} {r.avg.toFixed(1)}</span><Stars value={r.avg} size={14} /><span className="text-ink-soft">({r.n})</span></> : <span className="text-ink-faint">New on Kiwi</span>}
+          {r.avg ? <><span className="font-semibold text-brand-700">{r.avg >= 4.5 ? "Excellent" : r.avg >= 4 ? "Very good" : "Good"} {r.avg.toFixed(1)}</span><Stars value={r.avg} size={14} /><span className="text-ink-soft">({r.n})</span></> : <span className="text-ink-faint">New on WOM</span>}
         </div>
         {r.net && (
           <div className="mt-2.5 flex items-center gap-2 text-[14px]">
             <div className="flex -space-x-2">{r.net.endorsers.slice(0, 4).map((e) => <Avatar key={e.id} id={e.id} name={e.name} size={24} />)}</div>
-            <span className="font-medium text-kiwi-700">{r.net.count} in your network · {r.net.score.toFixed(1)}★</span>
+            <span className="font-medium text-brand-700">{r.net.count} in your network · {r.net.score.toFixed(1)}★</span>
           </div>
         )}
         <p className="mt-2 text-[14px] text-ink-soft">📍 Serves {regions}</p>

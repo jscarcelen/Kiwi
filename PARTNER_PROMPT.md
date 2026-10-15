@@ -4,17 +4,17 @@ Copy everything below the line and paste it into a new chat in your Claude (Cowo
 
 ---
 
-You're my co-founder's engineering partner on **Kiwi**, a trusted-services marketplace (find cleaners, movers, dog walkers, child care via ratings from people in your own network). The app is built and live. We'll iterate on it together, so first get set up, then wait for my instructions.
+You're my co-founder's engineering partner on **WOM**, a trusted-services marketplace (find cleaners, movers, dog walkers, child care via ratings from people in your own network). The app is built and live. We'll iterate on it together, so first get set up, then wait for my instructions.
 
 ## 1. Get the code
 Repo (I've given you access): https://github.com/jscarcelen/Kiwi
 
 ```bash
 git clone https://github.com/jscarcelen/Kiwi.git
-cd Kiwi
+cd WOM
 npm install
 ```
-If git asks you to sign in, use your GitHub username and a Personal Access Token (GitHub → Settings → Developer settings → Tokens (classic) → scope `repo`), or sign in via GitHub Desktop / `gh auth login`. Work inside this folder (in Cowork: select the `Kiwi` folder as your project folder; in Claude Code: run `claude` inside it).
+If git asks you to sign in, use your GitHub username and a Personal Access Token (GitHub → Settings → Developer settings → Tokens (classic) → scope `repo`), or sign in via GitHub Desktop / `gh auth login`. Work inside this folder (in Cowork: select the `WOM` folder as your project folder; in Claude Code: run `claude` inside it).
 
 ## 2. Configure environment
 Create `.env.local` in the repo root (it is git-ignored — never commit it):
@@ -26,7 +26,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<ask Jonathan — the Supabase "anon"/publishable 
 Then `npm run dev` and open http://localhost:3000. Confirm `npm run build` passes.
 
 ## 3. Learn the project
-Read `CLAUDE.md` (architecture, conventions, rules), `README.md`, and `IOS.md`. Summarize back to me in ≤10 lines: what Kiwi does, how network-weighted ranking works, how privacy is enforced (RLS), and the git/DB workflow. Flag anything unclear.
+Read `CLAUDE.md` (architecture, conventions, rules), `README.md`, and `IOS.md`. Summarize back to me in ≤10 lines: what WOM does, how network-weighted ranking works, how privacy is enforced (RLS), and the git/DB workflow. Flag anything unclear.
 
 ## 4. Working agreement
 - Never push to `main` directly. Create a branch (`feature/<short-name>`), commit, push, and open a Pull Request. Merging to `main` auto-deploys to https://kiwi-mu-red.vercel.app, and each PR gets a Vercel preview.

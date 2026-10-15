@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CATEGORIES, catEmoji, catLabel } from "@/lib/categories";
+import { LogoMark } from "./Logo";
 import { QUESTIONS, WHEN, answersToParams, type Answers, type Q } from "@/lib/intake";
 
 const EXAMPLES = ["Deep clean my 1-bedroom before I move out", "Walk my two dogs every weekday", "Assemble an IKEA wardrobe and mount my TV", "Babysitter for 2 kids on Saturday night"];
@@ -71,12 +72,12 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
         <div className="flex items-center justify-between px-5 pb-3 pt-4">
           <button onClick={back} className={`rounded-full p-2 hover:bg-black/5 ${stage === "describe" ? "invisible" : ""}`} aria-label="Back">←</button>
           <div className="text-center">
-            <div className="text-[15px] font-semibold">🥝 Kiwi assistant</div>
-            {category && <button className="text-[13px] text-kiwi-700" onClick={() => setStage("describe")}>{catLabel(category)} · change</button>}
+            <div className="flex items-center justify-center gap-1.5 text-[15px] font-semibold"><LogoMark size={18} /> WOM assistant</div>
+            {category && <button className="text-[13px] text-brand-700" onClick={() => setStage("describe")}>{catLabel(category)} · change</button>}
           </div>
           <button onClick={onClose} className="rounded-full p-2 hover:bg-black/5" aria-label="Close">✕</button>
         </div>
-        <div className="h-1 bg-black/5"><div className="h-1 bg-forest transition-all" style={{ width: `${pct}%` }} /></div>
+        <div className="h-1 bg-black/5"><div className="h-1 bg-navy transition-all" style={{ width: `${pct}%` }} /></div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {stage === "describe" && (
@@ -85,27 +86,27 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
               <textarea autoFocus className="input mt-4 min-h-[110px]" placeholder="e.g. I need a deep clean for my 1-bedroom before moving out" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); analyze(); } }} />
               <div className="mt-3 flex flex-wrap gap-2">{EXAMPLES.map((x) => <button key={x} onClick={() => setText(x)} className="rounded-full bg-black/5 px-3 py-1.5 text-[13px] hover:bg-black/10">{x}</button>)}</div>
               <p className="mb-2 mt-5 text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Or pick a category</p>
-              <div className="grid grid-cols-2 gap-2">{CATEGORIES.map((c) => <button key={c.slug} onClick={() => begin(c.slug, {}, c.label, `Great — let's find the right ${c.label.toLowerCase()} pro.`)} className="rounded-xl border border-black/10 p-3 text-left text-[14px] hover:border-forest"><span className="mr-1">{c.emoji}</span>{c.label}</button>)}</div>
+              <div className="grid grid-cols-2 gap-2">{CATEGORIES.map((c) => <button key={c.slug} onClick={() => begin(c.slug, {}, c.label, `Great — let's find the right ${c.label.toLowerCase()} pro.`)} className="rounded-xl border border-black/10 p-3 text-left text-[14px] hover:border-navy"><span className="mr-1">{c.emoji}</span>{c.label}</button>)}</div>
             </>
           )}
-          {stage === "thinking" && <div className="py-16 text-center text-ink-soft"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-black/10 border-t-forest" />Understanding your request…</div>}
+          {stage === "thinking" && <div className="py-16 text-center text-ink-soft"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-black/10 border-t-navy" />Understanding your request…</div>}
           {stage === "pick" && (
             <>
               <Bubble>{reply}</Bubble>
-              <div className="mt-4 grid grid-cols-2 gap-2">{CATEGORIES.map((c) => <button key={c.slug} onClick={() => begin(c.slug, {}, summary, "")} className="rounded-xl border border-black/10 p-4 text-left hover:border-forest"><div className="text-2xl">{c.emoji}</div><div className="mt-1 font-medium">{c.label}</div></button>)}</div>
+              <div className="mt-4 grid grid-cols-2 gap-2">{CATEGORIES.map((c) => <button key={c.slug} onClick={() => begin(c.slug, {}, summary, "")} className="rounded-xl border border-black/10 p-4 text-left hover:border-navy"><div className="text-2xl">{c.emoji}</div><div className="mt-1 font-medium">{c.label}</div></button>)}</div>
             </>
           )}
           {stage === "ask" && q && (
             <>
-              {idx === 0 && reply && <Bubble>{reply}{chips.length > 0 && <span className="mt-2 flex flex-wrap gap-1.5">{chips.map((c) => <span key={c} className="rounded-full bg-kiwi-100 px-2.5 py-0.5 text-[12px] text-kiwi-700">✓ {c}</span>)}</span>}</Bubble>}
+              {idx === 0 && reply && <Bubble>{reply}{chips.length > 0 && <span className="mt-2 flex flex-wrap gap-1.5">{chips.map((c) => <span key={c} className="rounded-full bg-brand-100 px-2.5 py-0.5 text-[12px] text-brand-700">✓ {c}</span>)}</span>}</Bubble>}
               <h2 className="mt-5 text-center text-2xl font-semibold tracking-tight">{q.title}</h2>
               {q.type === "multi" && <p className="mt-1 text-center text-[13px] text-ink-faint">Select all that apply</p>}
               <div className="mt-5 space-y-2">
                 {q.options.map((o) => {
                   const on = (answers[q.id] ?? []).includes(o.value);
                   return (
-                    <button key={o.value} onClick={() => toggle(o.value)} className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition ${on ? "border-forest bg-kiwi-50" : "border-black/10 hover:border-black/30"}`}>
-                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center border text-[11px] text-white ${q.type === "single" ? "rounded-full" : "rounded"} ${on ? "border-forest bg-forest" : "border-black/25"}`}>{on && "✓"}</span>
+                    <button key={o.value} onClick={() => toggle(o.value)} className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition ${on ? "border-navy bg-brand-50" : "border-black/10 hover:border-black/30"}`}>
+                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center border text-[11px] text-white ${q.type === "single" ? "rounded-full" : "rounded"} ${on ? "border-navy bg-navy" : "border-black/25"}`}>{on && "✓"}</span>
                       {o.label}
                     </button>
                   );
@@ -130,7 +131,7 @@ export default function IntakeModal({ open, onClose, initialText = "", initialCa
 function Bubble({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex gap-3">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-kiwi-100">🥝</span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50"><LogoMark size={16} /></span>
       <div className="rounded-2xl rounded-tl-sm bg-black/[0.04] px-4 py-3 text-[15px] leading-relaxed">{children}</div>
     </div>
   );

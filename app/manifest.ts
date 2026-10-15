@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Kiwi — trusted services",
-    short_name: "Kiwi",
+    name: "WOM — trusted services",
+    short_name: "WOM",
     description: "Find services your friends already trust.",
     start_url: "/",
     display: "standalone",
     background_color: "#fbfbfd",
-    theme_color: "#6aa84f",
+    theme_color: "#051C2C",
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { src: "/icon-512.png", sizes: "512x512", type: "image/png" },

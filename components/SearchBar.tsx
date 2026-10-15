@@ -35,7 +35,7 @@ export default function SearchBar({ initial, groups = [], signedIn = false }: { 
         <div className="hidden h-8 w-px bg-black/10 sm:block" />
         <label className="flex-1 rounded-2xl hover:bg-black/[0.03]">
           <span className="flex items-center gap-1.5 px-5 pt-2 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
-            Whose reviews <span className="rounded bg-kiwi-100 px-1.5 py-px text-[10px] text-kiwi-700">PLUS</span>
+            Whose reviews <span className="rounded bg-brand-100 px-1.5 py-px text-[10px] text-brand-700">PLUS</span>
           </span>
           <select className={sel} value={circle} onChange={(e) => setCircle(e.target.value)} disabled={!signedIn} title={signedIn ? "" : "Sign in to filter by your network"}>
             <option value="all">{signedIn ? "My whole network" : "Sign in to unlock"}</option>

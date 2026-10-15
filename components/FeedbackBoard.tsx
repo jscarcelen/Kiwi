@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 const STATUSES: [string, string, string][] = [
   ["new", "To do", "bg-amber-100 text-amber-800"],
   ["prompted", "Prompted", "bg-sky-100 text-sky-800"],
-  ["implemented", "Implemented", "bg-kiwi-100 text-kiwi-700"],
+  ["implemented", "Implemented", "bg-brand-100 text-brand-700"],
   ["dismissed", "Dismissed", "bg-black/10 text-ink-soft"],
 ];
 const CAT: Record<string, string> = { idea: "💡", bug: "🐞", design: "🎨", copy: "✏️" };
@@ -72,8 +72,8 @@ export default function FeedbackBoard() {
         <ul className="flex-1 divide-y divide-black/5 overflow-y-auto">
           {shown.length === 0 && <li className="p-8 text-center text-ink-soft">Nothing here.</li>}
           {shown.map((i) => (
-            <li key={i.id} onClick={() => { setFocus(i); setOut(null); }} className={`flex cursor-pointer gap-3 p-4 hover:bg-black/[0.03] ${focus?.id === i.id ? "bg-kiwi-50" : ""}`}>
-              <input type="checkbox" className="mt-1 h-4 w-4 accent-kiwi-600" checked={sel.has(i.id)} onClick={(e) => e.stopPropagation()} onChange={() => toggle(i.id)} />
+            <li key={i.id} onClick={() => { setFocus(i); setOut(null); }} className={`flex cursor-pointer gap-3 p-4 hover:bg-black/[0.03] ${focus?.id === i.id ? "bg-brand-50" : ""}`}>
+              <input type="checkbox" className="mt-1 h-4 w-4 accent-brand-600" checked={sel.has(i.id)} onClick={(e) => e.stopPropagation()} onChange={() => toggle(i.id)} />
               <div className="min-w-0 flex-1">
                 <p className="line-clamp-2 text-[14px]">{CAT[i.category]} {i.comment}</p>
                 <p className="mt-1 truncate text-[12px] text-ink-faint">{i.path} · {i.reporter?.split("<")[0]} · {new Date(i.created_at).toLocaleDateString()} {i.has_screenshot && "· 📸"}{i.target && " · 👆"}</p>
@@ -94,7 +94,7 @@ export default function FeedbackBoard() {
             <h2 className="text-lg font-semibold">Prompt builder</h2>
             <p className="text-[13px] text-ink-soft">{sel.size} item{sel.size === 1 ? "" : "s"} selected. Combines comment, page, element, files to touch, and acceptance criteria.</p>
             <textarea className="input mt-3 min-h-[60px]" placeholder="Optional extra instructions for Claude Code (e.g. 'keep the change behind a feature flag')" value={extra} onChange={(e) => setExtra(e.target.value)} />
-            <label className="mt-2 flex items-center gap-2 text-[13px]"><input type="checkbox" className="accent-kiwi-600" checked={refine} onChange={(e) => setRefine(e.target.checked)} /> Refine with AI (needs OPENAI_API_KEY on Vercel)</label>
+            <label className="mt-2 flex items-center gap-2 text-[13px]"><input type="checkbox" className="accent-brand-600" checked={refine} onChange={(e) => setRefine(e.target.checked)} /> Refine with AI (needs OPENAI_API_KEY on Vercel)</label>
             {out && (
               <div className="mt-4">
                 {out.note && <p className="mb-2 rounded-xl bg-amber-50 p-3 text-[13px] text-amber-900">{out.note}</p>}
@@ -123,14 +123,14 @@ export default function FeedbackBoard() {
             </div>
             <p className="mt-4 text-[18px] leading-relaxed">{focus.comment}</p>
             <dl className="mt-5 grid gap-x-6 gap-y-2 text-[13px] sm:grid-cols-[120px_1fr]">
-              <dt className="text-ink-faint">Page</dt><dd><a className="text-kiwi-700 underline" target="_blank" href={focus.url || focus.path}>{focus.path}</a></dd>
+              <dt className="text-ink-faint">Page</dt><dd><a className="text-brand-700 underline" target="_blank" href={focus.url || focus.path}>{focus.path}</a></dd>
               <dt className="text-ink-faint">From</dt><dd>{focus.reporter} · {new Date(focus.created_at).toLocaleString()}</dd>
               {focus.viewport && <><dt className="text-ink-faint">Viewport</dt><dd>{focus.viewport.w}×{focus.viewport.h}</dd></>}
               {focus.target && <><dt className="text-ink-faint">Element</dt><dd><code className="break-all text-[12px]">{focus.target.selector}</code>{focus.target.text && <div className="mt-1 text-ink-soft">“{focus.target.text.slice(0, 160)}”</div>}</dd></>}
               {focus.selected_text && <><dt className="text-ink-faint">Highlighted</dt><dd>“{focus.selected_text}”</dd></>}
               {focus.implemented_at && <><dt className="text-ink-faint">Implemented</dt><dd>{new Date(focus.implemented_at).toLocaleString()}</dd></>}
             </dl>
-            {focus.has_screenshot && (shot ? <div className="mt-5"><img src={shot} alt="Screenshot" className="max-w-full rounded-2xl ring-1 ring-black/10" /><a className="mt-2 inline-block text-[13px] text-kiwi-700 underline" href={shot} download={`kiwi-feedback-${focus.id.slice(0, 8)}.jpg`}>Download screenshot (to attach in Claude Code)</a></div> : <p className="mt-5 text-[13px] text-ink-faint">Loading screenshot…</p>)}
+            {focus.has_screenshot && (shot ? <div className="mt-5"><img src={shot} alt="Screenshot" className="max-w-full rounded-2xl ring-1 ring-black/10" /><a className="mt-2 inline-block text-[13px] text-brand-700 underline" href={shot} download={`kiwi-feedback-${focus.id.slice(0, 8)}.jpg`}>Download screenshot (to attach in Claude Code)</a></div> : <p className="mt-5 text-[13px] text-ink-faint">Loading screenshot…</p>)}
             <label className="label mt-5">Notes (e.g. commit / what was done)</label>
             <textarea key={focus.id} className="input min-h-[70px]" defaultValue={focus.note ?? ""} onBlur={(e) => e.target.value !== (focus.note ?? "") && setStatus([focus.id], focus.status, e.target.value)} />
           </div>

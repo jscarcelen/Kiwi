@@ -1,6 +1,6 @@
-# Kiwi — project guide for Claude
+# WOM — project guide for Claude
 
-Kiwi is a trusted-services marketplace: users find cleaners, movers/handymen, dog walkers and child care through ratings from people in their own network (friends, verified groups like Chicago Booth MBA), not anonymous reviews. Initial market: Chicago Booth community. Founders: Gerardo Sánchez, Rodrigo Peña, Jonathan Sanz.
+WOM is a trusted-services marketplace: users find cleaners, movers/handymen, dog walkers and child care through ratings from people in their own network (friends, verified groups like Chicago Booth MBA), not anonymous reviews. Initial market: Chicago Booth community. Founders: Gerardo Sánchez, Rodrigo Peña, Jonathan Sanz.
 
 - Live: https://kiwi-mu-red.vercel.app · Repo: https://github.com/jscarcelen/Kiwi
 - Feedback tracker (team only, no login): /admin/feedback — collects in-app feedback (element + screenshot) and generates Claude Code prompts.
@@ -25,7 +25,7 @@ Env (`.env.local`, never commit): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPAB
 - Demo seed data uses fictional users (ids `00000000-…-0000000000a1..a8`).
 
 ## Conventions
-- Design: clean, Apple-like, kiwi green (`kiwi-*`), rounded-3xl white cards, helper classes in `app/globals.css` (`.btn-primary`, `.btn-ghost`, `.card`, `.input`, `.label`). Mobile-first; check 375px.
+- Design: clean, Apple-like, navy + electric blue (`navy`, `brand-*` in tailwind.config.ts), rounded-3xl white cards, helper classes in `app/globals.css` (`.btn-primary`, `.btn-ghost`, `.card`, `.input`, `.label`). Mobile-first; check 375px.
 - Prefer server components for data; client components only for interactivity. Keep changes minimal; no unrelated refactors.
 - **DB changes:** add a NEW file in `supabase/` (never edit an already-run one silently), keep RLS on, and tell Jonathan exactly what to run in the Supabase SQL editor.
 - **Secrets:** never commit keys. Never use or request the Supabase `service_role`/secret key or DB password in app code.

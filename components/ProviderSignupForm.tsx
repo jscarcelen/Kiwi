@@ -45,18 +45,18 @@ export default function ProviderSignupForm() {
       </div>
       <div><label className="label">Services you offer (customers are matched on these)</label>
         <div className="space-y-4 rounded-2xl bg-black/[0.03] p-4">{qs.map((q) => { const all = q.options.map((o) => o.value); return (
-          <div key={q.id}><div className="text-[13px] font-semibold">{HEADINGS[q.id]}</div><div className="mt-1.5 flex flex-wrap gap-2">{q.options.map((o) => { const on = eff(q.id, all).includes(o.value); return <button type="button" key={o.value} onClick={() => toggleAttr(q.id, all, o.value)} className={`rounded-full px-3 py-1.5 text-[13px] ${on ? "bg-forest text-white" : "bg-white ring-1 ring-black/10"}`}>{o.label}</button>; })}</div></div>); })}</div></div>
+          <div key={q.id}><div className="text-[13px] font-semibold">{HEADINGS[q.id]}</div><div className="mt-1.5 flex flex-wrap gap-2">{q.options.map((o) => { const on = eff(q.id, all).includes(o.value); return <button type="button" key={o.value} onClick={() => toggleAttr(q.id, all, o.value)} className={`rounded-full px-3 py-1.5 text-[13px] ${on ? "bg-navy text-white" : "bg-white ring-1 ring-black/10"}`}>{o.label}</button>; })}</div></div>); })}</div></div>
       <div><label className="label">Regions you operate in</label>
         <div className="flex flex-wrap gap-2">{CITIES.map((c) => {
           const on = regions.includes(c);
-          return <button type="button" key={c} onClick={() => setRegions(on ? regions.filter((x) => x !== c) : [...regions, c])} className={`rounded-full px-4 py-2 text-[14px] ${on ? "bg-forest text-white" : "bg-black/5"}`}>{c}</button>;
+          return <button type="button" key={c} onClick={() => setRegions(on ? regions.filter((x) => x !== c) : [...regions, c])} className={`rounded-full px-4 py-2 text-[14px] ${on ? "bg-navy text-white" : "bg-black/5"}`}>{c}</button>;
         })}</div></div>
       <div><label className="label">Description</label><textarea className="input min-h-[100px]" value={f.description} onChange={set("description")} placeholder="What do you offer? What makes you great?" /></div>
       <div><label className="label">Photo or logo</label><input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="block w-full text-[14px] file:mr-3 file:rounded-full file:border-0 file:bg-black/5 file:px-4 file:py-2" /></div>
       {err && <p className="text-[14px] text-red-600">{err}</p>}
-      {note && <p className="rounded-xl bg-kiwi-50 p-3 text-[14px] text-kiwi-700">{note}</p>}
+      {note && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">{note}</p>}
       <button className="btn-primary w-full" disabled={busy || regions.length === 0}>{busy ? "Creating…" : "Create provider account"}</button>
-      <p className="text-center text-[14px] text-ink-soft">Already listed? <Link className="font-semibold text-kiwi-700" href="/login?next=/provider/dashboard">Sign in</Link></p>
+      <p className="text-center text-[14px] text-ink-soft">Already listed? <Link className="font-semibold text-brand-700" href="/login?next=/provider/dashboard">Sign in</Link></p>
     </form>
   );
 }

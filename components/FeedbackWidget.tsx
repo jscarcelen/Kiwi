@@ -142,12 +142,12 @@ export default function FeedbackWidget() {
       {open && !hideUI && (
         <div className="fixed bottom-20 right-5 z-[2147483000] w-[min(360px,calc(100vw-2.5rem))] rounded-3xl bg-white p-5 shadow-pop ring-1 ring-black/5">
           {state === "sent" ? (
-            <div className="py-8 text-center"><div className="text-4xl">🥝</div><p className="mt-2 font-semibold">Thanks — got it!</p></div>
+            <div className="py-8 text-center"><div className="text-4xl">🙌</div><p className="mt-2 font-semibold">Thanks — got it!</p></div>
           ) : (
             <>
               <div className="flex items-center justify-between"><h3 className="text-lg font-semibold">Send feedback</h3><button onClick={() => setOpen(false)} className="text-ink-faint hover:text-ink" aria-label="Close">✕</button></div>
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {CATS.map(([k, l]) => <button key={k} onClick={() => setCategory(k)} className={`rounded-full px-3 py-1 text-[13px] ${category === k ? "bg-kiwi-600 text-white" : "bg-black/5"}`}>{l}</button>)}
+                {CATS.map(([k, l]) => <button key={k} onClick={() => setCategory(k)} className={`rounded-full px-3 py-1 text-[13px] ${category === k ? "bg-brand-600 text-white" : "bg-black/5"}`}>{l}</button>)}
               </div>
               <textarea className="input mt-3 min-h-[96px]" placeholder="What's on your mind? Be as specific as you like." value={comment} onChange={(e) => setComment(e.target.value)} />
               <div className="mt-3 flex gap-2">
@@ -156,8 +156,8 @@ export default function FeedbackWidget() {
               </div>
               {(target || shot || selected) && (
                 <div className="mt-3 space-y-2 text-[12px]">
-                  {target && <div className="flex items-start justify-between gap-2 rounded-xl bg-kiwi-50 p-2.5"><span><b>Pointing at</b> &lt;{target.tag}&gt; {target.text && `“${target.text.slice(0, 50)}${target.text.length > 50 ? "…" : ""}”`}</span><button onClick={() => setTarget(null)}>✕</button></div>}
-                  {selected && <div className="flex items-start justify-between gap-2 rounded-xl bg-kiwi-50 p-2.5"><span><b>Highlighted text</b> “{selected.slice(0, 60)}”</span><button onClick={() => setSelected("")}>✕</button></div>}
+                  {target && <div className="flex items-start justify-between gap-2 rounded-xl bg-brand-50 p-2.5"><span><b>Pointing at</b> &lt;{target.tag}&gt; {target.text && `“${target.text.slice(0, 50)}${target.text.length > 50 ? "…" : ""}”`}</span><button onClick={() => setTarget(null)}>✕</button></div>}
+                  {selected && <div className="flex items-start justify-between gap-2 rounded-xl bg-brand-50 p-2.5"><span><b>Highlighted text</b> “{selected.slice(0, 60)}”</span><button onClick={() => setSelected("")}>✕</button></div>}
                   {shot && <div className="relative"><img src={shot} alt="Screenshot" className="max-h-32 w-full rounded-xl object-cover ring-1 ring-black/10" /><button className="absolute right-1.5 top-1.5 rounded-full bg-white/90 px-2 py-0.5" onClick={() => setShot(null)}>✕</button></div>}
                 </div>
               )}
@@ -171,7 +171,7 @@ export default function FeedbackWidget() {
       {mode === "pick" && (
         <>
           <div className="pointer-events-none fixed inset-x-0 top-4 z-[2147483001] flex justify-center"><div className="rounded-full bg-ink px-4 py-2 text-[13px] text-white shadow-pop">Click the thing you want to talk about · Esc to cancel</div></div>
-          {hover && <div className="pointer-events-none fixed z-[2147483001] rounded-md border-2 border-kiwi-500 bg-kiwi-500/15" style={{ left: hover.left, top: hover.top, width: hover.width, height: hover.height }} />}
+          {hover && <div className="pointer-events-none fixed z-[2147483001] rounded-md border-2 border-brand-500 bg-brand-500/15" style={{ left: hover.left, top: hover.top, width: hover.width, height: hover.height }} />}
           <style>{`body{cursor:crosshair !important} body *{cursor:crosshair !important}`}</style>
         </>
       )}
@@ -183,7 +183,7 @@ export default function FeedbackWidget() {
           onPointerUp={finishArea}
         >
           <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center"><div className="rounded-full bg-ink px-4 py-2 text-[13px] text-white shadow-pop">Drag to select an area · Esc to cancel</div></div>
-          {drag && <div className="absolute border-2 border-kiwi-500 bg-kiwi-500/10" style={{ left: Math.min(drag.x0, drag.x1), top: Math.min(drag.y0, drag.y1), width: Math.abs(drag.x1 - drag.x0), height: Math.abs(drag.y1 - drag.y0) }} />}
+          {drag && <div className="absolute border-2 border-brand-500 bg-brand-500/10" style={{ left: Math.min(drag.x0, drag.x1), top: Math.min(drag.y0, drag.y1), width: Math.abs(drag.x1 - drag.x0), height: Math.abs(drag.y1 - drag.y0) }} />}
         </div>
       )}
     </div>

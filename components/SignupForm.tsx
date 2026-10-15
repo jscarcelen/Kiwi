@@ -23,7 +23,7 @@ export default function SignupForm() {
       if (ref) await s.rpc("add_friend", { target: ref });
       router.push("/network?welcome=1"); router.refresh();
     }}>
-      {ref && <p className="rounded-xl bg-kiwi-50 p-3 text-[14px] text-kiwi-700">You were invited by a friend — you'll be connected automatically.</p>}
+      {ref && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">You were invited by a friend — you'll be connected automatically.</p>}
       <div><label className="label">Full name</label><input className="input" required value={f.full_name} onChange={set("full_name")} /></div>
       <div><label className="label">Email</label><input className="input" type="email" required value={f.email} onChange={set("email")} placeholder="Use your @chicagobooth.edu email to join Booth" /></div>
       <div><label className="label">Password</label><input className="input" type="password" minLength={6} required value={f.password} onChange={set("password")} /></div>
@@ -32,12 +32,12 @@ export default function SignupForm() {
         <div><label className="label">Instagram (optional)</label><input className="input" placeholder="@handle" value={f.instagram} onChange={set("instagram")} /></div>
       </div>
       {err && <p className="text-[14px] text-red-600">{err}</p>}
-      {note && <p className="rounded-xl bg-kiwi-50 p-3 text-[14px] text-kiwi-700">{note}</p>}
+      {note && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">{note}</p>}
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
       <PhoneAuth mode="signup" />
       <InstagramButton />
       <p className="text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">How does phone sign-in work?</Link></p>
-      <p className="text-center text-[14px] text-ink-soft">Already have an account? <Link className="font-semibold text-kiwi-700" href="/login">Sign in</Link></p>
+      <p className="text-center text-[14px] text-ink-soft">Already have an account? <Link className="font-semibold text-brand-700" href="/login">Sign in</Link></p>
     </form>
   );
 }

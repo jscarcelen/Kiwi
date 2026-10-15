@@ -1,11 +1,11 @@
-# Kiwi iPhone app (Capacitor)
+# WOM iPhone app (Capacitor)
 
 The iOS app is a native shell that loads the live site (https://kiwi-mu-red.vercel.app) and adds native features — currently **one-tap contacts import**. Web updates reach the app instantly; you only resubmit to Apple when native code changes.
 
 ## One-time prerequisites
 1. Enroll in the **Apple Developer Program** ($99/yr, developer.apple.com/programs). Approval can take 1–2 days; use an individual account to be fastest.
 2. A Mac with **Xcode** (App Store) and CocoaPods (`brew install cocoapods`).
-3. Optional: edit `appId` in `capacitor.config.ts` (default `app.kiwi.marketplace`) — it must match the Bundle ID you register.
+3. Optional: edit `appId` in `capacitor.config.ts` (default `app.wom.marketplace`) — it must match the Bundle ID you register.
 
 ## Build steps (Mac)
 ```bash

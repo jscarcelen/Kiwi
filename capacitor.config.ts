@@ -1,10 +1,10 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
-// The iOS app is a native shell that loads the live Kiwi site and adds native features (e.g. contacts import).
+// The iOS app is a native shell that loads the live WOM site and adds native features (e.g. contacts import).
 // Change appId to your own bundle identifier once you create the Apple Developer account.
 const config: CapacitorConfig = {
-  appId: "app.kiwi.marketplace",
-  appName: "Kiwi",
+  appId: "app.wom.marketplace",
+  appName: "WOM",
   webDir: "capacitor-www",
   server: { url: "https://kiwi-mu-red.vercel.app", cleartext: false },
   ios: { contentInset: "automatic", backgroundColor: "#fbfbfd" },

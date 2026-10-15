@@ -38,8 +38,8 @@ export default function ReviewForm({ providerId, existing }: { providerId: strin
         <label className="label">Comments (optional)</label>
         <textarea className="input min-h-[120px]" value={comment} onChange={(e) => setComment(e.target.value)} placeholder="What would you tell a friend?" />
       </div>
-      <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-kiwi-50 p-4">
-        <input type="checkbox" className="mt-1 h-5 w-5 accent-kiwi-600" checked={share} onChange={(e) => setShare(e.target.checked)} />
+      <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-brand-50 p-4">
+        <input type="checkbox" className="mt-1 h-5 w-5 accent-brand-600" checked={share} onChange={(e) => setShare(e.target.checked)} />
         <span className="text-[15px]"><b>Share with my friends & groups</b><br /><span className="text-ink-soft">Your name and review will be visible to your contacts. If off, only your rating counts toward the anonymous overall score.</span></span>
       </label>
       {err && <p className="text-[14px] text-red-600">{err}</p>}
