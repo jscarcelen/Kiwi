@@ -54,7 +54,7 @@ export default function ContentTab() {
         ))}
         {sub === "Profiles" && rows.map((p) => (
           <div key={p.id} className="flex items-start justify-between gap-3 rounded-2xl border border-black/5 bg-white p-4 text-[14px]">
-            <div><div className="font-semibold">{p.company} <span className="font-normal text-ink-faint">· {CATEGORIES.find((c) => c.slug === p.category)?.label ?? p.category} · {p.city}</span></div><div className="text-[13px] text-ink-soft">★{p.avg_rating ?? "–"} ({p.n ?? 0}) · {p.views} views · {p.contacts} contacts · owner: {p.owner || "none (seed)"}</div></div>
+            <div><div className="font-semibold">{p.company} {p.unclaimed && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800">UNCLAIMED</span>} <span className="font-normal text-ink-faint">· {CATEGORIES.find((c) => c.slug === p.category)?.label ?? p.category} · {p.city}</span></div><div className="text-[13px] text-ink-soft">★{p.avg_rating ?? "–"} ({p.n ?? 0}) · {p.views} views · {p.contacts} contacts · {p.unclaimed ? `added by ${p.added_by || "?"}` : `owner: ${p.owner || "none (seed)"}`}</div></div>
             <div className="shrink-0"><button className="mr-3 text-brand-700 hover:underline" onClick={() => setEdit({ ...p })}>Edit</button><button className="text-red-600 hover:underline" onClick={() => remove("admin_delete_provider", { pid: p.id }, "supplier profile")}>Delete</button></div>
           </div>
         ))}

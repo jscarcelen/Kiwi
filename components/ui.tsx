@@ -79,6 +79,7 @@ export function ProviderRow({ r }: { r: RankedProvider }) {
         <Link href={`/providers/${p.id}`}><h3 className="text-xl font-semibold tracking-tight hover:underline">{p.company}</h3></Link>
         <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px]">
           {top && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[12px] font-semibold text-amber-800">★ Top rated</span>}
+          {p.unclaimed && <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[12px] font-semibold text-brand-700">Recommended by a friend</span>}
           {r.avg ? <><span className="font-semibold text-brand-700">{r.avg >= 4.5 ? "Excellent" : r.avg >= 4 ? "Very good" : "Good"} {r.avg.toFixed(1)}</span><Stars value={r.avg} size={14} /><span className="text-ink-soft">({r.n})</span></> : <span className="text-ink-faint">New on WOM</span>}
         </div>
         {r.net && (

@@ -62,6 +62,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
           <TrackEvent type="search" meta={{ service, city, circle, results: results.length }} />
           <div className="mt-6 space-y-4">{results.map((r) => <ProviderRow key={r.provider.id} r={r} />)}</div>
           {results.length === 0 && <div className="mt-8"><Empty title="No pros match those filters">Try removing a filter or choosing another city.</Empty></div>}
+          <div className="mt-6 rounded-2xl bg-brand-50 p-5 text-[14px]"><b>Know a great {service === "all" ? "pro" : catLabel(service).toLowerCase()} who isn't listed?</b> <Link href={`/add-pro?service=${service === "all" ? "" : service}&city=${encodeURIComponent(city)}`} className="font-semibold text-brand-700 underline">Recommend them</Link> — your friends and communities will see it first.</div>
         </section>
       </div>
     </div>

@@ -60,3 +60,6 @@ Gated by `is_admin()`; all stats/moderation go through SECURITY DEFINER `admin_*
 
 ## Premium gating
 `supabase/premium.sql` (run after admin.sql): `premium_status()`, `has_premium()`; everyone has Premium until `app_settings.premium_start` (default 2027-01-01, editable in Admin → Revenue), then only `profiles.is_premium` (Admin → Users → Grant Premium; later a Paddle webhook). Gated: communities beyond the free limit, saved filters. UI: `UpgradeModal` (Paddle link via NEXT_PUBLIC_PADDLE_CHECKOUT_URL; hidden in iOS app), `/premium`, `SavedFilters`. TODO: Paddle webhook → set is_premium; RevenueCat/Apple IAP for iOS.
+
+## Recommended (user-added) pros
+`supabase/recommend_pro.sql` (run after moderation.sql): providers.unclaimed/created_by, `provider_private` (phone + claim token, RPC-only), RPCs `add_pro`, `find_similar_pros`, `provider_contact`, `my_added_pros`, `claim_preview`, `claim_pro` (adder earns supplier credits), `unclaim_remove`. Unclaimed profiles are visible to the adder, their circle, admins, or all once they have 3+ ratings. UI: /add-pro, /claim/[token], MyAddedPros, ContactButton (RPC for unclaimed), "Recommended by a friend" badge.

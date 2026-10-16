@@ -12,6 +12,7 @@ export default function SignupForm() {
   const sp = useSearchParams();
   const ref = sp.get("ref");
   const community = sp.get("community");
+  const nextRaw = sp.get("next"); const next = nextRaw && nextRaw.startsWith("/") && !nextRaw.startsWith("//") ? nextRaw : null;
   const [f, setF] = useState({ full_name: "", email: "", password: "", confirm: "", phone: "", instagram: "" });
   const [err, setErr] = useState(""); const [note, setNote] = useState(""); const [busy, setBusy] = useState(false);
   const set = (k: string) => (e: any) => setF({ ...f, [k]: e.target.value });
@@ -25,7 +26,7 @@ export default function SignupForm() {
       if (error) { setErr(error.message); setBusy(false); return; }
       if (!data.session) { setNote("Check your email to confirm your account, then sign in."); setBusy(false); return; }
       if (ref) await s.rpc("add_friend", { target: ref });
-      router.push("/network?welcome=1"); router.refresh();
+      router.push(next ?? "/network?welcome=1"); router.refresh();
     }}>
       {ref && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">You were invited by a friend — you'll be connected automatically.</p>}
       {community && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">You're joining a WOM community — you'll be added automatically.</p>}
@@ -46,7 +47,7 @@ export default function SignupForm() {
       <PhoneAuth mode="signup" />
       <InstagramButton />
       <p className="text-center text-[13px] text-ink-faint"><Link href="/help" className="underline">How does phone sign-in work?</Link></p>
-      <p className="text-center text-[14px] text-ink-soft">Already have an account? <Link className="font-semibold text-brand-700" href="/login">Sign in</Link></p>
+      <p className="text-center text-[14px] text-ink-soft">Already have an account? <Link className="font-semibold text-brand-700" href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}>Sign in</Link></p>
     </form>
   );
 }

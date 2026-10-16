@@ -15,6 +15,8 @@ export default async function ProviderPage({ params, searchParams }: { params: {
   const { user } = await getViewer(supabase);
   const { data: p } = await supabase.from("providers").select("*").eq("id", params.id).maybeSingle();
   if (!p) notFound();
+  const { data: adderRow } = p.unclaimed && p.created_by ? await supabase.from("profiles").select("full_name").eq("id", p.created_by).maybeSingle() : { data: null as any };
+  const adderFirst = (adderRow?.full_name ?? "your friend").split(" ")[0];
   const [{ data: stat }, { data: revs }, { data: siblings }] = await Promise.all([
     supabase.from("provider_stats").select("*").eq("provider_id", p.id).maybeSingle(),
     supabase.from("reviews").select("id,user_id,rating,comment,created_at,profiles(full_name)").eq("provider_id", p.id).order("created_at", { ascending: false }),
@@ -62,6 +64,9 @@ export default async function ProviderPage({ params, searchParams }: { params: {
             </div>
           </div>
 
+          {p.unclaimed && (
+            <div className="mt-4 rounded-2xl bg-brand-50 p-4 text-[14px] text-brand-700"><b>Recommended by {adderFirst}</b> · This pro isn't on WOM yet. {user?.id === p.created_by ? <>Invite them from <Link href="/add-pro" className="font-semibold underline">your added pros</Link>.</> : <>Profile created from a friend's recommendation.</>}</div>
+          )}
           {(siblings ?? []).length > 0 && (
             <p className="mt-4 flex flex-wrap items-center gap-2 text-[14px] text-ink-soft">Also offers:
               {(siblings ?? []).map((o: any) => <Link key={o.id} href={`/providers/${o.id}`} className="rounded-full bg-black/5 px-3 py-1 font-medium text-ink hover:bg-black/10">{catEmoji(o.category)} {catLabel(o.category)}</Link>)}
@@ -139,13 +144,13 @@ export default async function ProviderPage({ params, searchParams }: { params: {
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="card space-y-3 border-t-4 border-t-navy p-6">
-            <ContactButton providerId={p.id} phone={p.phone} email={p.email} />
+            <ContactButton providerId={p.id} phone={p.phone} email={p.email} unclaimed={!!p.unclaimed} adder={adderFirst} />
             <Link href={user ? `/review/${p.id}` : `/login?next=/review/${p.id}`} className="btn-ghost w-full">{mine ? "Edit your review" : "I've used this pro"}</Link>
             {mine && <p className="text-center text-[13px] text-ink-soft">You rated {mine.rating}/5.</p>}
             <p className="text-center text-[13px] text-ink-faint">🟢 Contact details are shared only when you click.</p>
           </div>
           <div className="rounded-2xl bg-black/[0.04] p-5 text-[14px]"><div className="font-semibold">WOM network</div><p className="mt-1 text-ink-soft">Reviews from people you know — not anonymous strangers.</p></div>
-          {p.owner_id !== user?.id && <div className="text-center"><ReportButton type="provider" id={p.id} authorId={p.owner_id} signedIn={!!user} label="Report this profile" /></div>}
+          {p.owner_id !== user?.id && <div className="text-center"><ReportButton type="provider" id={p.id} authorId={p.created_by ?? p.owner_id} signedIn={!!user} label="Report this profile" /></div>}
           <div className="card p-5"><div className="text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Coming soon</div><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>📅 Book appointments</li><li>💳 Pay securely through WOM</li></ul></div>
         </aside>
       </div>

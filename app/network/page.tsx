@@ -82,6 +82,8 @@ export default async function Network({ searchParams }: { searchParams: { welcom
         />
       </div>
 
+      <Link href="/add-pro" className="card mt-4 flex items-center justify-between p-5 hover:shadow-pop"><span><b>⭐ Recommend a pro you already use</b><br /><span className="text-[14px] text-ink-soft">Add their profile with your rating — your friends and communities see it first.</span></span><span className="text-brand-700">Add →</span></Link>
+
       <div id="friends" className="mt-10 scroll-mt-24"><NetworkManager me={user.id} friends={friends} myGroups={myGroups} allGroups={(groups ?? []).filter((g: any) => !g.owner_id)} suggestions={suggestions ?? []} /></div>
       <div className="scroll-mt-24"><CommunitiesPanel me={user.id} communities={communities} isPremium={prem.has_premium} paid={prem.paid} startLabel={fmtDate(prem.start)} /></div>
       {CONTACTS_AVAILABLE ? (
