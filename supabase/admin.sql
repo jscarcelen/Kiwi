@@ -15,7 +15,7 @@ insert into public.app_settings (key, value) values
   ('hero_subtitle', '"Tell us what you need. WOM finds local pros your friends and communities already rate highly."'),
   ('announcement', '{"enabled": false, "text": "", "link": ""}'),
   ('free_community_limit', '3'), ('credit_friend', '1'), ('credit_supplier', '3'), ('credit_community', '1'),
-  ('credits_per_month', '5')
+  ('credits_per_month', '5'), ('premium_start', '"2027-01-01"')
 on conflict (key) do nothing;
 
 create or replace function public.setting_num(k text, d numeric) returns numeric

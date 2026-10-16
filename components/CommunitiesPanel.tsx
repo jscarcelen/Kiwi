@@ -1,5 +1,6 @@
 "use client";
 import { track } from "@/lib/track";
+import { canShareNatively, shareNative } from "@/lib/native";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -74,6 +75,7 @@ export default function CommunitiesPanel({ me, communities, isPremium }: { me: s
                 <Link className={btn} href={`/search?service=all&circle=${c.slug}`}>See their picks →</Link>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
+                {canShareNatively() && <button className={btn} onClick={() => shareNative({ title: c.name, text: `Join ${c.name} on WOM`, url: link(c) })}>Share…</button>}
                 <button className={btn} onClick={async () => { await navigator.clipboard.writeText(link(c)); setCopied(c.id); setTimeout(() => setCopied(""), 1800); }}>{copied === c.id ? "Copied ✓" : "Copy invite link"}</button>
                 <a className={btn} href={`https://wa.me/?text=${encodeURIComponent(msg(c))}`} target="_blank" rel="noreferrer">WhatsApp</a>
                 <a className={btn} href={`sms:?&body=${encodeURIComponent(msg(c))}`}>Messages</a>

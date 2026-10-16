@@ -14,3 +14,13 @@ body { color: #1d1d1f; }
   .card { @apply rounded-2xl bg-white shadow-card ring-1 ring-black/[0.04]; }
   .label { @apply mb-1.5 block text-[13px] font-medium text-ink-soft; }
 }
+
+/* ---- iOS app (Capacitor) ---- */
+html.is-native { background: #fbfbfd; }
+.is-native body { padding-bottom: calc(64px + env(safe-area-inset-bottom)); overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
+.is-native header.sticky { padding-top: env(safe-area-inset-top); }
+.is-native footer { display: none; }
+.is-native button, .is-native a { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+.is-native input, .is-native textarea { font-size: 16px; } /* prevent iOS zoom on focus */
+.is-native [data-kiwi-feedback] > button { bottom: calc(76px + env(safe-area-inset-bottom)) !important; }
+.is-native [data-kiwi-feedback] > div { bottom: calc(136px + env(safe-area-inset-bottom)) !important; }

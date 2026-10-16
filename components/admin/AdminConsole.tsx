@@ -6,9 +6,10 @@ import { CATEGORIES } from "@/lib/categories";
 import { Bars, Card, Empty, HBars, Stat } from "./charts";
 import UsersTab from "./UsersTab";
 import ContentTab from "./ContentTab";
+import RevenueTab from "./RevenueTab";
 import EditorTab from "./EditorTab";
 
-const TABS = ["Overview", "Users", "Content", "Editor"] as const;
+const TABS = ["Overview", "Users", "Content", "Revenue", "Editor"] as const;
 const catLabel = (s: string) => CATEGORIES.find((c) => c.slug === s)?.label ?? s;
 const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
 
@@ -27,6 +28,7 @@ export default function AdminConsole({ me }: { me: string }) {
         {tab === "Overview" && <Overview />}
         {tab === "Users" && <UsersTab me={me} />}
         {tab === "Content" && <ContentTab />}
+        {tab === "Revenue" && <RevenueTab />}
         {tab === "Editor" && <EditorTab />}
       </div>
     </div>

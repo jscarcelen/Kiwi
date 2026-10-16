@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
+import { canShareNatively, isNative, shareNative } from "@/lib/native";
 
 export default function ShareBox({ icon, title, tagline, credit, perks, path, qrFile, message, emailSubject, personalize = false }: {
   icon: string; title: string; tagline: string; credit: string; perks: string[]; path: string; qrFile: string;
@@ -10,7 +11,7 @@ export default function ShareBox({ icon, title, tagline, credit, perks, path, qr
   const [showQr, setShowQr] = useState(false); const [showLink, setShowLink] = useState(false);
   const [qr, setQr] = useState<string | null>(null); const [copied, setCopied] = useState(false);
   const [name, setName] = useState(""); const [contact, setContact] = useState("");
-  useEffect(() => { setOrigin(window.location.origin); setCanShare(!!navigator.share); }, []);
+  useEffect(() => { setOrigin(window.location.origin); setCanShare(canShareNatively()); }, []);
   const link = `${origin}${path}`;
   useEffect(() => { if (showQr && origin) QRCode.toDataURL(link, { width: 640, margin: 2, color: { dark: "#051C2C", light: "#FFFFFF" } }).then(setQr); }, [showQr, origin, link]);
   const hi = name.trim() ? `Hi ${name.trim().split(" ")[0]}!` : "Hi!";
@@ -32,7 +33,7 @@ export default function ShareBox({ icon, title, tagline, credit, perks, path, qr
 
       <div className="mt-5 grid gap-2 sm:grid-cols-2">
         <button className={`btn ${showQr ? "bg-navy text-white" : "bg-brand-50 text-brand-700 hover:bg-brand-100"}`} onClick={() => setShowQr(!showQr)}>▦ Share QR code</button>
-        <button className={`btn ${showLink ? "bg-navy text-white" : "bg-brand-50 text-brand-700 hover:bg-brand-100"}`} onClick={() => setShowLink(!showLink)}>🔗 Share sign-up link</button>
+        <button className={`btn ${showLink ? "bg-navy text-white" : "bg-brand-50 text-brand-700 hover:bg-brand-100"}`} onClick={() => (isNative() && !personalize ? shareNative({ title: emailSubject, text: msg, url: link }) : setShowLink(!showLink))}>🔗 Share sign-up link</button>
       </div>
 
       {showQr && (
@@ -55,7 +56,7 @@ export default function ShareBox({ icon, title, tagline, credit, perks, path, qr
             <a className={small} href={wa} target="_blank" rel="noreferrer">WhatsApp</a>
             <a className={small} href={sms}>Messages</a>
             <a className={small} href={mail}>Email</a>
-            {canShare && <button className={small} onClick={() => navigator.share({ title: emailSubject, text: msg, url: link }).catch(() => {})}>Share…</button>}
+            {canShare && <button className={small} onClick={() => shareNative({ title: emailSubject, text: msg, url: link })}>Share…</button>}
           </div>
         </div>
       )}

@@ -54,3 +54,6 @@ Gated by `is_admin()`; all stats/moderation go through SECURITY DEFINER `admin_*
 
 ## Report & block (App Store 1.2)
 `supabase/moderation.sql` (run after admin.sql): `reports`, `user_blocks`, RPCs `report_content`, `block_user`, `unblock_user`, `my_blocked`, admin `admin_reports`/`admin_resolve_report`; `in_my_circle` excludes blocks both ways. UI: `ReportButton` (reviews, supplier profiles, friends), `BlockedList` in Settings, Reports queue in /admin → Content, `/terms` page, consent line on signup.
+
+## Native app features
+`lib/native.ts` (isNative, haptic, shareNative), `components/NativeBoot.tsx` (status bar, splash hide, haptics, offline banner, push registration + soft prompt), `NativeTabBar.tsx` (Home/Search/Network/Account in-app only), `capacitor-www/offline.html` (server.errorPath), safe-area CSS under `.is-native` in globals.css. FeedbackWidget hides point/capture in-app. Push: `supabase/push.sql` (device_tokens, notifications + triggers) and `/api/push/send` (APNs; env in .env.example; schedule with pg_cron+pg_net). Business plan: `docs/business-readiness.md`; Admin → Revenue tab models the spreadsheet.

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { isNative } from "@/lib/native";
 
 type Target = { selector: string; tag: string; text: string; html: string; rect: { x: number; y: number; w: number; h: number } };
 const CATS: [string, string][] = [["idea", "💡 Idea"], ["bug", "🐞 Bug"], ["design", "🎨 Design"], ["copy", "✏️ Wording"]];
@@ -44,6 +45,8 @@ async function shoot(r: { x: number; y: number; w: number; h: number }) {
 }
 
 export default function FeedbackWidget() {
+  const [native, setNative] = useState(false);
+  useEffect(() => setNative(isNative()), []);
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"idle" | "pick" | "area" | "shooting">("idle");
@@ -150,10 +153,10 @@ export default function FeedbackWidget() {
                 {CATS.map(([k, l]) => <button key={k} onClick={() => setCategory(k)} className={`rounded-full px-3 py-1 text-[13px] ${category === k ? "bg-brand-600 text-white" : "bg-black/5"}`}>{l}</button>)}
               </div>
               <textarea className="input mt-3 min-h-[96px]" placeholder="What's on your mind? Be as specific as you like." value={comment} onChange={(e) => setComment(e.target.value)} />
-              <div className="mt-3 flex gap-2">
+              {!native && <div className="mt-3 flex gap-2">
                 <button className="btn-ghost flex-1 !px-3 !py-2 !text-[13px]" onClick={() => { setOpen(false); setMode("pick"); }}>👆 Point at something</button>
                 <button className="btn-ghost flex-1 !px-3 !py-2 !text-[13px]" onClick={() => { setOpen(false); setMode("area"); }}>📸 Capture area</button>
-              </div>
+              </div>}
               {(target || shot || selected) && (
                 <div className="mt-3 space-y-2 text-[12px]">
                   {target && <div className="flex items-start justify-between gap-2 rounded-xl bg-brand-50 p-2.5"><span><b>Pointing at</b> &lt;{target.tag}&gt; {target.text && `“${target.text.slice(0, 50)}${target.text.length > 50 ? "…" : ""}”`}</span><button onClick={() => setTarget(null)}>✕</button></div>}

@@ -1,4 +1,5 @@
 "use client";
+import { canShareNatively, shareNative } from "@/lib/native";
 import { useEffect, useState } from "react";
 import { CREDIT_SUPPLIER } from "@/lib/referrals";
 
@@ -6,7 +7,7 @@ export default function SupplierReferCard({ me, firstName }: { me: string; first
   const [origin, setOrigin] = useState("");
   const [name, setName] = useState(""); const [contact, setContact] = useState("");
   const [copied, setCopied] = useState(false); const [canShare, setCanShare] = useState(false);
-  useEffect(() => { setOrigin(window.location.origin); setCanShare(!!navigator.share); }, []);
+  useEffect(() => { setOrigin(window.location.origin); setCanShare(canShareNatively()); }, []);
   const link = `${origin}/invite/${me}/pro`;
   const isEmail = contact.includes("@");
   const digits = contact.replace(/\D/g, "");
@@ -25,7 +26,7 @@ export default function SupplierReferCard({ me, firstName }: { me: string; first
         <a className="btn-primary !px-5 !py-2 !text-[14px]" href={`https://wa.me/${!isEmail && digits.length >= 10 ? (digits.length === 10 ? "1" + digits : digits) : ""}?text=${encodeURIComponent(msg)}`} target="_blank" rel="noreferrer">WhatsApp</a>
         <a className={btn} href={`sms:${!isEmail ? digits : ""}?&body=${encodeURIComponent(msg)}`}>Messages</a>
         <a className={btn} href={`mailto:${isEmail ? contact : ""}?subject=${encodeURIComponent("Join me on WOM as a pro")}&body=${encodeURIComponent(msg)}`}>Email</a>
-        {canShare && <button className={btn} onClick={() => navigator.share({ title: "Join WOM as a pro", text: msg, url: link }).catch(() => {})}>Share…</button>}
+        {canShare && <button className={btn} onClick={() => shareNative({ title: "Join WOM as a pro", text: msg, url: link })}>Share…</button>}
         <button className={btn} onClick={async () => { await navigator.clipboard.writeText(link); setCopied(true); setTimeout(() => setCopied(false), 2000); }}>{copied ? "Copied ✓" : "Copy link"}</button>
       </div>
       <p className="mt-3 break-all text-[12px] text-ink-faint">{link}</p>

@@ -1,4 +1,5 @@
 "use client";
+import { canShareNatively, shareNative } from "@/lib/native";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -127,7 +128,7 @@ export default function ContactsFinder({ me, friendIds }: { me: string; friendId
             <div className="mt-5">
               <h3 className="font-semibold">Invite the rest ({others.length})</h3>
               <div className="mt-2 flex flex-wrap gap-2">
-                <button className="btn-ghost !py-1.5 !text-[14px]" onClick={async () => { if (navigator.share) await navigator.share({ text: inviteMsg }); else { await navigator.clipboard.writeText(inviteMsg); setMsg("Invite message copied."); } }}>Share invite link</button>
+                <button className="btn-ghost !py-1.5 !text-[14px]" onClick={async () => { if (canShareNatively()) await shareNative({ text: inviteMsg }); else { await navigator.clipboard.writeText(inviteMsg); setMsg("Invite message copied."); } }}>Share invite link</button>
               </div>
               <ul className="mt-2 max-h-56 divide-y divide-black/5 overflow-y-auto">
                 {others.slice(0, 50).map((c) => (
