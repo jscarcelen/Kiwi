@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card } from "./charts";
+import CitiesCard from "./CitiesCard";
+import UniversitiesCard from "./UniversitiesCard";
 
 type Cfg = Record<string, any>;
 const NUM = [
@@ -51,6 +53,8 @@ export default function EditorTab() {
         <button className="btn-primary mt-4 !py-2" onClick={() => save(NUM.map(([k]) => k))}>Save rules</button>
         <p className="mt-2 text-[12px] text-ink-faint">Community limit applies instantly. Credit values apply to the app's referral logic once wired to these settings (see CLAUDE.md).</p>
       </Card>
+      <CitiesCard />
+      <UniversitiesCard />
       <Card title="Admin team" sub="Admins can view stats, delete and block. Add by account email.">
         <ul className="divide-y divide-black/5 text-[14px]">{admins.map((a) => <li key={a.user_id} className="flex items-center justify-between py-2"><span>{a.full_name || "—"} <span className="text-ink-faint">{a.email}</span></span><button className="text-red-600 hover:underline" onClick={() => a.email && setAdmin(false, a.email)}>Remove</button></li>)}</ul>
         <div className="mt-3 flex gap-2"><input className={inp + " !mt-0"} placeholder="teammate@email.com" value={email} onChange={(e) => setEmail(e.target.value)} /><button className="btn-primary !py-2" disabled={!email} onClick={() => setAdmin(true)}>Add admin</button></div>

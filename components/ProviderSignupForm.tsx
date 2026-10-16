@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { CATEGORIES, CITIES } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
+import { useCities } from "@/lib/cities";
 import { HEADINGS, QUESTIONS } from "@/lib/intake";
 import PasswordInput from "./PasswordInput";
 import { insertExtraServices, type ExtraService } from "@/lib/extraServices";
 
 export default function ProviderSignupForm({ refId }: { refId?: string }) {
+  const CITIES = useCities().map((c) => c.name);
   const router = useRouter();
   const [f, setF] = useState({ full_name: "", company: "", email: "", password: "", confirm: "", phone: "", category: "cleaning", city: "Chicago", description: "" });
   const [regions, setRegions] = useState<string[]>(["Chicago"]);

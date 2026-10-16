@@ -63,3 +63,6 @@ Gated by `is_admin()`; all stats/moderation go through SECURITY DEFINER `admin_*
 
 ## Recommended (user-added) pros
 `supabase/recommend_pro.sql` (run after moderation.sql): providers.unclaimed/created_by, `provider_private` (phone + claim token, RPC-only), RPCs `add_pro`, `find_similar_pros`, `provider_contact`, `my_added_pros`, `claim_preview`, `claim_pro` (adder earns supplier credits), `unclaim_remove`. Unclaimed profiles are visible to the adder, their circle, admins, or all once they have 3+ ratings. UI: /add-pro, /claim/[token], MyAddedPros, ContactButton (RPC for unclaimed), "Recommended by a friend" badge.
+
+## Cities & verified universities
+`supabase/cities_universities.sql` (run after recommend_pro.sql): `cities` table (editable in Admin → Editor, with per-city launch stats), `groups.city`, `admin_upsert_community`, `my_domain_communities`, `join_verified_community` (requires a confirmed email on the domain). UI: `useCities()` (lib/cities.ts) replaces the hard-coded list, `VerifiedPrompt` on /network, ✓ Verified badge. Account moves: docs/ACCOUNT_MIGRATION.md.

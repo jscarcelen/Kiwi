@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = createClient();
-  const { user } = await getViewer(supabase);
+  const { user, profile } = await getViewer(supabase);
   const [top, provCount, stats, groupCount] = await Promise.all([
     Promise.all(CATEGORIES.map((c) => rankProviders(supabase, user?.id ?? null, { service: c.slug, city: "Chicago", limit: 3 }))),
     supabase.from("providers").select("id", { count: "exact", head: true }),
@@ -30,7 +30,7 @@ export default async function Home() {
   return (
     <>
       {ann && (ann.link ? <Link href={ann.link} className="block bg-brand-600 px-5 py-2.5 text-center text-[14px] font-medium text-white">{ann.text} →</Link> : <div className="bg-brand-600 px-5 py-2.5 text-center text-[14px] font-medium text-white">{ann.text}</div>)}
-      <Hero stats={heroStats} headline={cfg.hero_headline || undefined} subtitle={cfg.hero_subtitle || undefined} />
+      <Hero defaultCity={(profile as any)?.city || undefined} stats={heroStats} headline={cfg.hero_headline || undefined} subtitle={cfg.hero_subtitle || undefined} />
 
       <section className="mx-auto max-w-6xl px-5 pt-16">
         <h2 className="text-3xl font-semibold tracking-tight">What do you need today?</h2>

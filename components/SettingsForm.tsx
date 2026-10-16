@@ -2,7 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { CATEGORIES, CITIES } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
+import { useCities } from "@/lib/cities";
 import { toE164, validPhone } from "@/lib/phone";
 import { initials } from "@/lib/data";
 import DeleteAccount from "./DeleteAccount";
@@ -15,6 +16,7 @@ function Card({ title, desc, children }: { title: string; desc?: string; childre
 const Msg = ({ m }: { m: string }) => (m ? <p className={`text-[13px] ${m.startsWith("✓") ? "text-emerald-700" : "text-red-600"}`}>{m}</p> : null);
 
 export default function SettingsForm({ user, profile, phoneRow, provider }: { user: { id: string; email: string; phone: string }; profile: any; phoneRow: any; provider: any }) {
+  const CITIES = useCities().map((c) => c.name);
   const router = useRouter();
   const s = createClient();
   // profile

@@ -1,17 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIES, CITIES } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
+import { nearestCity, useCities } from "@/lib/cities";
 import { QUESTIONS, answersToParams, type Answers } from "@/lib/intake";
 
-// approximate city centers for nearest-city detection
-const CENTERS: Record<string, [number, number]> = { Chicago: [41.8781, -87.6298], Evanston: [42.0451, -87.6877], "Oak Park": [41.885, -87.7845] };
-const nearest = (lat: number, lng: number) =>
-  Object.entries(CENTERS).sort((a, b) => (a[1][0] - lat) ** 2 + (a[1][1] - lng) ** 2 - ((b[1][0] - lat) ** 2 + (b[1][1] - lng) ** 2))[0][0];
 
-export default function HeroSearch({ onAssist }: { onAssist: (city: string) => void }) {
+export default function HeroSearch({ onAssist, defaultCity }: { onAssist: (city: string) => void; defaultCity?: string }) {
+  const CITIES = useCities().map((c) => c.name);
+  const cityList = useCities();
   const router = useRouter();
-  const [city, setCity] = useState(CITIES[0]);
+  const [city, setCity] = useState(defaultCity || "Chicago");
   const [located, setLocated] = useState<"idle" | "busy" | "ok" | "no">("idle");
   const [cat, setCat] = useState("");
   const [ans, setAns] = useState<Answers>({});
@@ -20,7 +19,7 @@ export default function HeroSearch({ onAssist }: { onAssist: (city: string) => v
     if (!navigator.geolocation) return setLocated("no");
     setLocated("busy");
     navigator.geolocation.getCurrentPosition(
-      (p) => { setCity(nearest(p.coords.latitude, p.coords.longitude)); setLocated("ok"); },
+      (p) => { setCity(nearestCity(cityList, p.coords.latitude, p.coords.longitude)); setLocated("ok"); },
       () => setLocated("no"), { timeout: 8000, maximumAge: 600000 });
   };
   useEffect(() => {

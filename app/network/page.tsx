@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
+import VerifiedPrompt from "@/components/VerifiedPrompt";
 import NetworkManager from "@/components/NetworkManager";
 import { fmtDate, getPremium } from "@/lib/premium";
 import CommunitiesPanel from "@/components/CommunitiesPanel";
@@ -51,6 +52,7 @@ export default async function Network({ searchParams }: { searchParams: { welcom
   return (
     <div className="mx-auto max-w-5xl px-5 py-8">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{searchParams.welcome ? `Welcome, ${first}` : "My network"}</h1>
+      <div className="mt-4"><VerifiedPrompt /></div>
       <p className="mb-6 mt-1 text-ink-soft">Everything about your circle, invites and rewards in one place.</p>
 
       <div className="grid grid-cols-3 gap-3 sm:gap-4">

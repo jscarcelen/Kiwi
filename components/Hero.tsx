@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
-import { CITIES } from "@/lib/categories";
 import IntakeModal from "./IntakeModal";
 import { LogoMark } from "./Logo";
 import TourButton from "./TourButton";
 import HeroSearch from "./HeroSearch";
 import type { Sug } from "@/lib/suggestions";
 
-export default function Hero({ stats, headline = "Whatever you need, ask the people you trust.", subtitle = "Tell us what you need. WOM finds local pros your friends and communities already rate highly." }: { stats: { label: string; value: string }[]; headline?: string; subtitle?: string }) {
+export default function Hero({ defaultCity, stats, headline = "Whatever you need, ask the people you trust.", subtitle = "Tell us what you need. WOM finds local pros your friends and communities already rate highly." }: { defaultCity?: string; stats: { label: string; value: string }[]; headline?: string; subtitle?: string }) {
   const [text, setText] = useState("");
-  const [city, setCity] = useState(CITIES[0]);
+  const [city, setCity] = useState(defaultCity || "Chicago");
   const [open, setOpen] = useState(false);
   const [cat, setCat] = useState<string | null>(null);
   const [sug, setSug] = useState<Sug | null>(null);
@@ -23,7 +22,7 @@ export default function Hero({ stats, headline = "Whatever you need, ask the peo
         <h1 className="mt-3 max-w-2xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl">{headline}</h1>
         <p className="mt-5 max-w-xl text-lg text-white/80">{subtitle}</p>
 
-        <HeroSearch onAssist={(c) => { setCity(c); launch(); }} />
+        <HeroSearch defaultCity={defaultCity} onAssist={(c) => { setCity(c); launch(); }} />
         <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px] text-white/75"><span>🔒 No calls or texts until you message a pro.</span><TourButton className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">▶ See how WOM works (1 min)</TourButton></div>
         <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">{stats.map((s) => <div key={s.label}><div className="text-3xl font-semibold tracking-tight">{s.value}</div><div className="text-[14px] text-white/70">{s.label}</div></div>)}</div>
       </div>

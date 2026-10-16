@@ -71,7 +71,7 @@ export default function NetworkManager({ me, friends, myGroups, allGroups, sugge
             return (
               <div key={g.id} className="card p-5">
                 <div className="flex items-start justify-between gap-3">
-                  <div><h3 className="font-semibold">{g.name}</h3><p className="text-[14px] text-ink-soft">{g.description}</p></div>
+                  <div><h3 className="font-semibold">{g.name}{g.email_domain && <span className="ml-2 rounded bg-green-100 px-1.5 py-0.5 text-[11px] font-semibold text-green-800">✓ Verified @{g.email_domain}</span>}</h3><p className="text-[14px] text-ink-soft">{g.description}</p></div>
                   {joined.has(g.id) ? <button className="btn-ghost !py-1.5 !text-[14px]" onClick={async () => { await s.from("group_members").delete().eq("group_id", g.id).eq("user_id", me); refresh(); }}>Leave</button>
                     : <button className="btn-primary !py-1.5 !text-[14px]" onClick={async () => { const { data } = await s.rpc("join_group", { gslug: g.slug }); setMsg({ ...msg, [g.id]: data === "ok" ? "" : data }); refresh(); }}>Join</button>}
                 </div>

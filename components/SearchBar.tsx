@@ -1,9 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CATEGORIES, CITIES } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
+import { useCities } from "@/lib/cities";
 
 export default function SearchBar({ initial, groups = [], signedIn = false }: { initial?: { service?: string; city?: string; circle?: string }; groups?: { slug: string; name: string }[]; signedIn?: boolean }) {
+  const CITIES = useCities().map((c) => c.name);
   const router = useRouter();
   const [service, setService] = useState(initial?.service ?? "all");
   const [city, setCity] = useState(initial?.city ?? "Chicago");

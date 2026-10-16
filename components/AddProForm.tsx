@@ -2,14 +2,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { CATEGORIES, CITIES } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
+import { useCities } from "@/lib/cities";
 import { QUESTIONS, type Answers } from "@/lib/intake";
 import { canShareNatively, shareNative } from "@/lib/native";
 import { track } from "@/lib/track";
 
 const Star = ({ on }: { on: boolean }) => <svg width="36" height="36" viewBox="0 0 20 20" fill="currentColor" className={on ? "text-amber-400" : "text-black/15"}><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8L10 1.5z" /></svg>;
 
-export default function AddProForm({ initialCategory = "", initialCity = CITIES[0], myName = "" }: { initialCategory?: string; initialCity?: string; myName?: string }) {
+export default function AddProForm({ initialCategory = "", initialCity = "Chicago", myName = "" }: { initialCategory?: string; initialCity?: string; myName?: string }) {
+  const CITIES = useCities().map((c) => c.name);
   const s = createClient();
   const [name, setName] = useState(""); const [cat, setCat] = useState(initialCategory); const [city, setCity] = useState(initialCity);
   const [phone, setPhone] = useState(""); const [note, setNote] = useState("");

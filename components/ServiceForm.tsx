@@ -2,7 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { CATEGORIES, CITIES } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
+import { useCities } from "@/lib/cities";
 import { HEADINGS, QUESTIONS } from "@/lib/intake";
 
 /**
@@ -17,6 +18,7 @@ export default function ServiceForm({ ownerId, base, listing, usedCategories, ca
   usedCategories: string[];
   canDelete?: boolean;
 }) {
+  const CITIES = useCities().map((c) => c.name);
   const router = useRouter();
   const firstFree = CATEGORIES.find((c) => !usedCategories.includes(c.slug))?.slug ?? "cleaning";
   const [category, setCategory] = useState<string>(listing?.category ?? firstFree);

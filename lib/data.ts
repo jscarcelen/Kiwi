@@ -1,4 +1,3 @@
-import { CITIES } from "./categories";
 
 export type Endorser = { id: string; name: string };
 export type RankedProvider = {
@@ -34,7 +33,7 @@ export async function rankProviders(
 ): Promise<RankedProvider[]> {
   let q = supabase.from("providers").select("*");
   if (f.service && f.service !== "all") q = q.eq("category", f.service);
-  if (f.city && CITIES.includes(f.city)) q = q.or(`city.eq.${f.city},regions.cs.{${f.city}}`);
+  if (f.city && /^[A-Za-z0-9 .'-]{2,60}$/.test(f.city)) q = q.or(`city.eq.${f.city},regions.cs.{${f.city}}`);
   const { data: all } = await q;
   const ans = Object.entries(f.answers ?? {}).filter(([, v]) => v.length);
   const providers = (all ?? []).filter((p: any) =>
