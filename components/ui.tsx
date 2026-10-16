@@ -30,7 +30,7 @@ export function ProviderCard({ r, signedIn }: { r: RankedProvider; signedIn: boo
   return (
     <Link href={`/providers/${p.id}`} className="card group block overflow-hidden transition hover:-translate-y-0.5 hover:shadow-pop">
       <div className="relative flex h-36 items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
-        {p.photo_url ? <img src={p.photo_url} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <span className="text-5xl">{catEmoji(p.category)}</span>}
+        {(p.photo_url || p.photos?.[0]) ? <img src={p.photo_url || p.photos?.[0]} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <span className="text-5xl">{catEmoji(p.category)}</span>}
         {r.net && <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-medium text-brand-700 backdrop-blur">In your network</span>}
       </div>
       <div className="p-5">
@@ -73,7 +73,7 @@ export function ProviderRow({ r }: { r: RankedProvider }) {
   return (
     <div className="card flex flex-col gap-5 p-5 sm:flex-row">
       <Link href={`/providers/${p.id}`} className="relative flex h-44 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-brand-50 to-brand-200 sm:h-40 sm:w-40">
-        {p.photo_url ? <img src={p.photo_url} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <span className="text-6xl">{catEmoji(p.category)}</span>}
+        {(p.photo_url || p.photos?.[0]) ? <img src={p.photo_url || p.photos?.[0]} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <span className="text-6xl">{catEmoji(p.category)}</span>}
       </Link>
       <div className="min-w-0 flex-1">
         <Link href={`/providers/${p.id}`}><h3 className="text-xl font-semibold tracking-tight hover:underline">{p.company}</h3></Link>

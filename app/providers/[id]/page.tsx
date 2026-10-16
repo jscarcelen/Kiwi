@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ReportButton from "@/components/ReportButton";
+import StickyProfileBar from "@/components/StickyProfileBar";
+import PhotoGallery from "@/components/PhotoGallery";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCircle, getViewer } from "@/lib/data";
@@ -47,7 +49,7 @@ export default async function ProviderPage({ params, searchParams }: { params: {
   const tab = "border-b-2 border-transparent px-1 py-3 text-[15px] text-ink-soft hover:text-ink";
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-8">
+    <div className="profile-bar-space mx-auto max-w-6xl px-4 py-6 sm:px-5 sm:py-8">
       <nav className="text-[13px] text-ink-soft"><Link href="/" className="hover:underline">WOM</Link> › <Link href={`/search?service=${p.category}`} className="hover:underline">{catLabel(p.category)}</Link> › <span className="font-medium text-ink">{p.company}</span></nav>
       <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_340px]">
         <div>
@@ -73,12 +75,14 @@ export default async function ProviderPage({ params, searchParams }: { params: {
             </p>
           )}
 
-          <div className="sticky top-16 z-30 mt-6 flex gap-6 border-b border-black/10 bg-[#fbfbfd]/95 backdrop-blur">
+          <PhotoGallery name={p.company} photos={[...(p.photo_url ? [p.photo_url] : []), ...((p.photos ?? []) as string[])]} />
+
+          <div className="sticky top-14 z-30 mt-6 flex gap-6 overflow-x-auto sm:top-16 border-b border-black/10 bg-[#fbfbfd]/95 backdrop-blur">
             <a href="#about" className={tab}>About</a><a href="#services" className={tab}>Services</a><a href="#reviews" className={tab}>Reviews</a>
           </div>
 
           <div className="mt-6 rounded-2xl bg-black/[0.04] p-5">
-            <div className="flex items-center gap-2 font-semibold">✨ Why WOM recommends this pro</div>
+            <div className="flex items-center gap-2 font-semibold">✨ Why we picked them for you</div>
             <ul className="mt-2 space-y-1 text-[14px] text-ink-soft">
               {!user ? <li>Sign in to see how people in your network rate them.</li> : network.length ? <li>{network.length} {network.length === 1 ? "person" : "people"} you know rated them {netAvg!.toFixed(1)}/5.</li> : <li>No one in your network has rated them yet — you could be the first.</li>}
               {stat && <li>{stat.n} overall rating{stat.n > 1 ? "s" : ""} averaging {Number(stat.avg_rating).toFixed(1)}/5.</li>}
@@ -143,7 +147,7 @@ export default async function ProviderPage({ params, searchParams }: { params: {
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="card space-y-3 border-t-4 border-t-navy p-6">
+          <div className="card hidden space-y-3 border-t-4 border-t-navy p-6 lg:block">
             <ContactButton providerId={p.id} phone={p.phone} email={p.email} unclaimed={!!p.unclaimed} adder={adderFirst} />
             <Link href={user ? `/review/${p.id}` : `/login?next=/review/${p.id}`} className="btn-ghost w-full">{mine ? "Edit your review" : "I've used this pro"}</Link>
             {mine && <p className="text-center text-[13px] text-ink-soft">You rated {mine.rating}/5.</p>}
@@ -154,6 +158,7 @@ export default async function ProviderPage({ params, searchParams }: { params: {
           <div className="card p-5"><div className="text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Coming soon</div><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>📅 Book appointments</li><li>💳 Pay securely through WOM</li></ul></div>
         </aside>
       </div>
+    <StickyProfileBar providerId={p.id} company={p.company} phone={p.phone} email={p.email} unclaimed={!!p.unclaimed} adder={adderFirst} rateHref={user ? `/review/${p.id}` : `/login?next=/review/${p.id}`} rated={!!mine} />
     </div>
   );
 }

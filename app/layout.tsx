@@ -5,7 +5,7 @@ import Logo from "@/components/Logo";
 import TourHost from "@/components/TourHost";
 import Nav from "@/components/Nav";
 import NativeBoot from "@/components/NativeBoot";
-import NativeTabBar from "@/components/NativeTabBar";
+import MobileTabBar from "@/components/MobileTabBar";
 import Tracker from "@/components/Tracker";
 import FeedbackWidget from "@/components/FeedbackWidget";
 
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <TourHost />
         <Tracker />
         <NativeBoot />
-        <NativeTabBar />
+        <MobileTabBar />
       </body>
     </html>
   );

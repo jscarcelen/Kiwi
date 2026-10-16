@@ -66,3 +66,6 @@ Gated by `is_admin()`; all stats/moderation go through SECURITY DEFINER `admin_*
 
 ## Cities & verified universities
 `supabase/cities_universities.sql` (run after recommend_pro.sql): `cities` table (editable in Admin → Editor, with per-city launch stats), `groups.city`, `admin_upsert_community`, `my_domain_communities`, `join_verified_community` (requires a confirmed email on the domain). UI: `useCities()` (lib/cities.ts) replaces the hard-coded list, `VerifiedPrompt` on /network, ✓ Verified badge. Account moves: docs/ACCOUNT_MIGRATION.md.
+
+## Mobile/tablet UX
+Responsive header (compact on phones; Explore/Connect/My network only md+), `MobileTabBar` (Home, Search, My network hero button, Alerts with unread badge, Account; shown <768px and always in the iOS app), `/notifications` inbox (`supabase/ux.sql`: notifications.read_at, unread/mark-read RPCs, providers.photos), `StickyProfileBar` (Contact/Rate always visible on profiles), `PhotoGallery` + `GalleryUpload`, gallery/list toggle on search, `NetworkNudge` on home. Global overflow-x clip prevents sideways scroll.

@@ -7,6 +7,7 @@ import { useCities } from "@/lib/cities";
 import { toE164, validPhone } from "@/lib/phone";
 import { initials } from "@/lib/data";
 import DeleteAccount from "./DeleteAccount";
+import GalleryUpload from "./GalleryUpload";
 import BlockedList from "./BlockedList";
 import PasswordInput from "./PasswordInput";
 
@@ -115,6 +116,7 @@ export default function SettingsForm({ user, profile, phoneRow, provider }: { us
             <div><label className="label">Regions you serve</label><div className="flex flex-wrap gap-2">{CITIES.map((c) => { const on = pr.regions.includes(c); return <button type="button" key={c} onClick={() => setPr({ ...pr, regions: on ? pr.regions.filter((x) => x !== c) : [...pr.regions, c] })} className={`rounded-full px-4 py-2 text-[14px] ${on ? "bg-navy text-white" : "bg-black/5"}`}>{c}</button>; })}</div></div>
             <div><label className="label">Description</label><textarea className="input min-h-[100px]" value={pr.description} onChange={(e) => setPr({ ...pr, description: e.target.value })} /></div>
             <div><label className="label">Business photo / logo</label><input type="file" accept="image/*" onChange={(e) => uploadProviderPhoto(e.target.files?.[0])} className="block w-full text-[14px] file:mr-3 file:rounded-full file:border-0 file:bg-black/5 file:px-4 file:py-2" /></div>
+            {provider && <GalleryUpload providerId={provider.id} userId={user.id} initial={provider.photos ?? []} />}
             <button className="btn-primary !py-2.5" disabled={pr.regions.length === 0}>Save pro profile</button><Msg m={prMsg} />
             <p className="text-[12px] text-ink-faint">This is your first service. Offer more (like cleaning and dog walking) and edit what each one offers from your <a className="underline" href="/provider/dashboard">dashboard</a>.</p>
           </form>

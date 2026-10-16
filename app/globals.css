@@ -15,12 +15,36 @@ body { color: #1d1d1f; }
   .label { @apply mb-1.5 block text-[13px] font-medium text-ink-soft; }
 }
 
+/* ---- never scroll sideways on any phone / iPad ---- */
+html, body { max-width: 100%; overflow-x: clip; }
+img, video, svg { max-width: 100%; }
+main { min-width: 0; }
+
+/* ---- mobile bottom navigation (phones; always in the iOS app) ---- */
+.mobile-tabbar { display: block; }
+@media (min-width: 768px) { html:not(.is-native) .mobile-tabbar { display: none; } }
+@media (max-width: 767px) {
+  body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  [data-kiwi-feedback] > button { bottom: calc(92px + env(safe-area-inset-bottom)) !important; right: 12px !important; padding: 10px 14px !important; }
+  [data-kiwi-feedback] > div { bottom: calc(150px + env(safe-area-inset-bottom)) !important; }
+  .profile-bar-space { padding-bottom: 84px; }
+}
+
 /* ---- iOS app (Capacitor) ---- */
 html.is-native { background: #fbfbfd; }
-.is-native body { padding-bottom: calc(64px + env(safe-area-inset-bottom)); overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
+.is-native body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
 .is-native header.sticky { padding-top: env(safe-area-inset-top); }
 .is-native footer { display: none; }
 .is-native button, .is-native a { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
 .is-native input, .is-native textarea { font-size: 16px; } /* prevent iOS zoom on focus */
-.is-native [data-kiwi-feedback] > button { bottom: calc(76px + env(safe-area-inset-bottom)) !important; }
-.is-native [data-kiwi-feedback] > div { bottom: calc(136px + env(safe-area-inset-bottom)) !important; }
+.is-native [data-kiwi-feedback] > button { bottom: calc(92px + env(safe-area-inset-bottom)) !important; }
+.is-native [data-kiwi-feedback] > div { bottom: calc(150px + env(safe-area-inset-bottom)) !important; }
+.is-native .profile-bar-space { padding-bottom: 84px; }
+
+/* sticky contact bar on pro profiles: sits above the tab bar */
+.profile-bar { bottom: env(safe-area-inset-bottom); }
+@media (max-width: 767px) { .profile-bar { bottom: calc(60px + env(safe-area-inset-bottom)); } }
+.is-native .profile-bar { bottom: calc(60px + env(safe-area-inset-bottom)); }
+.snap-x-row { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.snap-x-row::-webkit-scrollbar { display: none; }
+.snap-x-row > * { scroll-snap-align: start; flex: 0 0 auto; }

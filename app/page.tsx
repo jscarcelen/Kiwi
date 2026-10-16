@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getViewer, rankProviders } from "@/lib/data";
+import { getCircle, getViewer, rankProviders } from "@/lib/data";
 import { CATEGORIES } from "@/lib/categories";
 import Hero from "@/components/Hero";
+import NetworkNudge from "@/components/NetworkNudge";
 import TourButton from "@/components/TourButton";
 import IntakeButton from "@/components/IntakeButton";
 import { ProviderCard } from "@/components/ui";
@@ -21,6 +22,7 @@ export default async function Home() {
   const { data: st } = await supabase.from("app_settings").select("key,value").in("key", ["hero_headline", "hero_subtitle", "announcement"]);
   const cfg: Record<string, any> = Object.fromEntries((st ?? []).map((r: any) => [r.key, r.value]));
   const ann = cfg.announcement?.enabled && cfg.announcement?.text ? cfg.announcement : null;
+  const circle = user ? await getCircle(supabase, user.id) : null;
   const ratings = (stats.data ?? []).reduce((a: number, r: any) => a + (r.n ?? 0), 0);
   const heroStats = [
     { value: String(provCount.count ?? 0), label: "local pros" },
@@ -31,6 +33,7 @@ export default async function Home() {
     <>
       {ann && (ann.link ? <Link href={ann.link} className="block bg-brand-600 px-5 py-2.5 text-center text-[14px] font-medium text-white">{ann.text} →</Link> : <div className="bg-brand-600 px-5 py-2.5 text-center text-[14px] font-medium text-white">{ann.text}</div>)}
       <Hero defaultCity={(profile as any)?.city || undefined} stats={heroStats} headline={cfg.hero_headline || undefined} subtitle={cfg.hero_subtitle || undefined} />
+      {circle && <NetworkNudge friends={circle.friendIds.size} groups={circle.groups.length} />}
 
       <section className="mx-auto max-w-6xl px-5 pt-16">
         <h2 className="text-3xl font-semibold tracking-tight">What do you need today?</h2>

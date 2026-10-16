@@ -25,12 +25,12 @@ export default function SendProject({ top, category, summary, answers, city, whe
       <div className="flex items-center gap-4">
         <div className="flex -space-x-2">{top.map((t) => <Avatar key={t.id} id={t.id} name={t.company} size={40} />)}</div>
         <div>
-          <p className="font-semibold">{state === "sent" ? "Sent! They'll reach out soon." : `Send your project to your top ${top.length} matches`}</p>
-          <p className="text-[14px] text-ink-soft">{state === "sent" ? top.map((t) => t.company).join(", ") : "These pros fit your project and are best rated by your network. We share your name and contact only with them."}</p>
+          <p className="font-semibold">{state === "sent" ? "Sent! They'll reach out soon." : top.length === 1 ? "Send your project to your best match" : `Send your project to your top ${top.length} matches`}</p>
+          <p className="text-[14px] text-ink-soft">{state === "sent" ? top.map((t) => t.company).join(", ") : "Rated highest by people you trust. We share your name and contact only with them."}</p>
           {err && <p className="text-[13px] text-red-600">{err}</p>}
         </div>
       </div>
-      {state !== "sent" && <button className="btn-primary shrink-0" disabled={state === "sending"} onClick={send}>{state === "sending" ? "Sending…" : `Message top ${top.length}`}</button>}
+      {state !== "sent" && <button className="btn-primary shrink-0" disabled={state === "sending"} onClick={send}>{state === "sending" ? "Sending…" : top.length === 1 ? "Message them" : `Message top ${top.length}`}</button>}
     </div>
   );
 }
