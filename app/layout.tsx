@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div><Logo height={30} /><p className="mt-2 text-ink-soft">Trusted services,<br />recommended by people you know.</p></div>
             <div><h4 className="font-semibold">Customers</h4><ul className="mt-3 space-y-2 text-ink-soft"><li><Link href="/search">Browse pros</Link></li><li><Link href="/signup">Sign up</Link></li><li><Link href="/network">My network</Link></li><li><Link href="/help">Phone sign-in &amp; contacts</Link></li></ul></div>
             <div><h4 className="font-semibold">Pros</h4><ul className="mt-3 space-y-2 text-ink-soft"><li><Link href="/provider/signup">Join as a pro</Link></li><li><Link href="/provider/dashboard">Pro dashboard</Link></li></ul></div>
-            <div><h4 className="font-semibold">Support</h4><ul className="mt-3 space-y-2 text-ink-soft"><li><Link href="/help">Help</Link></li><li><Link href="/privacy">Privacy</Link></li><li>Chicago · Beta</li></ul></div>
+            <div><h4 className="font-semibold">Support</h4><ul className="mt-3 space-y-2 text-ink-soft"><li><Link href="/help">Help</Link></li><li><Link href="/privacy">Privacy</Link></li><li><Link href="/terms">Terms</Link></li><li>Chicago · Beta</li></ul></div>
           </div>
         </footer>
         <FeedbackWidget />

@@ -51,3 +51,6 @@ A pro account can have several listings (e.g. Cleaning and Dog walking): each is
 
 ## Admin console (/admin)
 Gated by `is_admin()`; all stats/moderation go through SECURITY DEFINER `admin_*` RPCs in `supabase/admin.sql` (each re-checks `is_admin()`). Tabs: Overview (auto insights, histograms, archetypes, funnel, premium free-vs-paid, installs, time in app), Users (search, edit, block, delete), Content (delete/edit reviews, supplier profiles, communities), Editor (hero copy, announcement banner, premium/credit rules in `app_settings`, admin team). Analytics: `components/Tracker.tsx` + `lib/track.ts` write to `app_events` (page_view, heartbeat, pwa/native install+open, search, premium_feature, limit_hit). Blocked users: hidden reviews, can't post/create communities (RLS). TODO: wire `lib/referrals.ts` credit constants to `app_settings`.
+
+## Report & block (App Store 1.2)
+`supabase/moderation.sql` (run after admin.sql): `reports`, `user_blocks`, RPCs `report_content`, `block_user`, `unblock_user`, `my_blocked`, admin `admin_reports`/`admin_resolve_report`; `in_my_circle` excludes blocks both ways. UI: `ReportButton` (reviews, supplier profiles, friends), `BlockedList` in Settings, Reports queue in /admin → Content, `/terms` page, consent line on signup.

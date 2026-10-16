@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ReportButton from "@/components/ReportButton";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCircle, getViewer } from "@/lib/data";
@@ -127,7 +128,7 @@ export default async function ProviderPage({ params, searchParams }: { params: {
                 {network.map((r: any) => (
                   <div key={r.id} className="card flex gap-4 p-5">
                     <Avatar id={r.user_id} name={(r.profiles as any)?.full_name ?? "?"} size={40} />
-                    <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><b>{(r.profiles as any)?.full_name}</b><Stars value={r.rating} size={14} /><span className="text-[12px] text-ink-faint">{new Date(r.created_at).toLocaleDateString()}</span></div>{r.comment && <p className="mt-1 text-ink-soft">{r.comment}</p>}</div>
+                    <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><b>{(r.profiles as any)?.full_name}</b><Stars value={r.rating} size={14} /><span className="text-[12px] text-ink-faint">{new Date(r.created_at).toLocaleDateString()}</span>{r.user_id !== user?.id && <ReportButton type="review" id={r.id} authorId={r.user_id} signedIn={!!user} className="ml-auto" />}</div>{r.comment && <p className="mt-1 text-ink-soft">{r.comment}</p>}</div>
                   </div>
                 ))}
                 {hidden > 0 && <p className="text-[13px] text-ink-faint">+ {hidden} anonymous rating{hidden > 1 ? "s" : ""} from outside your network.</p>}
@@ -144,6 +145,7 @@ export default async function ProviderPage({ params, searchParams }: { params: {
             <p className="text-center text-[13px] text-ink-faint">🟢 Contact details are shared only when you click.</p>
           </div>
           <div className="rounded-2xl bg-black/[0.04] p-5 text-[14px]"><div className="font-semibold">WOM network</div><p className="mt-1 text-ink-soft">Reviews from people you know — not anonymous strangers.</p></div>
+          {p.owner_id !== user?.id && <div className="text-center"><ReportButton type="provider" id={p.id} authorId={p.owner_id} signedIn={!!user} label="Report this profile" /></div>}
           <div className="card p-5"><div className="text-[12px] font-semibold uppercase tracking-wide text-ink-faint">Coming soon</div><ul className="mt-2 space-y-1.5 text-[14px] text-ink-soft"><li>📅 Book appointments</li><li>💳 Pay securely through WOM</li></ul></div>
         </aside>
       </div>

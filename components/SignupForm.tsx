@@ -41,6 +41,7 @@ export default function SignupForm() {
       </div>
       {err && <p className="text-[14px] text-red-600">{err}</p>}
       {note && <p className="rounded-xl bg-brand-50 p-3 text-[14px] text-brand-700">{note}</p>}
+      <p className="text-center text-[12.5px] text-ink-faint">By creating an account you agree to our <a href="/terms" className="underline">Terms</a> (no objectionable or abusive content) and <a href="/privacy" className="underline">Privacy Policy</a>.</p>
       <button className="btn-primary w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
       <PhoneAuth mode="signup" />
       <InstagramButton />

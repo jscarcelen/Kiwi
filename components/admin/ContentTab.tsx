@@ -3,17 +3,17 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORIES } from "@/lib/categories";
 
-const SUB = ["Reviews", "Profiles", "Communities"] as const;
+const SUB = ["Reports", "Reviews", "Profiles", "Communities"] as const;
 export default function ContentTab() {
-  const [sub, setSub] = useState<(typeof SUB)[number]>("Reviews");
+  const [sub, setSub] = useState<(typeof SUB)[number]>("Reports");
   const [rows, setRows] = useState<any[]>([]);
   const [msg, setMsg] = useState("");
   const [edit, setEdit] = useState<any>(null);
   const s = createClient();
   const load = useCallback(async () => {
     setMsg("");
-    const fn = sub === "Reviews" ? "admin_reviews" : sub === "Profiles" ? "admin_providers" : "admin_communities";
-    const { data, error } = await s.rpc(fn, sub === "Reviews" ? { lim_n: 200 } : {});
+    const fn = sub === "Reports" ? "admin_reports" : sub === "Reviews" ? "admin_reviews" : sub === "Profiles" ? "admin_providers" : "admin_communities";
+    const { data, error } = await s.rpc(fn, sub === "Reviews" ? { lim_n: 200 } : sub === "Reports" ? { only_open: true } : {});
     if (error) setMsg(error.message); else setRows(data ?? []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sub]);
@@ -32,6 +32,20 @@ export default function ContentTab() {
       <div className="flex gap-2 text-[14px]">{SUB.map((t) => <button key={t} onClick={() => setSub(t)} className={`rounded-full px-4 py-1.5 ${sub === t ? "bg-navy text-white" : "bg-black/5"}`}>{t}</button>)}</div>
       {msg && <p className="mt-3 rounded-xl bg-brand-50 p-3 text-[13px] text-brand-700">{msg}</p>}
       <div className="mt-4 space-y-2">
+        {sub === "Reports" && rows.map((r) => (
+          <div key={r.id} className="rounded-2xl border border-black/5 bg-white p-4 text-[14px]">
+            <div className="flex flex-wrap items-center gap-2"><span className="rounded bg-red-100 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-red-700">{r.target_type}</span><b>{r.reason}</b><span className="text-[12px] text-ink-faint">by {r.reporter || "?"} · {new Date(r.created_at).toLocaleString()}</span></div>
+            <p className="mt-1 text-ink-soft">{r.summary || "(content already removed)"}</p>
+            {r.details && <p className="mt-1 text-[13px] italic text-ink-faint">"{r.details}"</p>}
+            <div className="mt-3 flex flex-wrap gap-3 text-[13px]">
+              {r.target_type === "review" && r.summary && <button className="text-red-600 hover:underline" onClick={async () => { if (!confirm("Delete this review?")) return; const { error } = await s.rpc("admin_delete_review", { rid: r.target_id }); if (!error) await s.rpc("admin_resolve_report", { rid: r.id, new_status: "resolved" }); setMsg(error ? error.message : "Review deleted."); load(); }}>Delete review</button>}
+              {r.target_type === "provider" && r.summary && <button className="text-red-600 hover:underline" onClick={async () => { if (!confirm("Delete this profile?")) return; const { error } = await s.rpc("admin_delete_provider", { pid: r.target_id }); if (!error) await s.rpc("admin_resolve_report", { rid: r.id, new_status: "resolved" }); setMsg(error ? error.message : "Profile deleted."); load(); }}>Delete profile</button>}
+              {r.author_id && <button className="hover:underline" onClick={async () => { const { error } = await s.rpc("admin_set_blocked", { uid: r.author_id, flag: true, reason: `Report: ${r.reason}` }); setMsg(error ? error.message : "Author blocked."); }}>Block author</button>}
+              <button className="text-brand-700 hover:underline" onClick={async () => { await s.rpc("admin_resolve_report", { rid: r.id, new_status: "resolved" }); load(); }}>Mark resolved</button>
+              <button className="text-ink-faint hover:underline" onClick={async () => { await s.rpc("admin_resolve_report", { rid: r.id, new_status: "dismissed" }); load(); }}>Dismiss</button>
+            </div>
+          </div>
+        ))}
         {sub === "Reviews" && rows.map((r) => (
           <div key={r.id} className="flex items-start justify-between gap-3 rounded-2xl border border-black/5 bg-white p-4 text-[14px]">
             <div><div><span className="font-semibold">{r.reviewer || "?"}</span> → <span className="font-semibold">{r.provider || "?"}</span> · {"★".repeat(r.rating)}<span className="text-ink-faint"> · {new Date(r.created_at).toLocaleDateString()} {r.shared ? "" : "· private"}</span></div>{r.comment && <p className="mt-1 text-ink-soft">{r.comment}</p>}</div>

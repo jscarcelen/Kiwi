@@ -1,4 +1,5 @@
 "use client";
+import ReportButton from "./ReportButton";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -42,7 +43,7 @@ export default function NetworkManager({ me, friends, myGroups, allGroups, sugge
           {friends.map((p) => (
             <li key={p.id} className="flex items-center justify-between py-3">
               <span className="flex items-center gap-3"><Avatar id={p.id} name={p.full_name} /> {p.full_name}</span>
-              <button className="text-[13px] text-ink-faint hover:text-red-600" onClick={async () => { await s.rpc("remove_friend", { target: p.id }); refresh(); }}>Remove</button>
+              <span className="flex items-center gap-3"><button className="text-[13px] text-ink-faint hover:text-red-600" onClick={async () => { await s.rpc("remove_friend", { target: p.id }); refresh(); }}>Remove</button><ReportButton type="user" id={p.id} authorId={p.id} signedIn label="Report / block" /></span>
             </li>
           ))}
         </ul>

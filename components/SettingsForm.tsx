@@ -6,6 +6,7 @@ import { CATEGORIES, CITIES } from "@/lib/categories";
 import { toE164, validPhone } from "@/lib/phone";
 import { initials } from "@/lib/data";
 import DeleteAccount from "./DeleteAccount";
+import BlockedList from "./BlockedList";
 import PasswordInput from "./PasswordInput";
 
 function Card({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
@@ -117,6 +118,8 @@ export default function SettingsForm({ user, profile, phoneRow, provider }: { us
           </form>
         </Card>
       )}
+
+      <Card title="Blocked people"><BlockedList /></Card>
 
       <Card title="Account">
         <div className="flex flex-wrap items-center justify-between gap-3">
