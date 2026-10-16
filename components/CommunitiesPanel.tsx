@@ -1,5 +1,6 @@
 "use client";
 import { track } from "@/lib/track";
+import UpgradeModal from "./UpgradeModal";
 import { canShareNatively, shareNative } from "@/lib/native";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,14 +11,14 @@ import { FREE_COMMUNITY_LIMIT } from "@/lib/referrals";
 
 export type Community = { id: string; slug: string; name: string; description: string | null; owner_id: string | null; invite_code: string; visible: boolean; members: number };
 
-export default function CommunitiesPanel({ me, communities, isPremium }: { me: string; communities: Community[]; isPremium: boolean }) {
+export default function CommunitiesPanel({ me, communities, isPremium, paid, startLabel }: { me: string; communities: Community[]; isPremium: boolean; paid: boolean; startLabel: string }) {
   const router = useRouter();
   const s = createClient();
   const [origin, setOrigin] = useState("");
   const [name, setName] = useState(""); const [desc, setDesc] = useState("");
   const [err, setErr] = useState(""); const [busy, setBusy] = useState(false); const [open, setOpen] = useState(false);
   const [qr, setQr] = useState<{ id: string; url: string } | null>(null);
-  const [copied, setCopied] = useState("");
+  const [copied, setCopied] = useState(""); const [lock, setLock] = useState(false);
   useEffect(() => setOrigin(window.location.origin), []);
   const owned = communities.filter((c) => c.owner_id === me);
   const used = owned.length;
@@ -26,8 +27,8 @@ export default function CommunitiesPanel({ me, communities, isPremium }: { me: s
     const { data, error } = await s.rpc("create_community", { cname: name, cdesc: desc });
     setBusy(false);
     if (error) return setErr(error.message);
-    if (data?.error) { if (data.limit) track("limit_hit", { feature: "community" }); return setErr(data.error); }
-    track("premium_feature", { feature: "community", free: !isPremium });
+    if (data?.error) { if (data.limit) setLock(true); return setErr(data.error); }
+    if (data?.premium_used) track("premium_feature", { feature: "community", free: !paid });
     setName(""); setDesc(""); setOpen(false); router.refresh();
   };
   const link = (c: Community) => `${origin}/c/${c.invite_code}`;
@@ -43,8 +44,8 @@ export default function CommunitiesPanel({ me, communities, isPremium }: { me: s
           <p className="mt-1 max-w-2xl text-[14px] text-ink-soft">Create your own — “Booth 2028”, “Latin Booth”, your running club — and share the link. You become its <b>ambassador</b>. Filter any search by a community to see only its members' reviews.</p>
         </div>
         <div className="text-right text-[13px] text-ink-soft">
-          <div className="font-semibold text-ink">{isPremium ? `${used} communities · Premium` : `${used} of ${FREE_COMMUNITY_LIMIT} free communities`}</div>
-          {!isPremium && <div>Premium (soon) = unlimited. Earn free months by growing your network.</div>}
+          <div className="font-semibold text-ink">{paid ? `${used} communities · Premium` : isPremium ? `${used} communities · Premium free until ${startLabel}` : `${used} of ${FREE_COMMUNITY_LIMIT} free communities`}</div>
+          {!isPremium && <div>Premium = unlimited. <Link href="/premium" className="font-medium text-brand-700 underline">See Premium</Link> · earn free months by growing your network.</div>}
         </div>
       </div>
 
@@ -95,6 +96,7 @@ export default function CommunitiesPanel({ me, communities, isPremium }: { me: s
           );
         })}
       </div>
+      <UpgradeModal open={lock} onClose={() => setLock(false)} feature="more communities" startLabel={startLabel} />
     </section>
   );
 }

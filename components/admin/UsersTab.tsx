@@ -31,6 +31,10 @@ export default function UsersTab({ me }: { me: string }) {
     const { error } = await s.rpc("admin_delete_user", { uid: u.id });
     setMsg(error ? error.message : "Account deleted."); load();
   }
+  async function premium(u: any) {
+    const { error } = await s.rpc("admin_set_premium", { uid: u.id, flag: !u.is_premium });
+    setMsg(error ? error.message : u.is_premium ? "Premium revoked." : "Premium granted."); load();
+  }
   async function saveEdit() {
     const { error } = await s.rpc("admin_update_profile", { uid: edit.id, new_name: edit.full_name, new_instagram: edit.instagram ?? "", new_city: edit.city ?? "Chicago" });
     setMsg(error ? error.message : "Saved."); if (!error) { setEdit(null); load(); }
@@ -49,14 +53,14 @@ export default function UsersTab({ me }: { me: string }) {
           <tbody>
             {rows.map((u) => (
               <tr key={u.id} className={`border-t border-black/5 ${u.blocked ? "bg-red-50/60" : ""}`}>
-                <td className="p-3"><div className="font-medium">{u.full_name || "—"} {u.is_admin && <span className="ml-1 rounded bg-navy px-1.5 py-0.5 text-[10px] text-white">ADMIN</span>} {u.blocked && <span className="ml-1 rounded bg-red-600 px-1.5 py-0.5 text-[10px] text-white">BLOCKED</span>}</div><div className="text-ink-faint">{u.email || u.phone || ""}</div></td>
+                <td className="p-3"><div className="font-medium">{u.full_name || "—"} {u.is_admin && <span className="ml-1 rounded bg-navy px-1.5 py-0.5 text-[10px] text-white">ADMIN</span>} {u.is_premium && <span className="ml-1 rounded bg-brand-600 px-1.5 py-0.5 text-[10px] text-white">PREMIUM</span>} {u.blocked && <span className="ml-1 rounded bg-red-600 px-1.5 py-0.5 text-[10px] text-white">BLOCKED</span>}</div><div className="text-ink-faint">{u.email || u.phone || ""}</div></td>
                 <td>{u.archetype}</td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                 <td>{u.last_seen ? new Date(u.last_seen).toLocaleDateString() : "—"}</td>
                 <td>{u.friends} / {u.reviews} / {u.owned}</td>
                 <td>{u.credits}</td>
                 <td className="whitespace-nowrap pr-3 text-right">
-                  <button className="mr-2 text-brand-700 hover:underline" onClick={() => setEdit({ ...u })}>Edit</button>
+                  <button className="mr-2 text-brand-700 hover:underline" onClick={() => setEdit({ ...u })}>Edit</button><button className="mr-2 hover:underline" onClick={() => premium(u)}>{u.is_premium ? "Revoke Premium" : "Grant Premium"}</button>
                   {u.id !== me && <><button className="mr-2 hover:underline" onClick={() => block(u)}>{u.blocked ? "Unblock" : "Block"}</button><button className="text-red-600 hover:underline" onClick={() => del(u)}>Delete</button></>}
                 </td>
               </tr>

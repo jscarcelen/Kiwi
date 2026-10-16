@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import SavedFilters from "@/components/SavedFilters";
+import { fmtDate, getPremium } from "@/lib/premium";
 import TrackEvent from "@/components/TrackEvent";
 import { getCircle, getViewer, rankProviders } from "@/lib/data";
 import { catLabel } from "@/lib/categories";
@@ -21,6 +23,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
   const city = searchParams.city ?? "Chicago";
   const circle = searchParams.circle ?? "all";
   const answers = readAnswers(searchParams, service);
+  const prem = await getPremium(supabase);
+  const { data: savedRows } = user ? await supabase.from("saved_filters").select("id,name,qs").order("created_at", { ascending: false }).limit(12) : { data: [] as any[] };
+  const qsNow = new URLSearchParams(Object.entries(searchParams).filter(([, v]) => typeof v === "string" && v) as [string, string][]).toString();
   const results = await rankProviders(supabase, user?.id ?? null, { service, city, circle, answers });
   if (results.length) await supabase.from("provider_events").insert(results.slice(0, 12).map((r) => ({ provider_id: r.provider.id, type: "impression", user_id: user?.id ?? null })));
   const inNet = results.filter((r) => r.net);
@@ -38,6 +43,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
         <section>
           <h1 className="text-3xl font-semibold tracking-tight">Matching {service === "all" ? "pros" : catLabel(service).toLowerCase()}</h1>
           <details className="mt-1 text-[14px] text-ink-soft"><summary className="cursor-pointer list-none">Our criteria ⓘ</summary><p className="mt-2 max-w-xl rounded-xl bg-black/[0.04] p-3">We rank pros your friends rate highest first (direct friends count fully, group members 60%), then everyone else by overall rating and number of reviews. Filters only exclude pros who told us they don't offer that service.</p></details>
+          <SavedFilters signedIn={!!user} hasPremium={prem.has_premium} paid={prem.paid} startLabel={fmtDate(prem.start)} qs={qsNow} defaultName={service === "all" ? "All pros" : catLabel(service)} saved={(savedRows ?? []) as any[]} />
           {searchParams.q && (
             <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl bg-black/[0.04] px-4 py-3 text-[14px]">
               <span><b>Your project:</b> {searchParams.q}{searchParams.when && ` · ${WHEN_LABEL[searchParams.when] ?? ""}`}</span>

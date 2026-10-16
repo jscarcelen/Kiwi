@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/data";
 import NetworkManager from "@/components/NetworkManager";
+import { fmtDate, getPremium } from "@/lib/premium";
 import CommunitiesPanel from "@/components/CommunitiesPanel";
 import ContactsFinder from "@/components/ContactsFinder";
 
@@ -17,6 +18,7 @@ export const dynamic = "force-dynamic";
 export default async function Network({ searchParams }: { searchParams: { welcome?: string } }) {
   const supabase = createClient();
   const { user, profile } = await getViewer(supabase);
+  const prem = await getPremium(supabase);
   if (!user) redirect("/login?next=/network");
   const [{ data: conns }, { data: mem }, { data: groups }, { data: suggestions }, { data: refs }, { count: endorsed }] = await Promise.all([
     supabase.from("connections").select("friend:profiles!connections_friend_id_fkey(id,full_name,instagram)").eq("user_id", user.id),
@@ -81,7 +83,7 @@ export default async function Network({ searchParams }: { searchParams: { welcom
       </div>
 
       <div id="friends" className="mt-10 scroll-mt-24"><NetworkManager me={user.id} friends={friends} myGroups={myGroups} allGroups={(groups ?? []).filter((g: any) => !g.owner_id)} suggestions={suggestions ?? []} /></div>
-      <div className="scroll-mt-24"><CommunitiesPanel me={user.id} communities={communities} isPremium={!!profile?.is_premium} /></div>
+      <div className="scroll-mt-24"><CommunitiesPanel me={user.id} communities={communities} isPremium={prem.has_premium} paid={prem.paid} startLabel={fmtDate(prem.start)} /></div>
       {CONTACTS_AVAILABLE ? (
         <ContactsFinder me={user.id} friendIds={friends.map((f: any) => f.id)} />
       ) : (

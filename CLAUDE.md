@@ -57,3 +57,6 @@ Gated by `is_admin()`; all stats/moderation go through SECURITY DEFINER `admin_*
 
 ## Native app features
 `lib/native.ts` (isNative, haptic, shareNative), `components/NativeBoot.tsx` (status bar, splash hide, haptics, offline banner, push registration + soft prompt), `NativeTabBar.tsx` (Home/Search/Network/Account in-app only), `capacitor-www/offline.html` (server.errorPath), safe-area CSS under `.is-native` in globals.css. FeedbackWidget hides point/capture in-app. Push: `supabase/push.sql` (device_tokens, notifications + triggers) and `/api/push/send` (APNs; env in .env.example; schedule with pg_cron+pg_net). Business plan: `docs/business-readiness.md`; Admin → Revenue tab models the spreadsheet.
+
+## Premium gating
+`supabase/premium.sql` (run after admin.sql): `premium_status()`, `has_premium()`; everyone has Premium until `app_settings.premium_start` (default 2027-01-01, editable in Admin → Revenue), then only `profiles.is_premium` (Admin → Users → Grant Premium; later a Paddle webhook). Gated: communities beyond the free limit, saved filters. UI: `UpgradeModal` (Paddle link via NEXT_PUBLIC_PADDLE_CHECKOUT_URL; hidden in iOS app), `/premium`, `SavedFilters`. TODO: Paddle webhook → set is_premium; RevenueCat/Apple IAP for iOS.
