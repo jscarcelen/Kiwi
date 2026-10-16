@@ -24,3 +24,20 @@ At 2% on a $70 job we earn $1.40; card processing is ≈ 2.9% + $0.30 ≈ $2.33.
 4. Booking + Stripe Connect
 5. IAP for Premium (StoreKit via RevenueCat)
 6. Lead-list consent + export
+
+
+## Spain-based company selling worldwide — payments architecture
+**Paddle (merchant of record)** handles VAT/sales tax in most countries, invoices and chargebacks, at ≈5% + $0.50 per transaction (verify on paddle.com/pricing). But its Acceptable Use Policy excludes marketplaces where non-Paddle sellers transact, standalone human services, and "advertising/sponsorship where no real software is sold". So:
+| Stream | Use | Why |
+|---|---|---|
+| Premium users (filters, communities) | Paddle on web + **Apple IAP** in iOS | Software feature; Apple requires IAP outside the US |
+| Supplier invoicing / fee-avoidance sub | Paddle (web only) | It's a SaaS tool |
+| Promotion, lead list | **Ask Paddle in writing first**; fallback Stripe | Could be classed as advertising / marketplace |
+| Booking fee (2–5%) | **Stripe Connect** (available in Spain) | Marketplace split payments; Paddle can't do this |
+
+Watch: Paddle's flat $0.50 makes a $2.50/month plan lose ≈25% to fees — sell annual or raise price. Stripe Connect Express adds platform/payout fees (verify euro pricing). EEA cards ≈1.5% + €0.25; non-EEA ≈3.25% + FX. Handling customer money may have PSD2/payment-institution implications — Stripe Connect covers this if you stay within its model; confirm with a lawyer.
+
+## Spain checklist
+SL (sociedad limitada) vs autónomo · NIF/CIF + bank account · gestoría for IVA/IRPF/corporate tax · Stripe + Paddle accounts in the SL's name · D-U-N-S for the Apple organization account (Spain-based) · RGPD/GDPR compliance (privacy policy, DPA with Supabase/Vercel/OpenAI, contacts-upload consent, cookie banner for EU users) · EU consumer-law withdrawal rules for subscriptions · DSA notice-and-action for user content (report flow built) · Verifactu/e-invoicing rules for your own invoices (ask gestor).
+
+The admin → Revenue tab models all of this: processor fees by stream, Apple's cut, refunds, fixed and variable costs, tax, break-even users and scale scenarios.
